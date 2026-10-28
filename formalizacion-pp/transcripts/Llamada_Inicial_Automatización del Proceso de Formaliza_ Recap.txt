@@ -1,0 +1,52 @@
+Automatización del Proceso de Formalización de Préstamos Personales
+Thu, Oct 8, 2026
+
+Summary:
+
+Se evaluó la viabilidad de automatizar la formalización de préstamos personales en Ultimus.
+• El agente completaría entre 10 y 15 campos.
+• Ultimus se integra con IBS mediante servicios web.
+• El acceso directo a datos sigue pendiente de autorización.
+• Trazabilidad, validaciones y permisos son requisitos centrales.
+
+
+Action Items:
+
+* Participante de la reunión: Compartan el catálogo completo de mensajes y errores que pueden surgir al consultar IBS para esta validación
+* Ricardo Herrera: Informa a Luis y Juan sobre el proceso e incluye al equipo de arquitectura
+* Nerio Peña: Redacta y comparte la consulta técnica sobre la factibilidad de insertar datos en las tablas de Ultimus
+
+
+Key Discussion Points:
+
+Objetivo de automatización y alcance del proceso
+Nerio Peña y Ricardo Herrera introdujeron la automatización de tareas de formalización de préstamos que hoy realiza el personal. El proceso propuesto contempla que el agente complete información y que una persona revise los datos antes de continuar.
+
+Acceso técnico a Ultimus y validación con el core
+Rodolfo Blasser planteó acceder a los datos de Ultimus sin operar la interfaz gráfica y mantener las validaciones frente al core sin escribir en este último. Yaniselly Oses pidió aclarar qué información se cargaría y en qué punto se produciría la validación.
+
+Flujo operativo e integraciones de préstamos
+Se confirmó que las integraciones de préstamos personales con IBS utilizan servicios web. Ricardo describió las acciones actuales en revisión documental, como actualizar al cliente, reservar el préstamo, crear una cuenta de ahorro si hace falta y completar datos según el tipo de empresa.
+
+Mensajes de integración, acceso a datos y campos manuales
+Ricardo y Ediel explicaron que el sistema registra los movimientos de integración y muestra los errores que se producen al consultar el core. Rodolfo solicitó conocer el catálogo de errores y el mecanismo de acceso a Ultimus, mientras el equipo precisó que el proceso suele requerir unos diez campos y que esa cifra podría aumentar.
+
+Alternativa de acceso directo y conservación de trazabilidad
+Yaniselly pidió confirmar si la propuesta consistía en reemplazar la automatización de interfaz por acceso directo a los datos. Rodolfo explicó que se busca evitar la fragilidad de emular clics, y Ediel planteó la necesidad de preservar la bitácora, las validaciones y la atribución de las operaciones; el intercambio continuó sin una decisión final en el tramo disponible.
+
+Integraciones con IBS y propuesta de validación
+Yaniselly describió las integraciones existentes para crear o actualizar clientes y generar números de préstamo mediante procesos conectados al IBS. Rodolfo propuso una etapa de validación síncrona con el core y una implementación programática que emule las consultas sin usar la interfaz gráfica.
+
+Acceso, seguridad y estrategia de pruebas
+Yaniselly señaló que debían revisarse los permisos con ciberseguridad, mientras Rodolfo explicó que la aplicación residiría dentro de la infraestructura del banco. Ricardo y Rodolfo indicaron que el proyecto estaba en una etapa inicial y que las pruebas, certificaciones y ajustes comenzarían en un ambiente de prueba antes de cualquier despliegue productivo.
+
+Participación de arquitectura y factibilidad de acceso a Ultimus
+Yaniselly recomendó involucrar a arquitectura, y Oscar explicó que se debía conocer el tipo de agente y su funcionamiento para consultar a las áreas técnicas correspondientes. Nerio aclaró que primero era necesario determinar si Ultimus permite insertar datos en sus tablas; Oscar pidió formalizar la consulta para revisarla internamente.
+
+Consulta técnica y próximos pasos
+Nerio acordó preparar y compartir una consulta técnica para validar la factibilidad, con Luis y Juan como destinatarios y Ricardo en copia. El equipo aceptó esperar esa respuesta antes de definir el diseño, y se confirmó que la conexión con IBS se realiza mediante un servicio web.
+
+
+Notepad:
+
+* No notes

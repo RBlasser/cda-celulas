@@ -1,0 +1,622 @@
+Req. Técnico - Formalización PP
+Thu, Oct 22, 2026
+
+0:01 - Juan Montenegro Pescador
+¿Qué tal, señores? ¿Cómo están? ¿Qué tal, Marianella?
+
+0:06 - Unidentified Speaker
+Hola, buen día. Hola, buenos días. ¿Cómo están?
+
+0:10 - Mara Cordoba
+Hola, buenos días.
+
+0:12 - Unidentified Speaker
+Hola, Marianella. Buenos días. Hola, buenos días. ¿Cómo están? Todo bien. Unos minutitos a Read AI.
+
+0:20 - Marianella Musso
+Ya se conecta.
+
+0:22 - Unidentified Speaker
+Gracias.
+
+0:25 - Juan Montenegro Pescador
+Ricardo, yo le mandé la sesión a Ediel, siempre veo aquí que no lo ha aceptado, lo veo en rojo, no sé si por esta sesión o porque está en otra. Ediel estaba en otra sesión, casualmente donde yo vengo saliendo.
+
+0:49 - Unidentified Speaker
+Ok.
+
+0:50 - Juan Montenegro Pescador
+Pero la sesión allá siguió.
+
+0:54 - Ricardo Herrera
+Acá está Christian, así que él nos pudiese apoyar en esa parte más técnica del sistema y quizás nos pueda dar un poco más de luces de la necesidad que tenga el equipo.
+
+1:08 - Juan Montenegro Pescador
+Sí, igual vamos cubriendo los puntos que tú sepas, Christian, y si hay algo muy técnico que ya entre a nivel de programación, pues podemos ponerle un pin, dejarlo pendiente y verlo en la tarde con EDL o mandarle las consultas puntuales directamente Subtítulos por la comunidad de Amara.org en el lo tengo así, pero ustedes lo tienen de este lado.
+
+2:39 - Unidentified Speaker
+Hola, buenos días. Hola, buenos días. Bueno, creo que ahora sí somos completos.
+
+2:47 - Juan Montenegro Pescador
+Bueno, el objetivo de esta sesión es tener un ejercicio similar al que vimos ayer, pero ya de la parte más técnica. De la iniciativa. Gracias Mara, ahí ya está presentando y le pedí a Mara que si podía liderar la sesión, siendo ella pues nuestro enlace con TI, siendo este un documento más técnico, pues para que yo no tenga que estar entendiendo qué dice cada punto, creo que directamente que lo lleve a alguien que maneje más ese ámbito.
+
+ Así que sin más, adelante Mara. Bueno, buenos días a todos.
+
+3:29 - Mara Cordoba
+Yo tenía primero que nada, antes de que empezáramos a ver el documento, de toda esta serie de requisitos que están aquí. Sí, obviamente que unos deben tener más prioridad que otros, entonces también me gustaría que a medida que los vayamos viendo, nos vayamos sacando cuáles son los que deberían tener más prioridad para realmente que vamos a usar en primera instancia y cuáles no usaríamos de momento para igual no pedir todo Entonces, listo.
+
+ OK, OK, bueno, primero.
+
+4:02 - Rodolfo Blasser
+Mi intención con esto es que evidentemente podamos tener para el sistema, para el agente que hemos propuesto diseñar primero los recursos necesarios para emular lo que hace el el funcional. Es decir, el funcional, por ejemplo, necesita tener acceso en su operatividad a último, por ejemplo. Necesita tener un... Es decir, todas las características que una persona necesitaría en términos de recursos, son los mismos recursos que debe tener el sistema.
+
+ Porque el sistema va a hacer interacción por esas mismas vías. Por ejemplo, en el espacio ayer quedó claro que no es necesario acceder a la base de datos donde están los aprobados, porque ya quedó claro, ya quedó claro que ese dato ya está en últimos. Es decir que eso no lo necesitamos, tampoco necesitamos. Salvo que haya una un caso excepcional, no necesitamos aparentemente tener una un acceso a a rutas compartidas para para poder consumir archivos o en general insumos documentales porque todo eso ya está en últimos es decir que hay algunas de estas cuestiones que nosotros siendo ya no necesario en este momento salvo que haya un caso atípico pero comprendo que de los casos se resuelven en el entorno de últimos.
+
+ Dicho eso, ¿qué si es imprescindible tener ambientes? Me refiero a tener un servidor, una instancia. Ok, entonces empecemos con esto, ¿verdad?
+
+6:07 - Unidentified Speaker
+Sí, eso sí.
+
+6:09 - Rodolfo Blasser
+¿Y qué significa esto? En términos de desarrollo, es decir, un ambiente que sea para desarrollar, probar, etcétera. Necesitamos tener las mismas condiciones que tiene el funcional. El funcional tiene una computadora con interfaz gráfica y que Ultimus es, de hecho, una interfaz gráfica. Si bien lo que luego se va a hacer, lo más probable es que sea headless, o sea, no va a tener, no se va a ver movimientos de mouse ni nada por el estilo, sino más bien una programática, la intención de tener y digamos un un servidor Windows es poder representar correctamente.
+
+ Em últimos entenderlo. Desplegar incluso en ambiente de desarrollo contenedores que nos permitan luego llevarlos a productivo. Y que todo lo que sea necesario. Para que para para que podamos construir, incluso dar mantenimiento, lo podemos hacer en un entorno seguro de pruebas, donde incluso se validen algunas características de todo tipo. Por ejemplo, un aspecto que hay que atender y que es importante es, por ejemplo, las características que comentaba Ricardo ayer de que la institución Tienen sus calendarios particulares para que se empiece a descontar a un cliente.
+
+ Entonces eso, eso hay que atenderlo de una manera de alguna forma. Para mí. El ambiente productivo. En principio, pues lo que deseamos es que el todo desarrollo, si lo logramos en un servidor, Windows, Excel, etc. Y que en un servidor Linux SSH podamos desplegar. Y que eso, entonces, sea donde el sistema agéntico hace sus operaciones, dejando toda la trazabilidad, los logs que se hayan diseñado desde su implementación en la perspectiva de pruebas.
+
+
+
+8:34 - Mara Cordoba1
+Ok a bien, viendo a lo que acabas de decir en primordiales, sería este servidor de Windows de desarrollo y en el ambiente preproductivo es para que tenga conectividad con este mismo servidor de Windows, un servidor Linux.
+
+8:53 - Rodolfo Blasser
+Sí, sí, y hay algo imprescindible que esto es una experiencia.
+
+8:58 - Unidentified Speaker
+Aprendida.
+
+9:00 - Rodolfo Blasser
+en el desarrollo de los modelos de aprobados. Nosotros necesitamos tener. Dame un segundito que voy a dejar de compartir para reiniciar el Word porque no me está dejando escribir. No te preocupes. Algo que es imprescindible para nosotros. Es que estos dos servidores. Tengan salida segura a Internet por lo siguiente. Y para particularmente yo lo describí ahí, descargar dependencias, construir los contenedores.
+
+ Necesitamos hacer de hecho también consultas o digamos, interacción con los APIs que nos hemos predispuesto a utilizar de servicios de inteligencia artificial, por ejemplo. Pero no, obviamente no queremos, no es una. La idea es que necesitamos Internet. Esa es la conclusión en estos servidores que tengan salida a Internet.
+
+10:05 - Unidentified Speaker
+¿Qué nos ocurrió? Con el.
+
+10:09 - Rodolfo Blasser
+el desarrollo de de aprobados que fue muy inconveniente y que incluso eh supuso un atraso para dar respuestas más rápidas. Es que ninguno de los servidores que nos vieron tenían internet.
+
+10:26 - Unidentified Speaker
+Entonces, ¿qué nos tocaba hacer? Pero.
+
+10:29 - Mara Cordoba
+Necesita salir a internet porque puertos por. Sí.
+
+10:33 - Rodolfo Blasser
+Para un Sí, creo que se los coloqué un poco más abajo.
+
+10:41 - Unidentified Speaker
+Yo vi aquí. Sí, sí.
+
+10:44 - Rodolfo Blasser
+Para ambos servidores.
+
+10:46 - Unidentified Speaker
+Sí, es correcto.
+
+10:48 - Rodolfo Blasser
+Y la respuesta es por lo siguiente. Porque lo que ocurrió con modelos aprobados, como ningún servidor La idea es que nosotros podamos colocar un Dockerfile y que se construya el contenedor dentro del servidor. Pero como no tenía Internet, lo que nos tocó hacer supuso un desgaste adicional bárbaro. Y era que construyamos los contenedores localmente, guardábamos las imágenes como binarios y subíamos ese monstruo al servidor.
+
+ Y si había que hacer un mantenimiento, no era lo más fácil. Había que hacer ejercicio una y otra vez. Entonces, en un ambiente productivo o más bien, ya está productivo o de prueba, digamos, pero en un escenario óptimo y que tampoco nada atípico para este tipo de proyectos, nosotros podemos hacer ajustes de mantenimientos. Directamente al código. Construir nuevamente. El contenedor. En el servidor.
+
+ Haciendo uso de él de la salida. Eso es una diferencia enorme. Mira, yo creo y voy a elevarlo aquí.
+
+12:15 - Mara Cordoba
+Hago una pausita al equipo de seguridad, información y la seguridad para ver ¿Cuáles son realmente las opciones que nos da para esa salida que estás solicitando a internet? A lo que veo ahorita, necesitas salida por un puerto 443 y tener acceso a esto que estás aquí señalando. Sí, podemos hacer white listing.
+
+12:43 - Rodolfo Blasser
+Yo les puedo pasar, o sea, digo, pueden surgir necesidades en cierto momento. Por ejemplo, pues, En principio utilizaríamos Docker, utilizaríamos algunas librerías de Python que no son estándar dentro de. Digamos el paquete que viene. Nativamente. Necesitamos. Por ejemplo, como les comentaba, acceso a A lo a los APIs. De de Antropic. O el servicio de teléfono oficial que se decida, pues, utilizar.
+
+ Y todo esto en pro de agilizar el desarrollo, las pruebas, etcétera, y también darle capacidades suficientes al sistema agéntico para que haga su función.
+
+13:41 - Mara Cordoba1
+Otra preguntita, solamente para, estoy viéndolo de cara a lo que es seguridad seguridad, el que vaya a necesitar. ¿Esto tiene que estar todo el tiempo o solamente un demanda o un horario en particular?
+
+14:00 - Unidentified Speaker
+Esa es una buena pregunta.
+
+14:02 - Rodolfo Blasser
+Nosotros realmente trabajamos incluso de manera así. Nosotros podemos estar haciendo desarrollo durante la noche, pero yo no sé si por cuestiones propias de las políticas ¿Cuánto tiempo? ¿Cuánto tiempo?
+
+14:37 - Unidentified Speaker
+¿Cuánto tiempo? ¿Cuánto tiempo? ¿Cuánto tiempo?
+
+14:42 - Rodolfo Blasser
+¿Cuánto tiempo? La ventaja de poder hacer, digamos pues, ajustes o mejoras en tiempos fuera de oficina, de manera tal que, y eso lo hicimos en varias ocasiones con el equipo de Redocredito, cuando estábamos mejorando, alineando políticas en el modelo, trabajábamos durante la noche y el día siguiente ellos tienen un correo de en la noche. Así que sí, es una flexibilidad pues valiosa.
+
+15:22 - Mara Cordoba
+Bueno, entonces digamos que estos dos puntos, este sería como si tuviera un Product Backlog. Estos serían mis dos primeros Sí, sí, eso.
+
+15:43 - Rodolfo Blasser
+Y yo diría, Mara, que también que el, bueno. Si quieres seguir moviendo y me dices, ok, lo siguiente que vi.
+
+15:52 - Mara Cordoba
+Ajá, sí, lo del usuario.
+
+15:54 - Unidentified Speaker
+Ah, voy para allá. Un usuario que tenga suficientes permisos.
+
+15:58 - Rodolfo Blasser
+Sí. Ah, ok.
+
+16:00 - Mara Cordoba
+Lo siguiente que vi fue que estas dos las voy a quitar, pues son características que tienen que venir integradas con estos dos primero porque ya solitas no se pueden hacer. Necesita estos dos que están acá arriba. El punto uno y el uno uno y el uno dos. Entonces, por aquí viene, creo que aquí está lo de la salida. Ajá, ok. Esta es mi salida de Internet Modelos de IA, salida a seguros. Esto no es también un una solicitud para los dos servidores de prueba que se están creando.
+
+
+
+16:34 - Rodolfo Blasser
+Sí, sí, sí, yo hice una distinción de o digamos que por casos de uso, por un caso de uso y que para que tienes internet. El primer, un primer caso de uso es para poder descargar dependencias, incluso para dependencias propias de contenedor que se esté construyendo y dos. El para consumo de API de los servicios de de Antropic o o de inteligencia inteligencia artificial que se decía Entonces lo separe, porque en esencia no son lo mismo.
+
+ Uno es para descargar dependencias, digamos, de Docker, por ejemplo, Python, etc. Y el otro es para consumir los recursos, no los recursos, pero hacer consultas para integrar con la capacidad de inteligencia artificial, porque esa inteligencia artificial Si bien hay un agente que tiene capacidades, aquello que va a darle la característica agéntica, pues es una consulta que se hace vía Apple.
+
+17:45 - Unidentified Speaker
+Ok.
+
+17:45 - Mara Cordoba
+De por sí, todas estas que he visto acá, yo sería la que las estaría gestionando. Entonces, ya con los equipos internos. Este es el acceso a última este me llama, no me llama, sino que, ok, acceso al portal web de último interno y a los procesos de formalización de préstamos de últimos BPM tanto por la interfaz web, o sea, tú tendrías todos los, o sea, el acceso tendría acceso a todas las etapas, es que cada funcional tiene una etapa diferente.
+
+
+
+18:23 - Rodolfo Blasser
+O que sería la etapa propia de La que hemos visto con Ricardo, pues.
+
+18:30 - Mara Cordoba
+Ok, la etapa de formalización perfecta. Ah, solamente para la etapa de formalización.
+
+18:35 - Rodolfo Blasser
+Es decir que entonces, por esa razón, hay una solicitud propia de un usuario que le pueden poner, qué sé yo, agente de formalización, arroba cada hora, por ejemplo. Pero ese, ese usuario es el que tendría los permisos para acceder a Ultimus y sería un funcional más pues.
+
+18:57 - Mara Cordoba
+Lo que está abajo.
+
+18:59 - Rodolfo Blasser
+Ahí. No, déjame ponerle todos los detalles. Sí. Usted me puede disculpar un momento.
+
+19:10 - Unidentified Speaker
+y mil disculpas.
+
+19:16 - Marianella Musso
+Mata una consulta aprovechando acá mientras Rodolfo se vuelve un Las fechas, pero yo sé que tú vas a ser la intermediaria, ¿no?
+
+19:46 - Unidentified Speaker
+para solicitar estos accesos.
+
+19:48 - Marianella Musso
+Pero sí es importante que sea lo más ágil posible. Entonces, no sé si vas a colocar una fecha límite para nosotros también tenerlo allí presente. Claro que sí, Marianella.
+
+20:03 - Mara Cordoba
+Nada más déjame consultarlo internamente porque esto apenas voy a consultar. Cuáles son, cuál de la lista navideña de allí puede el banco proporcionar. Y de allí pues pongo las solicitudes y apenas ellos me den los, hay un SLA existente, apenas pueda ponerme los SLA, yo les comunico cuánto tiempo me va a demorar. Eso, Juan Montenegro, si seguimos con lo que conversamos antes de ayer, que vamos a ir por la manera más ágil sin toda la parafernalia adicional.
+
+ Correcto.
+
+20:38 - Marianella Musso
+correcto vale vale ok y lo otro es este que también le había comentado a luis Villarreal que otra de las cosas que deberíamos o que vamos a necesitar es esta navegación por el por últimos este para ir viendo también como el paso a paso entonces sería bueno también coordinar eso con tal vez Tal vez lo podemos ver con Ediel.
+
+21:08 - Mara Cordoba
+Ediel está, como él escribió, en otra sesión que estaba previo. Entonces, pues, es algo productivo, así que ustedes saben que producción mata proyecto.
+
+21:17 - Unidentified Speaker
+Sí, no, tranquilo.
+
+21:18 - Mara Cordoba
+Entonces, no, pero ya él dijo que apenas ahora ya se conecta, entonces coordinemos con él una pequeña sesión de que él nos lo pueda mostrar.
+
+21:27 - Unidentified Speaker
+Exacto. Sí, entonces, bueno, para que lo tengas allí presente.
+
+21:31 - Mara Cordoba
+No, y si no logra entrarse antes que terminemos, igual yo le convoco a la sesión para que nos dé el tour.
+
+21:43 - Unidentified Speaker
+Vale, súper. Genial.
+
+21:44 - Marianella Musso
+Gracias, Mara. No, de nada.
+
+21:47 - Mara Cordoba
+Estamos empezando.
+
+21:49 - Unidentified Speaker
+Sí, bueno. León.
+
+22:30 - Rodolfo Blasser
+mil disculpas, una llamada sensitiva. Ahora sí, ok, entonces, sí, la idea, entonces, también esto que estamos viendo acá, yo lo coloqué como una posible necesidad, pero no lo es, ya, acceder a la base de datos de los modelos aprobados, porque eso ya está en últimos. Yo había agregado esto, y esto puede que sí sea, es decir, esto es importante para guardar trazabilidad de algunas cuestiones que vamos a hacer, y es que el propio agente en su entorno, y que ambos tengan, tanto el productivo como el de prueba, una base de sencilla, nada de otro mundo.
+
+ ¿Y qué vamos a hacer con esto? La vamos a usar como un repositorio importante para ir guardando, por ejemplo, otras habilidades, que se vayan generando logs. Por ejemplo, algo importantísimo, que esto todavía no lo hemos, o sea, yo no lo he diseñado, pero lo que yo comentaba al inicio de esta nueva característica de tener que utilizar calendarios, eso lo tenemos que estandarizar. Con eso me refiero a que vendría a ser útil tener una base de datos con una tabla que se llame calendarios, etiquetadas por institución y cada una con su característica.
+
+ Porque la gente tiene que entonces tener un criterio para determinar que esta que pertenece a esta institución, de acuerdo al calendario, se le debe iniciar en tal fecha sus descuentos. Y eso únicamente lo vamos a, pero lo que no vamos a hacer es estar leyendo PDF cada vez que eso. Yo lo que opino es que esto lo tenemos que estandarizar y buscar un método para que el otro año y los siguientes años, cuando surjan nuevos calendarios de estas instituciones, pues se actualicen.
+
+
+
+24:50 - Mara Cordoba
+Una consulta. Esto básicamente ahorita no sería necesario. Pero sí va a ser necesario a medida que avancemos en los desarrollos. Sí, esto sería, necesitaría una base de datos, crear una base de datos para utilizar una tabla dentro de ella. Necesitaría crear una tabla dentro de la base de datos de un último, no sé, Eso sí tendría que detallarlo más cuando lleguemos.
+
+25:20 - Unidentified Speaker
+Ajá.
+
+25:20 - Rodolfo Blasser
+Una base de datos para el agente. O sea, no se va a pegar con últimos ni nada. Es algo como un, pongámoslo así, como una base de conocimiento para el agente, que el agente pueda acceder ahí. Debo revisar el calendario. Él hace un select a esa base, a esa tabla. Necesitamos, por ejemplo, qué sé yo, como comentaba Ricardo, es posible, es posible que tengamos un caso atípico en el que se está formalizando el préstamo de un jubilado, pero hace falta la certificación de usuario social.
+
+ Es posible que tengamos un flujo en el que el agente pare, deje eso ahí y haya que guardar en una bitácora. Hoy, diligencié para tal cliente jubilado pero quedé parado. Revisar dentro de dos días, por ejemplo. En prosa, pues, pero digamos que eso puede quedar en una bitácora y esa bitácora puede tranquilamente vivir en una tabla.
+
+26:28 - Mara Cordoba
+Pero sería, pero sería alguna base.
+
+26:31 - Rodolfo Blasser
+Ojo, yo podía decir que sale imprescindible porque. Pero si sería positivo tenerlo en el interin que puedo hacer que no es lo ideal, pero pudiera utilizar SQLite, que son... Pero igual no sé si eso está permitido.
+
+26:53 - Mara Cordoba
+Lo pongo en el parking lot para averiguar cuál es la mejor solución que nos da el equipo de base de datos, ¿sí?
+
+27:07 - Unidentified Speaker
+Sí, está bien, sí.
+
+27:10 - Mara Cordoba
+para que realmente necesitas. Realmente es una base de datos para una tabla específica con fechas de. Ah, para hacer, por ejemplo, catálogo para hacer, eh?
+
+27:22 - Rodolfo Blasser
+Eh? Puedo dejar ahí los también trazabilidades de para hacer travel shooting, por ejemplo, un proceso que no se ejecutó correctamente. Dejamos los lo podemos tener en tablas. Es más fácil de de analizar, digamos, eso sería como que un nice to have, si no podemos obtenerlo, yo buscaría una alternativa como SQLite, donde esto lo puedo manejar así, pues, con SQLite, digamos, en caso de que no se pueda.
+
+ Si no se puede, no se puede.
+
+27:59 - Mara Cordoba
+Yo tomo todas las notas, Rodolfo, y yo vengo y las voy a consultar. Y te digo esto sí me dijeron que sí se puede y que necesitamos en patines o mira no veamos la opción la opción si está permitida listo nos vamos con eso pero creo que en mi no sé cómo es aquí que soy sincera pero yo creo que va a ser una base a todo ese cole realmente no permiten que no sean administrables Lo de abajo yo creo que no.
+
+
+
+28:36 - Rodolfo Blasser
+Nada de lo de carpetas compartidas. Eso era bajo la premisa de que había que consumir insumos documentales de una ruta. Pero si eso no es necesario, porque porque todo estaría en últimos, entonces no se necesitaría nada de eso. Lo del correo. Lo pondré como una estufa.
+
+28:58 - Mara Cordoba
+el correo pudiera servir para lo siguiente pudiera servir para mandar notificaciones pudiese funcionar principalmente para eso yo no diría que el que para otra cosa que no fuera eso se pueden mandar correos solamente te comento que sé que aquí te tenemos Office 365, así que me imagino que estamos 100% integrados, así que lo más probable es que si necesiten eso, van a necesitar una licencia, asociarla a una licencia E3 o E5 de Office.
+
+
+
+29:42 - Unidentified Speaker
+Sí, ojo.
+
+29:42 - Mara Cordoba
+Si solo para mandar correo E3, si va a ser otra cosa, una E5.
+
+29:48 - Rodolfo Blasser
+Si no, podemos buscar otras alternativas, pero yo diría que para eso que fuera se positivo socialice para en que un haya buzón, por ejemplo, de que algo ocurrió y que quede ahí la trazabilidad. Y que no sea realmente sujeto a que si alguien entró o no, a ver que está listo.
+
+30:09 - Mara Cordoba
+Ok, es decir, efectivamente estamos en el proceso y ya la automatización cumplió lo que tenía que hacer y lo toca recibir al equipo de, no sé, de Ricardo Herrera. Estoy inventando que ya el proceso terminó y que el préstamo ya pasó por la etapa de que tenía que pasar y le toca seguir con el proceso.
+
+30:33 - Unidentified Speaker
+Eso.
+
+30:33 - Rodolfo Blasser
+Sí, una notificación Es una notificación para que pueda entonces darse a conocer a todas las partes de interés que la gente culminó una tarea, por ejemplo.
+
+30:46 - Mara Cordoba
+Ok. Sí. Listo. Ok. Hay otras formas, Mara, pero son un poco inestables.
+
+30:53 - Rodolfo Blasser
+Otra forma de hacer eso, que no sería mi primera opción, porque es inestable y tiene ciertas debilidades. Hay un webhook que utiliza Teams, que te permite mandar a un grupo notificaciones. Pero este webhook es muy inestable. Le cambian mucho el esquema y es más propenso a romperse. Un correo, pues, es un digamos que un protocolo mucho más estable, que un correo, o sea, que algo por SMTP se caiga es difícil, es muy difícil, sobre todo porque ya hay integraciones rápidas para mandar correos.
+
+ El webhook de Teams es un poco débil y no sé, esa es una opción, pero yo la pondría por ahí alejadita.
+
+31:49 - Mara Cordoba
+Es una opción Z porque me parece excelente, nada más que yo quería tener, porque claro, me tengo que voltear a pedir todas estas solicitudes y yo tengo que tener el contexto, pero el contexto nada más de poder enviar las notificaciones del estado en que está lo que está haciendo la gente es que ya es ahí está la justificación.
+
+32:12 - Rodolfo Blasser
+Sí, claro, entonces se puede adoptar. O sea, por ejemplo, yo no necesito tener, por ejemplo, instalado en un en un servidor. En un servidor SSH yo puedo Obviamente, con todas las configuraciones, con todas las configuraciones de SMTP, yo puedo levantar un pequeño cliente en SSH que haga la misma función. Con todas las características, los parámetros y tal, eso levanta y puede también enviar correo.
+
+ Es decir, aquello que se configure en el ambiente de prueba, con un UI, ya sea versión 365 web o desktop. Eso es emulable, pues, sin UI en un servidor SSH con un cliente SMTP. Pero tenemos metiendo más componentes. O sea, me refiero a que yo no te diría que necesitamos necesariamente tener UI de Outlook o tal. De que haya, de que esté habilitado. Digamos, si yo puedo en un servidor de prueba Windows o un productivo CCH Linux, configurar con parámetros.
+
+ El correo para que lo envíe no necesariamente necesito tener el acceso al UI ni nada por el estilo, simplemente que esté disponible el correo, digamos, porque sea como sea el mensaje eh saldría de de un de un correo con dominio caja de caja de ahorro eh interno eh y yo tendría una lista de recipientes que puede que sea un solo buzón pero digamos que tengo una lista de recipientes eh y el mensaje yo lo único que necesitaría es que lo que yo parametrize como configuración de ese cliente SMTP eh pues se hable con a hacer uso de del email para mandarlo, porque lo que no queremos es lo siguiente es algo que no van a querer, por ejemplo, y eso yo no lo voy a hacer tampoco, porque la única forma en que yo pueda mandar un correo de forma segura es utilizando el SMTP, o sea, el correo interno de caja de ahorros.
+
+
+
+34:40 - Mara Cordoba
+Pero una pregunta, Rodolfo, si yo tengo una licencia de 365 para que esto me funcione, sí o sí tengo que tener una salida de Internet. Los servidores productivos van a tener salida de Internet. Bueno, la salida de Internet que yo solicito es para lo de arriba.
+
+35:07 - Rodolfo Blasser
+Porque eso, en principio, O sea, el Internet que yo necesito es para los casos de uso que están arriba, no? Para probar, para los. Exacto, por eso te hago la consulta, pero para los dos y la y la y la respuesta de por qué para los dos es lo siguiente, porque, por ejemplo. El docker file que yo determine es. Digamos el que se va a llevar a productivo, yo lo voy a confiar. Pero yo me voy a llevar a ese mismo Dockerfile o el Compose, me lo voy a llevar a el servidor productivo Linux SSH.
+
+ Y yo le pongo Docker Compose a esto y él va a descargar dependencias de Internet para construir ese ese contenedor en productivo. Lo que no quiero es compilar la imagen en el de prueba y llevar a ese monstruo para allá. Es muy difícil, sí. Ah, Marianella, sí. Marianella.
+
+36:08 - Unidentified Speaker
+Sí, acá una consulta, Rodolfo.
+
+36:10 - Marianella Musso1
+En esta parte del servidor de correo, tú dices que es un I2H. Yo creo que, o sea, ¿realmente es un I2H o tú lo ves como que, o sea, por todo lo que estás explicando, me parece que no es un I2H?
+
+36:28 - Unidentified Speaker
+Sí, en verdad sí.
+
+36:30 - Rodolfo Blasser
+Es una, le da visibilidad de darle visibilidad a lo que está haciendo el agente, porque no habría incluso otra forma de comunicarlo. Yo creo que no deberíamos colocar que es un ice to have, sino que Mara valide y cualquier cosa, entonces ahí vemos, no sé qué opinan.
+
+36:49 - Unidentified Speaker
+Sí, estoy de acuerdo.
+
+36:50 - Marianella Musso
+Esa es una forma de darle visibilidad a lo que está ocurriendo con el agente.
+
+36:56 - Rodolfo Blasser
+Por eso, por eso no lo veo como un ice to have.
+
+37:00 - Unidentified Speaker
+era eso.
+
+37:01 - Mara Cordoba
+Y yo lo puse como dijo Rodolfo, pero también puse las instrucciones para validarlo. Sin embargo, lo que entiendo por qué Rodolfo dice porque no es necesario para que funcione la solución. Es una manera, usando tu palabra, de dar visibilidad a lo que está haciendo, pero no es necesario para que funcione. Por eso entendí el tema de Rodolfo de sería bueno tenerlo para tener visibilidad, pero no es necesario.
+
+ Para que funcione. ¿Correcto? Eso es una buena conclusión, sí.
+
+37:33 - Unidentified Speaker
+Sí. Y es bueno darle visibilidad, evidentemente.
+
+37:36 - Rodolfo Blasser
+Es bueno darle visibilidad para que no quede eso sujeto a si alguien entró o no a últimos a ver qué hay ahí.
+
+37:47 - Marianella Musso
+Exacto. Por eso lo digo que sí, sería importante. Pero bueno, solamente que me llamó la atención. Sí, gracias.
+
+37:56 - Unidentified Speaker
+Pero tú eres el que, tú eres el que sabes.
+
+38:01 - Rodolfo Blasser
+Sí, no, pero sí, es tal cual, así, yo estoy de acuerdo que darle visibilidad es importantísimo.
+
+38:11 - Mara Cordoba
+Ok, este que sigue.
+
+38:13 - Rodolfo Blasser
+Ah, ese es, está asociado al correo, él debe tener un correo de dominio, caja de ahorro, pues, no lo, no me gustaría que fuese algo genérico, porque si se le va a asignar un usuario para que pueda entrar a Ultimus, seguramente eso queda dentro como del director antiguo, entonces se le puede hacer esta dirección de correo. Es decir que Ricardo recibiría un forreo de agente guión formalización arroba cada hora con dos minutos.
+
+ Te la capté clarita.
+
+38:57 - Mara Cordoba
+A la gente formalización, le crean la cuenta y sería bueno que él fuera el que la tuviera para que independientemente del texto que se programe, ese llegue de agente de formalización.
+
+39:13 - Rodolfo Blasser
+Sí, y yo dejé algo ahí escrito, pero eso era como un Y eso lo podemos ver en ese discovery más profundo, en ese tour que veríamos después, y es lo siguiente. Yo no estoy seguro si lo puse más abajo, igual se los digo en este momento. La pregunta clara era la siguiente. ¿Qué motiva a alguien a hacer este proceso de formalización? ¿Cómo sé que lo tengo que hacer? Porque tiene que ver con un disparador.
+
+ Puede que sea entrar a Ultimus y ver que hay algo, algo que indica que se debe hacer un proceso. Si es así, perfecto. Yo dejé de que, bueno, ¿qué pasa si fuera un correo, pero eso era un supuesto, pues que el disparador fuera. Hey, agente, ponte manos a la obra y dale.
+
+40:17 - Mara Cordoba
+Pero lo lo dejé como un supuesto, realmente dejámoslo allí en el parque y luego, si te parece, después que vemos la parte de cómo funciona últimos y demás, como el flujo de autos, como el flujo de autos, entonces vemos si realmente lo sacamos del partido o lo eliminamos. Christian, mira, estaba hablando con, en lo que estábamos aquí, con Ediel, y me dice que para que tengamos la sesión con el equipo de estrategia, ay, yo no puedo pronunciar esa palabra.
+
+ Estrategia. Es como estrategia en tecnología.
+
+41:01 - Unidentified Speaker
+Se me queda, se me queda.
+
+41:05 - Mara Cordoba
+Entonces, me dice a mí me queda a mí comenta a mí que si eh coordine contigo para que lo apoyes entonces por la parte de eh no sé si hay otro Christian disculpa él me dice Christian pero yo creo que sí es contigo sí sí entonces programamos la sesión ya que estamos aquí pongámonos de acuerdo todos los días después de la una de la tarde. En la mañana sí me encuentro en un proyecto de 8 a 12. ¿Qué les parece para salir de esto lunes en la tarde o es muy encima?
+
+
+
+41:56 - Unidentified Speaker
+Enviado por experiencia.
+
+41:58 - Christian Myrie
+Verifiquen y yo acá verifico a Ediel. Exacto. El 1 tengo espacio después de las 3. Dame un segundito, déjame.
+
+42:10 - Unidentified Speaker
+Podría de 3 a 5.
+
+42:13 - Christian Myrie
+Ok.
+
+42:14 - Unidentified Speaker
+Ediel no tiene nada en ese horario lo que veo.
+
+42:19 - Mara Cordoba
+Déjame un minuto. Digamos que si puede ser.
+
+42:24 - Unidentified Speaker
+Sí, sí, sí.
+
+42:28 - Rodolfo Blasser
+Perfecto, entonces ya esa parte la quedamos coordinada, me parece súper, antes que, antes, sorry por la la interrupción del flujo pero ya salíamos salimos igualmente esto es súper valioso porque evidentemente una explicación humana tiene más más contexto o agrega más contexto que las palabras puestas en prosa en un documento y la razón de cada una de estas cosas más de Christian, Ediel, ¿quién más estaría participando?
+
+
+
+43:28 - Unidentified Speaker
+¿Tú, Rodolfo? Sí.
+
+43:31 - Mara Cordoba
+¿Quién más? Yo también, Mara.
+
+43:36 - Unidentified Speaker
+Mariamela también. Les quería solicitar de ser posible.
+
+43:45 - Rodolfo Blasser
+Estas horas para usted son buenas, tipo 11, 10 y media, 11. Sí, por ahora sí.
+
+43:54 - Mara Cordoba
+Marianela, ¿alguien más? No. Por ahora lo mando y si necesitan compartírselo a alguien, lo hacen. Total, lo importante es que cerremos la agenda en este Dame un segundito nada más. Ya lo tengo.
+
+44:36 - Mara Cordoba
+Listo, ok, continuamos, pues cualquier cosa lo, si necesitan compartirlo a alguien más, nos avisan. Entonces, bueno, aquí están son los diagramas, que creo que básicamente es lo que hace, o cómo hace la conectividad de la IA, pero yo creo que sería bueno que miremos primero de cara a Ultimus, por si acaso hay algo que añadir, o tengamos algo que poner ¿Qué es lo más importante?
+
+45:14 - Rodolfo Blasser
+¿Qué es lo más importante?
+
+45:14 - Unidentified Speaker
+¿Qué es lo más importante? ¿Qué es lo más importante? ¿Qué es lo más importante? ¿Qué es lo más importante?
+
+45:25 - Rodolfo Blasser
+¿Qué es lo más importante? ¿Qué es lo más importante?
+
+45:27 - Unidentified Speaker
+¿Qué es lo más importante?
+
+45:32 - Rodolfo Blasser
+consultas, consultas, consultas prueba que sería Windows por cuestión de UI, por poder ver últimos, y el de Linux, que ambos tengan ese acceso seguro a Internet por esta cuestión. Porque les confieso, fue muy difícil y atrasó muchísimo la respuesta a solicitudes que nos hacían en modelos de préstamos de tener que compilar una imagen, subirla y ahí meterle mano de ser necesario un bituri en vez de tener algo que se pueda construir directamente descargando pues dependencias directamente de internet pues.
+
+ Es decir, que por esa razón necesitamos internet en ambos. Para eso. Entonces, entonces acá hay una serie de consultas.
+
+46:56 - Mara Cordoba
+consulta, que esta pues ya la vimos. Esta consulta que está aquí está relacionada con las notas que tenemos en la parte de arriba.
+
+47:13 - Unidentified Speaker
+¿Cierto?
+
+47:14 - Mara Cordoba
+Sí. Son las autorizaciones. Esto no tengo...
+
+47:19 - Rodolfo Blasser
+Sí, eso básicamente, por ejemplo, por ejemplo, Yo comentaba hace un momento que la intención es emular lo que hace la persona que se encarga de hacer esto. O sea, si Ricardo tiene que revisar un documento, ese documento lo tiene que ver el agente. Ahora bien, si por cuestiones de atrasabilidad es de interés revisar qué hizo el agente para específico proceso de formalización de tal préstamo, Yo puedo dejar una bitácora con el reviso, esto, esto y esto y eso, y ese esto puede que sean documentos y lo puedo guardar en, por ejemplo.
+
+ En una base de conocimiento. En los en un servidor o en el otro, en el en el de productivo, por ejemplo, pero si dices acá tú no puedes hacer eso, no puedes guardar, está bien, no, no, no lo guardo y busco una manera distinta de dejar transferibilidad. Eso solamente para comprender que por qué la gente se comportó, o no por qué se comportó, porque no se ha comportado como si, tú sabemos, de manera volátil, va a ser lo mismo, pero por qué tal caso lo trató de tal forma.
+
+ Y pudiera ser que, por ejemplo, como no hay un estándar de, y muchos de los documentos, incluso creo que están hasta escaneados posiblemente, por ejemplo, digamos que, ¿sabes qué? Deberíamos tener un poco más de controles con los documentos escaneados, porque esto se malinterpreta. Qué sé yo, eso es una conclusión que puede salir viendo el resultado de algo que se procesó y el insumo que se utilizó.
+
+ Pero eso no es una necesidad, eso solamente es una característica en cuanto a poder entender postmortem. Por qué se procesó así? Pues dice que tú no puedes poner eso en ese servidor, aunque dentro de la infraestructura del banco, por ejemplo, nosotros.
+
+49:22 - Mara Cordoba
+Sí, entendiendo lo que dice, pero de mi parte técnico, no, no, no veo que, o sea, si dentro de último los datos no se enmascaran.
+
+49:36 - Rodolfo Blasser
+Es más, incluso mucho de esto también estaba, tenía, digamos que más relación con en caso de que hubiera que consumir datos de una tabla, por ejemplo, de modelos de préstamo aprobado. Estaba también orientado por ahí, pues, por ejemplo. Si hay que hacer un select a una tabla y ahí hay datos de clientes. Si era necesario enmascarar eso, por ejemplo, pero eso no es ya un tema porque los datos de la tabla, van a estar en últimos.
+
+ Bueno, y nos quedaría un último punto.
+
+50:18 - Mara Cordoba
+Esto no está relacionado con que tengamos la base de datos que se solicitó. O sea, la base de datos.
+
+50:29 - Rodolfo Blasser
+Yo lo puedo hacer con, yo puedo dejar mis blogs en una base de SQLite. Ok. Eso solamente, sí, lo puedo dejar ahí y eso funciona para otra servidora.
+
+50:47 - Mara Cordoba
+Pero podrían estar en la base de datos que dimos de SQLite, por ejemplo.
+
+50:55 - Rodolfo Blasser
+Sí, también sí, claro.
+
+50:58 - Unidentified Speaker
+Ok.
+
+50:58 - Mara Cordoba
+Y listo.
+
+50:59 - Unidentified Speaker
+Eso sería todo.
+
+51:03 - Rodolfo Blasser
+Sí, tal vez se veía más complicado de lo que era.
+
+51:08 - Mara Cordoba
+Sí, porque lo que pasa es que ya se descartaron algunas cosas, entonces eso nos ayuda a enfocarnos en lo mínimo. Bueno, de mi lado quedan casi todos los pendientes de investigación y la parte de la sesión para el lunes que ya la amarramos, entonces no hay más nada.
+
+51:32 - Rodolfo Blasser
+super yo quedo atento y y bueno de ser posible para tener pues mayor flexibilidad también de mi lado espacios a estas horas funcionan super bien diez y media once eh hasta las doce a veces tres tres quince se me complica un poco pero eh igualmente a mí a las once está bien no sé el semana si dijimos que la sesión es lunes a las 3 a 5.
+
+52:07 - Mara Cordoba
+La sesión con con Ediel y Christian. Sí, tal vez la tome.
+
+52:13 - Unidentified Speaker
+Sí, yo la puedo tomar.
+
+52:15 - Rodolfo Blasser
+Puedo empezar la llamada. Me conecto por el celular y. O si quieres. Y a las tres y media no te sale efectivo de tres y media cinco. Sí, digamos que tengo un compromiso familiar entre tres y quince, tres y veinte y cuatro. Me toca buscar a mis hijos en la escuela. Entonces, usualmente eso es lo que me compromete diariamente a esas horas. Entonces, lo que yo intento es que si surge algo que debo atender, yo tomo la llamada en el teléfono y en cuanto culmino mi tarea logística me conecto por correo.
+
+
+
+53:01 - Mara Cordoba
+Lo que pasa es que como supongo que vas a estar muy pendiente de que lo que va a estar explicando Ediel y Christian yo entiendo que se complica entonces por eso como Christian tiene un horario cerrado en las mañanas comprometido entonces nos queda el horario Christian dijiste entre una y cinco, ¿verdad?
+
+53:25 - Unidentified Speaker
+Correcto. Entonces, no sé si te parece entonces a que sea de una a tres.
+
+53:30 - Christian Myrie
+Sí, está bien.
+
+53:31 - Unidentified Speaker
+De una a tres, fantástico.
+
+53:33 - Mara Cordoba
+Lo que yo quiero es que lograr que ya que mi compañero Christian nos va a apoyar y que Dil nos va a apoyar, tú puedas sacarle el mayor provecho. Entonces, sí entiendo que a veces también me toca buscar a mis hijos a la escuela, así que almuerzo tarde eh podamos eh eh que tú puedas sacarle mayor provecho entonces no sé si de tres de unas a tres te y tal vez no dure hasta las tres pero de una a tres funciona ¿Les parece mejor?
+
+
+
+54:06 - Rodolfo Blasser
+Yo estoy totalmente de acuerdo a Mara me funciona.
+
+54:10 - Mara Cordoba
+Christian ¿Tú qué dices? Y él me dijo igual que él tenía toda la tarde disponible.
+
+54:17 - Christian Myrie
+No me representa un problema. El lunes sí tengo una sesión programada de dos y media, tres. Ah, el lunes ya tenías una sesión.
+
+54:25 - Unidentified Speaker
+Sí, correcto, de dos y media, tres.
+
+54:27 - Christian Myrie
+Por eso es que había mencionado que de tres en adelante. El resto de los días sí, pero el lunes particularmente sí tengo ese espacio ya.
+
+54:35 - Unidentified Speaker
+Entonces, ¿el martes, pues? Sí, el martes. El martes a la una.
+
+54:39 - Mara Cordoba
+A la una.
+
+54:40 - Unidentified Speaker
+Súper.
+
+54:40 - Rodolfo Blasser
+Me lo envían y yo agendo de una vez para apartar el espacio. Eh, listo, pues.
+
+54:46 - Mara Cordoba
+Martes a la una.
+
+54:49 - Unidentified Speaker
+Excelente.
+
+54:50 - Rodolfo Blasser
+Ahí les tiene que estar llevando.
+
+54:54 - Unidentified Speaker
+Súper, perfecto.
+
+54:56 - Mara Cordoba
+Ajá, déjame un segundito que las mandé. Sí, sí, creo que me acabas de llegar. Sí, gracias a todos. Ok. Aquí está la que dice flujo de últimos formalización. Formalización de PP, porque vamos a ver todo el flujo de último, pero para ver la parte de cómo se integra la parte de formalización.
+
+55:31 - Unidentified Speaker
+Es el mismo.
+
+55:32 - Mara Cordoba
+Martes 27 de 1 a 3 de la tarde.
+
+55:37 - Rodolfo Blasser
+Ya listo, ya lo agendamos. De aquí, de mi lado y ya lo aparté.
+
+55:46 - Unidentified Speaker
+Bueno, perfecto. Super, excelente.
+
+55:50 - Marianella Musso
+Mara, quedamos atentos entonces con el tema de las fechas, de entregas de esos retenimientos.
+
+56:02 - Mara Cordoba
+Sí, exacto. Listo.
+
+56:04 - Unidentified Speaker
+Una pregunta, eh...
+
+56:06 - Mara Cordoba
+Ah, no es una pregunta, es informativo. Si necesitan pasarle la sesión a alguien más, por favor nos avisan. O la mandan ustedes directo y se la reenvían, sin ningún problema.
+
+56:19 - Unidentified Speaker
+Ok, super. Ok. Gracias a todos.
+
+56:22 - Mara Cordoba
+Hasta luego.
+
+56:23 - Unidentified Speaker
+Hasta luego. Gracias. Hasta luego, gracias. Adiós. Estén bien. Saludos. Subtítulos realizados por la comunidad de Amara.org

@@ -1,0 +1,61 @@
+Req. Funcional - Formalización préstamo personal
+Wed, Oct 21, 2026
+
+Summary:
+
+La reunión definió requerimientos operativos y documentales para el flujo de préstamos en BPM.
+• BPM centraliza decisiones, datos y documentación del préstamo.
+• Los desembolsos manuales representan hasta el 0,1 % de solicitudes.
+• El certificado de jubilación es requisito para formalizar, no aprobar.
+• La automatización del certificado y las reglas de vigencia siguen pendientes.
+
+
+Action Items:
+
+* Juan Montenegro Pescador: Reprograma la sesión de requerimiento técnico para incluir a los programadores del equipo de Ricardo
+* Juan Montenegro Pescador: Graba la sesión.
+* Rodolfo Blasser: Crear una bitácora para dar seguimiento a los casos de jubilados detenidos durante la formalización.
+* Rodolfo Blasser: Acordar con el área de revisión documental que adjunte al BPM el certificado de jubilación requerido.
+* Rodolfo Blasser: Definir con el área de revisión documental una nomenclatura uniforme para el certificado y un identificador que permita asociarlo inequívocamente al cliente.
+* Juan: Comparte el material solicitado con Ricardo.
+
+
+Key Discussion Points:
+
+Contexto y propósito del requerimiento
+Juan presentó la necesidad de completar el documento resumido de requerimientos para que el equipo de Stratec pueda comenzar el desarrollo. Rodolfo explicó que el documento respaldará el diseño y que espera validar el proceso mediante un recorrido en vivo cuando estén disponibles los accesos y recursos necesarios.
+
+Origen de las decisiones de aprobación
+Ricardo solicitó aclarar quién genera los resultados de aprobación y dónde se registran los datos de los métodos tradicional y algorítmico. Rodolfo identificó a Irving como contacto relacionado con el modelo de aprobados, mientras que el responsable del método tradicional quedó sin determinar; Ricardo señaló que el BPM gestiona las decisiones del flujo tradicional.
+
+Flujo BPM, Stratify y datos del préstamo
+Los participantes abordaron la frecuencia de las decisiones, los datos que contienen los registros y el recorrido de los casos aprobados. Ricardo explicó que los casos de Stratify siguen el flujo BPM con una marca identificadora, que el número de préstamo se genera allí y que la documentación para la firma del cliente es lo que se extrae; la discusión terminó señalando que no haría falta buscar datos en otra base o sistema.
+
+Incidencias y desembolsos manuales
+Ricardo explicó la baja frecuencia de los desembolsos manuales y señaló que se prefiere corregir las incidencias con apoyo del programador para mantener el trámite dentro del sistema. Rodolfo propuso tener presentes los casos atípicos y diferenciar los que puede resolver un agente de aquellos que requieren intervención humana; Ricardo ilustró el enfoque con una incidencia resuelta mediante la actualización de datos en IBS.
+
+Acceso a datos y flujo de aprobaciones
+Ricardo pidió aclarar a qué se referían las restricciones de lectura. Rodolfo explicó que el enmascaramiento sería pertinente bajo una política de confidencialidad, pero que esa situación no aplicaba; Ricardo confirmó que los casos aprobados también pasan por el BPM y que no se identificó una necesidad de acceso adicional a datos externos.
+
+Documentos de soporte del préstamo
+Ricardo y Rodolfo revisaron cómo se reciben y almacenan los documentos de soporte. Los archivos se adjuntan al BPM, y Ricardo enumeró los documentos necesarios para solicitar la aprobación del crédito, con la excepción del certificado de jubilación de la Caja de Seguro Social.
+
+Certificado requerido y demora en la formalización
+Ricardo describió los documentos requeridos para los préstamos de jubilados y explicó por qué el certificado de la Caja de Seguro Social se tramita por separado. La demora de emisión puede dejar un préstamo aprobado sin posibilidad de avanzar a la firma del cliente.
+
+Registro del número y alternativas para el flujo
+Ricardo mostró el certificado y explicó que el dato necesario para BPM es su número de identificación. Rodolfo y Ricardo analizaron si el documento debía adjuntarse y cómo facilitar que se valide el número antes de continuar la formalización.
+
+Seguimiento y estandarización de documentos
+Se compararon opciones para pausar los casos de jubilados o detectar el certificado cuando se incorpore al sistema. Rodolfo propuso un enfoque híbrido con seguimiento de casos, coordinación con revisión documental y criterios comunes para nombrar y asociar los documentos.
+
+Validación documental y límites de responsabilidad
+Rodolfo y Ricardo analizaron la validación del contenido documental frente a la nomenclatura de los archivos y acordaron que prevalece la información contenida en el documento. También revisaron cómo mantener acotada la responsabilidad del proceso de formalización y centralizar los insumos documentales en el BPM cuando sea posible.
+
+Calendarios de vigencia de descuentos
+Ricardo explicó que las instituciones establecen calendarios con fechas concretas para la vigencia de las órdenes de descuento, y que los préstamos personales excluyen los descuentos de diciembre. Se comprometió a buscar el documento y verificar si las fechas son una regla estricta; la revisión del calendario para empleados activos quedó iniciada, pero sin conclusión.
+
+
+Notepad:
+
+* No notes

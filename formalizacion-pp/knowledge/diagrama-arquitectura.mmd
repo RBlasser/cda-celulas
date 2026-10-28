@@ -1,0 +1,69 @@
+flowchart LR
+    %% =========================================================
+    %% ZONA 1: SALIDA A INTERNET
+    %% =========================================================
+    subgraph ZONE1["1. Salida a Internet (HTTPS 443)"]
+        direction TB
+        REPOS["Repositorios Oficiales<br>• Python PyPI (pypi.org)<br>• Docker Hub (hub.docker.com)<br>• Distribución de componentes base"]
+        AI_APIS["APIs de Inteligencia Artificial<br>• Google Gemini API<br>• OpenAI / Anthropic API<br>(Inferencia y extracción documental)"]
+    end
+
+    %% =========================================================
+    %% INFRAESTRUCTURA ON-PREMISE DE CAJA DE AHORROS
+    %% =========================================================
+    subgraph BANK_INFRA["Infraestructura On-Premise (Caja de Ahorros)"]
+        direction LR
+
+        %% =====================================================
+        %% ZONA 2: SERVIDORES DEL SISTEMA AGÉNTICO
+        %% =====================================================
+        subgraph ZONE2["2. Servidores del Sistema Agéntico"]
+            direction TB
+            subgraph WIN_SRV["Servidor Windows (Desarrollo & Pruebas Visuales)"]
+                WIN_APP["Agente en Modo Visual (Headed)<br>• Inspección interactiva de UI<br>• Depuración de selectores y modales"]
+            end
+
+            subgraph LIN_SRV["Servidor Linux (Producción & Desatendido)"]
+                LIN_APP["Contenedor Docker: Agente Headless<br>• Ejecución desatendida y programada<br>• Descarga y lectura de adjuntos<br>• Diligenciamiento y validación"]
+                LIN_DB[("Base de Datos Interna<br>(PostgreSQL Docker)<br>• Estado, colas y bitácora forense")]
+                LIN_APP <-->|Persistencia y auditoría local| LIN_DB
+            end
+        end
+
+        %% =====================================================
+        %% ZONA 3: SISTEMAS Y RECURSOS INTERNOS DEL BANCO
+        %% =====================================================
+        subgraph ZONE3["3. Sistemas y Recursos Internos"]
+            direction TB
+            ULTIMUS["Aplicativo Web Ultimus BPM<br>• Bandeja de formalización<br>• Datos del préstamo y cliente<br>• Documentos adjuntos (cartas, cédulas)<br>• Web Services hacia IBS (cliente, reserva, cuenta)"]
+            SMTP_SRV["Servidor de Correo (SMTP)<br>• Notificaciones de inicio/fin de lote<br>• Balances operativos diarios a supervisores<br>• Alertas por inconsistencias"]
+        end
+    end
+
+    %% =========================================================
+    %% CONEXIONES DE INTERNET (SOLO SALIENTE - EGRESS)
+    %% =========================================================
+    REPOS -->|Descarga dependencias y runtimes| WIN_APP
+    REPOS -->|Pull imágenes base y build| LIN_APP
+    WIN_APP -->|Pruebas de inferencia| AI_APIS
+    LIN_APP -->|Extracción estructurada de expedientes| AI_APIS
+
+    %% =========================================================
+    %% FLUJOS HACIA SISTEMAS INTERNOS (ORIGEN EXPLÍCITO POR SERVIDOR)
+    %% =========================================================
+    WIN_APP ==>|"Flujo 1: Pruebas visuales de interfaz (HTTP/HTTPS)"| ULTIMUS
+    LIN_APP ==>|"Flujo 2: Automatización desatendida (HTTP/HTTPS)"| ULTIMUS
+    LIN_APP -->|"Flujo 3: Envío de notificaciones y balances (SMTP)"| SMTP_SRV
+
+    %% =========================================================
+    %% ESTILOS VISUALES
+    %% =========================================================
+    classDef extZone fill:#f4f0fa,stroke:#6f42c1,stroke-width:2px;
+    classDef bankZone fill:#ffffff,stroke:#002855,stroke-width:2px,stroke-dasharray: 5 5;
+    classDef agentZone fill:#e8f4fd,stroke:#0d6efd,stroke-width:2px;
+    classDef internalZone fill:#eafaf1,stroke:#198754,stroke-width:2px;
+
+    class ZONE1 extZone;
+    class BANK_INFRA bankZone;
+    class ZONE2 agentZone;
+    class ZONE3 internalZone;

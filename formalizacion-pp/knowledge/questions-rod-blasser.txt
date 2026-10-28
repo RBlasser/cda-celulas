@@ -1,0 +1,15 @@
+1. Insumos de Riesgo de Crédito / Producto Préstamo Personal.
+¿Cómo consiguen el resultado de los préstamos aprobados provenientes del método tradicional y del modelo de aprobados? Necesito un detalle de este subproceso, indicando la vía (correo, ruta compartida, etc.) para idear una manera programática de obtenerlos (por ejemplo: lectura de base de datos via ODBC).
+
+2. Insumos documentales.
+¿Cómo obtienen los documentos de soporte para el préstamo y en qué formato? Por ejemplo: cartas de trabajo en PDF. Necesito un detalle de este subproceso, indicando la vía (correo, ruta compartida, etc.) para idear una manera programática de obtenerlos (por ejemplo: lectura ruta compartida).
+
+3. Disparador.
+Desde la perspectiva actual, ¿qué motiva al funcional a empezar este proceso? Es decir, necesitamos definir un trigger que inicie esta secuencia de pasos. Por ejemplo: el funcional recibe un correo en donde se le comunica que debe atender la formalización del préstamo X para el cliente Y. Para esto, el funcional empieza la búsqueda de los insumos descritos arriba.
+
+4. Recursos para el agente.
+Necesitamos un servidor Windows (pruebas visuales) y un servidor Linux (productivo), ambos con:
+Suficientes permisos admin/sudo sobre la sesión de usuario.
+Salida segura a internet para descargar dependencias y construir los contenedores de Docker.
+Acceso al sistema Ultimus y todos los recursos relacionados para este proceso (carpetas compartidas, lectura de bases de datos, correo, etc.)
+Usuario del banco para el agente con suficientes permisos para acceder (evaluar si necesita un correo electrónico).

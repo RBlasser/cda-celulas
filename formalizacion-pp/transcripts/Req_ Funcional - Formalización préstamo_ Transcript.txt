@@ -1,0 +1,479 @@
+Req. Funcional - Formalización préstamo personal
+Wed, Oct 21, 2026
+
+0:00 - Juan Montenegro Pescador
+Aquí falta Rodolfo Mariana, a mí me parece que lo invité pero no lo veo en la lista.
+
+0:24 - Marianella Musso
+Sí, déjame escribirle. Ya, dame un segundo. Dale, listo.
+
+0:27 - Juan Montenegro Pescador
+De nuestra parte, luis no va a poder estar. Onam me dijo que se nos iba a estar uniendo. Aunque bueno, quizás no funciona más Onam para ver el tema del requerimiento técnico. O no.
+
+1:39 - Marianella Musso
+Ok, ya le escribí a Rodolfo, vamos a esperar unos minutos.
+
+1:45 - Juan Montenegro Pescador
+ya le envié la invitación por si acaso. A la línea.
+
+3:07 - Juan Montenegro Pescador
+Mariana dice que podemos ir arrancando para ir dándole contexto al equipo.
+
+3:14 - Marianella Musso
+Sí, ya Rodolfo me dice que va, ya va entrando, vale. Ah, listo, buenísimo.
+
+3:21 - Juan Montenegro Pescador
+Bueno, buen día a todos nuevamente. Ricardo, gracias por acompañarnos. Ahí viene entrando Rodolfo. Buen día, ¿qué tal Rodolfo?
+
+3:31 - Unidentified Speaker
+¿Cómo estás?
+
+3:33 - Juan Montenegro Pescador
+Hola, buen día.
+
+3:35 - Unidentified Speaker
+Hola, Rodolfo, ¿cómo estás? ¿Qué tal? ¿Cómo están?
+
+3:39 - Marianella Musso
+Buenos días.
+
+3:40 - Unidentified Speaker
+Buenos días, ¿todo bien?
+
+3:43 - Rodolfo Blasser
+Estoy aquí empezando. Bueno, Ricardo Herrera, Ricardo García.
+
+3:48 - Juan Montenegro Pescador
+Bueno, para comentarles un poquito de lo que tenemos pendiente o lo que necesitamos ya cumplir con el hito para poder con el equipo de Stratec es referente a los documentos de requerimiento o la versión de documentos de requerimiento que Mara nos compartió hace creo que un par de días, que básicamente es como un requerimiento resumido que necesitamos llenar pues con ustedes o que nos ayuden a llenarlo para que ya ese sea el insumo para que el equipo pueda arrancar a desarrollar.
+
+ Bueno, hay un requerimiento funcional que que tenemos para esta sesión y en la tarde había puesto otra para el requerimiento más técnico. Ahí Rodolfo me había comentado si la podía mover. Creo que la voy a estar moviendo porque también faltan los programadores de tu equipo, Ricardo, con los que se reunieron la vez pasada. Pero entonces, no sé si han tenido chance de ver este documento que nos compartió Mara, pero el objetivo fuera ir llenando para eh tener ese insumo y entregarlo voy a tenerlo pues eh preparado para el equipo de estrategia y podamos arrancar ese ese desarrollo que es básicamente especificar todas estas preguntas eh no sé si ahí tenga un comentario Rodolfo, Marianella.
+
+
+
+5:15 - Unidentified Speaker
+Sí, sí, cien por ciento.
+
+5:17 - Rodolfo Blasser
+Sí, gracias Juan por la introducción, como tan equipo. Sí, la idea con esto es tener digamos, en escrito, evidentemente, un panorama más claro que nos permita fundamentar el diseño. Ok, el diseño. Sin embargo. Cuando tengamos los recursos, es decir, servidores, accesos, usuario para la gente, etcétera. Mi interés es con esto en mano hacer un recorrido en vivo y emular de mi lado exactamente cómo se hace la tarea.
+
+ Ok, es decir que esto tiene una perspectiva documental que respalde un diseño. Y cuando tengamos acceso, recursos, etcétera. Para para acceder a últimos, entre otras cosas, entonces me gustaría hacer con esto en mano un recorrido en vivo que eso es lo que me va a permitir es tener una perspectiva de incluso de los detallitos puede que de exactamente aunque ya se los mostraron pero aún así me gustaría hacer ese recorrido entonces esa es la razón de este documento de este documento como respaldo documental del diseño nos ayuda a diseñar mejor Buenísimo Rodolfo, gracias ahí por la profundización.
+
+
+
+6:51 - Juan Montenegro Pescador
+Y bueno, realmente tenemos esta sesión de esta hora donde siento que podemos ir punto por punto llenando esto y tenemos aquí el equipo de estrategia que nos puede resolver cualquier consulta. En caso tal no sepamos a qué hace referencia una de las preguntas levantadas, pues podemos directamente ir dimensionando eso.
+
+7:13 - Oscar Samudio De Leon1
+Oscar, adelante. ¿Vas a grabar la sesión?
+
+7:18 - Juan Montenegro Pescador
+Me parece una excelente observación.
+
+7:23 - Unidentified Speaker
+Lo voy a poner a grabar. Ok, listo. Bueno, creo que podemos empezar desde arriba.
+
+7:36 - Juan Montenegro Pescador
+No sé si tengan algo que consultar ahí equipo de producto personal.
+
+7:45 - Ricardo Herrera
+Sí, yo estaba leyendo el documento, me queda bastante claro el punto dos, ahí tengo la la info, pero tengo dudas en el punto uno, porque dicen, un sumo de riesgo o de crédito y productos préstamo personal, que necesitamos saber cómo estamos aprobados tanto por el método tradicional como por el modelo aprobado para diseñar una forma programática de obtener a través de bases de datos y demás dice quien genera el resultado el área o qué rol puede entender método tradicional a completar por el banco modelo de aprobados a completar por el banco cuando cuando eh mencionan quién genera el resultado eh Rodolfo no sé si si me podrás contestar tú ¿Te refieres a quién le dice al ejecutivo el préstamo está aprobado?
+
+ ¿El el el aplicativo o a qué se refieren en esa parte?
+
+8:58 - Rodolfo Blasser
+Sí, por ejemplo y que ojo, pudiéramos incluso reformular lo que está como pregunta para que como sabemos que son dos flujos distintos la manera en que tradicionalmente se concluye por ejemplo que un préstamo está aprobado es distinto a cómo se genera del modelo de de aprobado pues la manera algorítmica la manera algorítmica eso termina en consume, pero Irving La y eso, digamos. Por ejemplo, como estos son insumos, es decir, hay una dependencia, saber esa dependencia, quién es y cómo comparte esa información.
+
+ Yo comprendo que la intención con el agente para la formalización de los préstamos busca que ambas perspectivas sean consideradas para esa formalización, tanto aquello que proviene del método tradicional como el modelo de aprobados. Posiblemente la parte de la perspectiva tradicional sea más propensa a un descubrimiento de detalles, es posible, versus el de aprobado. Porque el aprobado realmente tenemos certeza de que eso termina en una base de datos.
+
+ Ahora bien, yo sé que eso termina ahí. Lo que no, lo que no me queda 100 por ciento claro es si ustedes lo consumen de esa base de datos. Entonces, con respecto a la primera pregunta, quién genera resultados en el caso de los aprobados? Yo diría que la persona que lo es Irving, porque Irving es quien ha sido responsable de gestionar tanto el input como la verificación del output del modelo de aprobados.
+
+ Y esto nos ayuda, por ejemplo, cuando necesitamos hacer un consumo de datos de insumo, saber a quién referirnos. En vez de que quede como que el área de innovación, por ejemplo, es decir, específicamente, ¿quién? Para tener entonces una comunicación directa. Entonces, en la primera pregunta, ¿quién genera el resultado? De la parte tradicional, no estoy seguro. Esa, esa pregunta, la verdad es que para esto no tengo respuesta.
+
+ Para la, la del modelo de aprobados con certeza Irving está metido en la ecuación. Así que Irving pudiera ser la persona responsable que debe estar plasmada acá.
+
+11:50 - Ricardo Herrera
+en el método tradicional disculpa que te interrumpe Rodolfo cuando para poder ver si estoy entendiendo lo que mencionas cuando hablas de método tradicional es que el cliente viene Joaquín llega a la sucursal y dice yo quiero un préstamo personal y el ejecutivo va e ingresa el préstamo y entonces espera la decisión de aprobado o rechazado según sea el caso es correcto este rechazado o aprobado quien es responsable de decir eso que solicitaron Y dónde pone esa información que vendría a ser la pregunta siguiente?
+
+ Pero si eso es el mismo BPM que me da esa decisión. Yo la consumo desde el BPM. El BPM me dice aprobación final o rechazado de vuelta, o sea, la decisión que dio el ejecutivo.
+
+12:40 - Unidentified Speaker
+Así que ahí netamente sería desde.
+
+12:43 - Ricardo Herrera
+Podemos ver el método tradicional en este caso. Sería el BPM, eso tiene que haber alguna tabla de registros que eso lo pudiésemos ver con EDL en qué sistema fuente recibe el resultado en la siguiente también es en el BPM que seguro que queda plasmado en alguna alguna data o registro o tabla ¿Por qué bien llega la funcionalidad? El BPM le manda una notificación al ejecutivo indicándole que en su bandeja tiene un número, un incidente o una solicitud pendiente, pero cuando le entra al sistema entonces le brinda la decisión de aprobado.
+
+ Digo, si la tiene en su bandeja en la etapa de ya de formalización, final es lo que estamos viendo. Si ya está en formalización es porque ya lo tiene aprobado, pero lo puede. Le puede llegar un correo por sistema. Él lo puede consultar o él puede ingresar a su bandeja y él va a ver el el caso, pero a través de BPM últimos.
+
+13:58 - Unidentified Speaker
+Ese también pegaría en BPM.
+
+14:00 - Ricardo Herrera
+En qué forma? En qué formato le llega como una solicitud desde el BPM? El BPM me hace todo. Ese registro cuando son los métodos tradicionales. Igualmente ahí sería por BPM último. Con qué frecuencia o en qué momento se genera? Diariamente. No sé si la palabra correcta es. Habría que hacer ejercicio. Sí, sí, eso puede que no haya un todos los días un préstamo aprobado y puede que me preocupe.
+
+14:34 - Unidentified Speaker
+si no fuese así.
+
+14:36 - Ricardo Herrera
+Digo, me preocuparía si no fuese así.
+
+14:40 - Rodolfo Blasser
+Eso es un buen criterio para tener a otro lado. Diariamente deben existir notificaciones de que algo se ha probado.
+
+14:50 - Ricardo Herrera
+Sí, diariamente, salvo los domingos, pero diariamente debe haber de uno en adelante. Porque, como bien tú lo dices, dice si no existe me preocuparía porque o nosotros no estamos ofreciendo lo correcto o el cliente está está yendo a otra oferta de valor en otro banco pero diariamente debe deben haber procesos aprobados o con una decisión final de que el banco si acepta las condiciones que tú presentas como cliente poniéndolo desde desde ese panorama ¿no?
+
+ ¿Qué datos trae? No, no, no, en ese.
+
+15:31 - Unidentified Speaker
+Eso es importante, sí.
+
+15:33 - Rodolfo Blasser
+¿Cuáles son esos atributos? Y quería hacer una pregunta para decir, ok, con respecto al formato en el que está representado el aprobado en últimos, o sea, eso vive ahí, o sea, no lo tienes que sacar de Excel, no lo tienes que, eso, eso simplemente está allí en en el BPM.
+
+15:55 - Ricardo Herrera
+Sí, el flujo viaja, el el hasta cuando ya se constituye el préstamo, que es la integración. Ese es su su hábitat, el BPM. Él hace todo el proceso por dentro de.
+
+16:05 - Rodolfo Blasser
+Ok, o sea que tú hasta ese punto no hay que sacar nada ni hacer copy paste de nada, porque eso ya está en últimos.
+
+16:13 - Ricardo Herrera
+Lo único que hay que sacar o extraer es la papelería que el cliente va a firmar, pero todo lo demás viaja por el flujo.
+
+16:21 - Rodolfo Blasser
+Y la parte que tiene que ver con los aprobados. El préstamo que ha aprobado, que vendría a ser en sistema Stratify, lo que está en Stratify.
+
+16:34 - Ricardo Herrera
+Viaja por BPM también, lo que hace, lo que nosotros hacemos es marcarlo con una marca de agua o tipificarlo con una marca que tenemos registrado en el sistema. Por poner un ejemplo, nosotros ya tenemos el insumo de los casos que se aprobaron a través de la herramienta el ejecutivo ingresa el caso y le marca nosotros le parametrizamos un botón en el sistema aprobado stratify tiene sí o no le coloca ese sí y ese vaya va con una marca de agua donde va por el flujo de que este caso fue aprobado por stratify sigue el mismo sin el mismo flujo de un cliente regular con distinción de que este va por con la marca de agua sabiendo de que ya está aprobado por Stratify y va a todo ese recorrido.
+
+ Para qué? Para poder generar la papelería que el cliente tiene que afirmar.
+
+17:35 - Rodolfo Blasser
+Super. Entonces incluso aquello que viene de Stratify de modo aprobados ya está canalizado por el BPM.
+
+17:42 - Unidentified Speaker
+Entra por el BPM. Correcto. Perfecto. Super. Se entiende.
+
+17:46 - Ricardo Herrera
+Qué datos trae? El número de préstamo después de la aprobación no lo trae como le comenté en la reunión pasada eso lo tiene que generar el ejecutivo como como le mostré en el campo pero se genera a través del bpm igualmente para los casos de stratify todo se genera a través o dentro del bpm existe acceso programático vistas o tablas de base de datos porque todos están dentro del BPM. Correcto, todo vive dentro del BPM.
+
+
+
+18:20 - Unidentified Speaker
+Todo está dentro del BPM. Incluso los aprobados.
+
+18:24 - Ricardo Herrera
+Motor de base de datos, nombre de la vista, tabla. ¿A qué se refieren con eso?
+
+18:31 - Unidentified Speaker
+Porque eso no aplica.
+
+18:33 - Rodolfo Blasser
+Eso no aplica porque si todo está en el BPM, no hay necesidad de irnos a otro instante.
+
+18:41 - Ricardo Herrera
+consultar natural eh ¿Quién autoriza el acceso de solo lectura? PNA. PNA. OK.
+
+18:48 - Rodolfo Blasser
+Sí, eso era en base a a la premisa de que había que leer tabla, pero no.
+
+18:57 - Ricardo Herrera
+Digo, ojo, no te digo que no se si que se ejecutan procesos o trámites manuales, vamos a decir, el préstamo se aprobó hoy.
+
+19:09 - Unidentified Speaker
+Sí.
+
+19:10 - Ricardo Herrera
+ahí pudo avanzar porque el sistema generó un error que no ni pa'lante ni pa'trás con esa solicitud con ese cliente pero eso es muy esporádico por meses hacia caso uno llega hasta ahí el incidente y lo que se hace es que se desembolsa manual o sea el área operativa va y crea el número de préstamo en el eh bueno no lo crea porque ya el BPM lo reservó él busca ese número de préstamo que el BPM reservó y crea todo los input que necesita el módulo de préstamo para que se constituya el préstamo.
+
+
+
+19:45 - Unidentified Speaker
+Pero eso pasa.
+
+19:47 - Ricardo Herrera
+Casi nunca o es muy bajo la probabilidad que pase, porque como te digo, eso pasa un préstamo de mil y tantas solicitudes que desembolsamos. Porque estamos hablando del cero punto 1% si acaso. O sea que eso es nul. Si es muy atípico y si es una incidencia, eso es lo último que nosotros. O la última decisión que se ejecuta para que se desembolse manual, salvo que el cliente se haya mantenido en mucho tiempo de espera ya con el descuento aprobado.
+
+ Pero por lo general siempre entramos con el programador para que revise corrija y siga por el flujo. Esa es la última opción que elegimos. Vamos a desembolsar lo manual, pero siempre entremos con el programador para que revise, valide, certifique y todo quede por el por el por dentro del sistema.
+
+20:48 - Rodolfo Blasser
+Y esas incidencias son por desperfectos del BPM o por...
+
+20:53 - Unidentified Speaker
+No necesariamente.
+
+20:54 - Ricardo Herrera
+Puede ser que es el que me está arrojando. El error no es el BPM, es el core. Entonces, como estamos ligado al core y porque hubo alguna actualización en el core que no se cargó en esa base que va al BPM a buscar, digo, puede ser por un sinnúmero de cosas. También puede ser alguna incidencia del BPM que ese cliente trajo algún error y no lo reconoció en primera instancia, sino lo reconoció antes del desembolso.
+
+ Digo, tiene de ambas cosas pero por lo general siempre es cuando va a ser la integración al coro que en el coro cuando él va a buscar no encuentra ese dato que él espera recibir entonces por lo general o en su gran mayoría para no decir que todos los casos es del coro hacia acá y es que ni siquiera todos acaba de expresar pero inclusive también puede ser el error de que en el bpm el campo tenga una en el corte en otra longitud y eso manda un error también pudiese ser correcto ok ok siguen siendo casos atípicos pero tenerlos hay que tenerlos presentes sí sí como te digo desembolsamos más de mil solicitudes al mes por ejemplo el mes pasado porque suelen mandarme la la la valiación para la autorización de los desembolsos manuales y el mes pasado no desembolsamos ningún caso manual que yo tenga conocimiento o que entró por el BPM no desembolsamos ningún caso manual y el mes antepasado tampoco tengo como tres meses seguidos que no se desembolsan casos manuales de gran cantidad de solicitudes que se desembolsan ojo ok Ese tipo de cuestiones atípicas más probable es que nos lo vamos a encontrar.
+
+
+
+22:55 - Rodolfo Blasser
+Y dependiendo de cuál sea la razón de digamos que el resultado no deseado, buscaremos la manera de encontrarle una solución. Es que eso es lo que...
+
+23:12 - Unidentified Speaker
+No dime, dime Roberto.
+
+23:14 - Rodolfo Blasser
+Sí, y tiene mucho sentido que esto lo tengamos en mente, porque digamos que, digamos como tú dices, esto puede que sea el 1% de la vez. Entonces, bueno, si el 99% de los casos se resuelven dentro del BPM y que son, digamos, sin fricción, si logramos que la gente resuelva ese 99% de escenarios, ganas de ese ese remanente pudiésemos buscar la forma de cómo uno distinguirlo. Aquí pasó algo y ver si es resolvible por el agente o si es algo que verdaderamente se sale del del propio alcance de la gente.
+
+ Porque yo no sé cómo, no sé qué hacer con esto, pero que haya intervención humana. Pero es saludable tenerlo siempre en el radar.
+
+24:07 - Ricardo Herrera
+Te doy un vivo ejemplo. Ayer hubo un caso de que cuando lo pasa, que se pasó a desembolso, él iba a buscar la información al cor y el cor decía que el monto que se estaba desembolsando no cumplía con el monto mínimo o máximo de apertura. O sea, yo estaba desembolsando más de lo que estaba registrado en el en el coro, en el IBS, porque había quedado pendiente una actualización. Se hizo la actualización en el Se volvió a avanzar el caso y listo, se desembolsó.
+
+ Para no incurrir en ese desembolso manual, porque puede ser que en su gran mayoría de las veces se puede resolver si. Por qué se dice que se desembolsa manual? Porque el cliente está esperando un desembolso de un descuento que ya le están realizando. Entonces, para no afectar el el tiempo del cliente, la espera, la atención y demás, solemos decir desembolse en avance en manual para que el cliente no siga esperando porque ya le están descontando, entonces tiene que ser justo, no si ya a mí me están descontando por algo que no tengo, entonces lo que hacemos es, ojo, pero se busca el punto de error para corregirlo, para que en un que no vuelva a pasar.
+
+ Pero siempre, siempre tratamos de abarcar todo eso, esa línea. Eh, restricción o datos que no pueden ser leídos por el agente. ¿A qué se refiere con eso? No sé si me amplías ahí.
+
+25:48 - Rodolfo Blasser
+Esto solamente si desde su perspectiva que yo yo en realidad no lo percibo como una. Como un riesgo porque la gente vive dentro de la infraestructura esto era solamente si por cuestión de alguna política interna en caso de que existiera no tiene por qué existir si había algún impedimento de que él estaba está bien relacionado aquello a lectura de de datos no es el caso porque todos una política que no le permitiera a un agente hacer lectura a a datos, por ejemplo, porque leer, porque pudiera ser el escenario de que él lee de una tabla.
+
+ En esos casos que no es este escenario para elaborar un poco, en esos casos lo que se hace es que se ofusca información, por ejemplo, por ejemplo, que no es el caso, no es el caso, pero, por ejemplo, digamos que tienes un agente que tiene acceso a lectura de una tabla y allí hay, por ejemplo, dirección de la persona y sabe que es un dato confidencial. Lo que se hace es que se enmascara esa información sensitiva para que la gente no lea, por ejemplo, y que igual manera no tendría gran impacto porque la gente sigue viviendo dentro de la infraestructura del mar.
+
+
+
+27:21 - Unidentified Speaker
+no estaría viviendo eh por ejemplo eh no es que el no es que vamos a hacer uso de algo que haga que el otro salga de eso solamente era como si existía una consideración si no existe no importa y que además de eso no puede que no apliquen porque no vamos a leer nada de tablas eso estaba muy relacionado a la premisa de que había que leer Ok.
+
+27:50 - Ricardo Herrera
+Ahí con el tema de los aprobados, entonces también aplicaría lo de BPM último, ¿verdad? Porque al final todo viaja por ahí. Sí, esto es algo que yo acabo de aprender, que todo está canalizado incluyendo los aprobados.
+
+28:07 - Rodolfo Blasser
+Así que si va por ahí, perfecto. Y esto nos pone en una mejor posición para justamente no tener que solicitar acceso a, por ejemplo, de datos de que están en otro lado y nos agiliza un poco más la gestión ok ok entonces aquí rapidito para cerrar esta tabla esto también sería diariamente a demanda así ustedes ustedes no están viendo realmente una diferencia entre entre cómo se consume el dato tradicional o aprobado todos están el bpm la diferencia es que hay uno que está marcado que dice aprobado, un modelo aprobado, pero todo está viviendo en ese mismo universo.
+
+
+
+28:54 - Ricardo Herrera
+Así que no hay realmente distinción.
+
+28:58 - Unidentified Speaker
+Te explico. Correcto. Ok, y esta de los datos tampoco aplica, ¿verdad? No, tampoco aplica. Tampoco aplica. Listo. Bueno, con eso cerramos ese primer punto. Pueden agregar Entiendo que si él tenía más dudas, Ricardo, podemos ir a pasar entonces aquí al que. Ah, sí, sí.
+
+29:24 - Ricardo Herrera
+Es bastante interesante. Vamos a ver que necesitamos saber cómo sostienen los documentos de soporte del préstamo y en qué formato para diseñar una forma programática, obtener, por ejemplo, lectura de una ruta compartida.
+
+29:40 - Unidentified Speaker
+Y puede ser. ¿Cómo sacan?
+
+29:43 - Rodolfo Blasser
+hay una carta de trabajo de un cliente que fue aprobado indiferentemente de cómo fue aprobado.
+
+29:50 - Unidentified Speaker
+Cómo? Cómo consiguen eso? Dónde sale?
+
+29:53 - Ricardo Herrera
+El cliente no las entregó, no las envía. Puede ser en formato PDF o puede ser en formato digital o en foto. Y en lo que hace el ejecutivo es corta la imagen, la pega en un Word y la adjunta en el BPM, pero todos los documentos están adjuntos dentro del aplicativo.
+
+30:18 - Rodolfo Blasser
+Ok, eso es una buena noticia, porque entonces significa que en principio no necesitaríamos hacer lectura, porque nosotros tratando de ser conservadores, no estamos tan optimistas. ¿Qué pasa si eso lo están colocando en una ruta compartida? Donde alguien lo descarga, lo echa ahí. Bueno, entonces la gente se va a tener que ir a la curva compartida, pues si no es el caso y todo está viviendo en últimos de todas estas cosas y todo está viviendo ahí porque ya alguien lo ajustó.
+
+
+
+30:51 - Ricardo Herrera
+Sí, por poner un ejemplo, para poder buscar la aprobación del crédito, el ejecutivo tiene que adjuntar carta de trabajo, talonario comprobante, ficha en la caja de seguro social, tiene que poder estar la cédula y de identidad personal del cliente, la solicitud multiproducto completada, el que no va a estar adjunto en el BPM va a ser el certificado de jubilación de la caja de seguro social, ese no va a estar ahí, el de la caja de seguro social.
+
+ Me vas a preguntar por qué, por qué, porque ese es como una carta de trabajo, que da la caja de seguros sociales para los jubilados donde si es canalizado por un área de forma física y el seguro nos los entrega de forma física y no lo adjuntan en el BPM porque ese documento nos da como un número de de identificación de posición vamos a decirle para poder que entre te lo imagines y en ese ese es un número único que va a tener ese documento donde con ese número único yo voy a poner ese número único en la orden de descuento que el cliente va a firmar, eso solamente pasa en los jubilados de caja de seguro social.
+
+ En el de Contraloría no me pega tanto porque con el talonario de Contraloría ellos sí pueden sacar ese certificado directo desde la página de la Contraloría con una clave o una contraseña, no recuerdo mucho cómo es el tema, pero ellos sí lo tienen de forma eh digital o a través de un PDF pero el jubilado pero el jubilado de la caja de seguro social yo no necesito la aprobación del préstamo no necesito el certificado yo con el talonario de jubilado me basta pero para llenar la orden de descuentos sí necesito el certificado y estos dos documentos existen ya ¿Cuál es el área responsable de conseguir eso?
+
+
+
+33:00 - Rodolfo Blasser
+El del certificado de jubilado de Cáceres Social.
+
+33:04 - Ricardo Herrera
+Sí, eso está centralizado por el área de revisión documental y casualmente el que completa los campos en sistema es el área encargada de pedir y recibir el documento.
+
+33:22 - Rodolfo Blasser
+Y en el flujo normal, digamos, nos topamos con un cliente que ha tenido un préstamo aprobado y se requiere ese documento. Entonces, ¿qué ocurre? Hay que solicitarlo propiamente a ese área que lo consiga para que lo sientan. Por poner un ejemplo, tú eres jubilado a la Caja de Seguro Social.
+
+33:43 - Ricardo Herrera
+Llegaste acá a Caja de Ahorro a pedir un préstamo personal. ¿Qué hace el ejecutivo? El ejecutivo te va a colocar, te va. No he ingresado el préstamo por BPM, inclusive ni siquiera he ingresado tus datos al BPM, pero yo te hice un cálculo. Ya yo sé que tú cumples con capacidad, nivel, edad, todo lo que se refiere al préstamo. El ejecutivo va a llenar un documento donde tú como cliente vas a firmar y yo lo paso al área de revisión documental sin haber ingresado tu préstamo ojo al BPM.
+
+
+
+34:14 - Unidentified Speaker
+Yo lo paso a este área. Revisión documental.
+
+34:17 - Ricardo Herrera
+Este área va a validar que tenga todo lo que me pide la Caja de Seguro Social y el mensajero va a llevar esa solicitud a la Caja de Seguro Social. Al día siguiente yo ingreso tu préstamo, hago todo ese proceso, me aprueban el préstamo, dos días después que haciendo un ejercicio, dos días después que mandé tu solicitud o un día después de haberlo ingresado, me llega la aprobación, lo voy a tener ahí está en la etapa de revisión documental o generación de documentos, porque no te puedo poner a firmar si no tengo esa numeración.
+
+ Nuestro proceso de aprobación es más rápido de lo que me sale ese documento, porque dependo de un tercero. La Caja de Seguridad Social puedes morar una semana en emitirme ese certificado como me puedes morar 15 días, como me puedes morar 20 días hábiles. Hablando. No lo tengo de que llevo el documento y lo y lo llevo a la solicitud y ese mismo día me lo no. En el mundo ideal. Han demorado dos, tres días como como mínimo, pero hay momentos porque eso también depende del volumen que tiene la caja de seguro social, porque solamente no se lo hace a caja de ahorro, se lo hace a Banco Nacional, a general, al BAC, al Banismo, a todos los clientes jubilados que soliciten un préstamo personal en estas instituciones.
+
+ Y como está centralizado en el área de la caja de seguro social, ellos también lo generan por demanda.
+
+35:57 - Rodolfo Blasser
+Ok, entonces tú dirías que el proceso, o sea, en términos de formalización, la formalización para un cliente jubilado, el proceso en última no se inicia hasta tener todo eso. Incluso este documento o el proceso de formalización de todo lo que hace últimos queda pausado hasta conseguir ese documento. Correcto. No, no, no puedo hacer más nada.
+
+36:24 - Ricardo Herrera
+Aunque tenga el préstamo aprobado, no puedo mover. Para qué? O no puedo ejecutar para que el cliente firme, digo, pudiese completar otros, los otros, los otros campos, lo que tengo, número de planilla, número de seguro, cuándo va a iniciar la fecha de descuento. Eso lo pudiese yo completar, pero no puedo llamar al cliente y decirle Rodolfo, ya tengo su préstamo aprobado, venga a firmar. No puedo hacerlo porque yo necesito ese documento.
+
+ Déjame ver para ver si encuentro uno para mostrarte más o menos como para ¿Cómo se ve eso y qué?
+
+37:04 - Rodolfo Blasser
+Porque si sería una buena pregunta en términos como de flujo, ¿no?
+
+37:09 - Ricardo Herrera
+O sea, es decir, este proceso con el agente para clientes que son jubilados, no iniciarlo hasta que se tengan todos los documentos o va a quedar pendiente, pausado, algo que se inició hasta que se adjunte el el el documento faltante lo que lo que pudiésemos hacer ahí Rodolfo es que el proceso se inicie que se que se pudiese iniciar pero lo que no se pudiese hacer es avanzarlo a la etapa de firma pero ya con el otro proceso completamente terminado y culminado va a ser el encargo de validar toda la información correspondiente.
+
+
+
+38:00 - Unidentified Speaker
+Nada más pueda validar.
+
+38:01 - Ricardo Herrera
+Ah, ya la gente hizo todo. Está correcto. Nada más tengo que esperar que me llegue el certificado para yo colocar la numeración. Y una vez me llegue el certificado para colocar la información, entonces avanza el caso. Ya sabiendas que valide y certifique que la gente hizo todo lo que tenía que hacer de forma correcta. Dame un segundito que que encontré un.
+
+38:51 - Unidentified Speaker
+Bueno, no más solamente le tapé los datos de nuestro cliente, confidencialidad.
+
+39:20 - Ricardo Herrera
+Y mira, este es el número que nosotros necesitamos. Y este número, este es como la carta de trabajo de del cliente del jubilado de la Casa de Seguridad Social, certifica que Rodolfo Blaser es jubilado bajo la planilla, el número que sea. En este caso, este cliente era planilla 14. Aquí te dice toda la información, te dice la la cédula del cliente, el número de seguro social del cliente, el nombre del cliente y te da esto.
+
+ Este detalle, esto es como un número de registro, un número de identificación, no sé Bajo qué concepto ellos ellos lo tienen autorizado. Seguramente ellos lo lo relacionan con el con el jubilado para que cuando ellos vayan a aprobar la orden de descuento, coloquen esta información y le tire toda la información que que el sistema mantiene. No sé, te estoy inventando.
+
+40:22 - Unidentified Speaker
+Pero necesita ese documento. Si un mes, seis meses a un mes o un mes y ok.
+
+40:30 - Ricardo Herrera
+La ventaja con este documento es que si sale a nombre de el banco, por ejemplo, para uso exclusivo de caja de ahorros, el cliente no puede ir con este documento. Al banco vecino y si nosotros emití y si la Casa de Seguro Social emitió ese documento, no lo puede emitir ningún otro banco hasta que venza, ya que nosotros vamos a tener un mes. Para que ese cliente, si se quiere ir a otro va a tener que esperar que este documento venza para poder ejecutar el préstamo con otra entidad.
+
+ Si en el camino dijo, hey, sabes que no quiero nada con caja de ahorro. Va a tener que esperar un mes para que entonces ese otro banco en la plaza le emita ese nuevo documento.
+
+41:18 - Rodolfo Blasser
+Ok, entonces esto es un documento físico que se demora en días en conseguir, lo escanean y se sube en el BPM.
+
+41:26 - Ricardo Herrera
+depende si porque porque en el BPM yo tengo la opción de colocar este número y como yo soy el área que lo recibo en el área de revisión documental yo coloco este número en el BPM lo transcribo a 2026-016747 como ya lo coloque en el BPM cuando el ejecutivo va a hacer la impresión del documento Ya me sale este número.
+
+41:56 - Rodolfo Blasser
+Lo que no pueda input directamente el número o puedes apuntar el documento como respaldo al préstamo.
+
+42:05 - Ricardo Herrera
+No sé si lo están apuntando, es la lava, porque al final yo no necesito este documento, yo necesito esta numeración.
+
+42:15 - Unidentified Speaker
+Correcto.
+
+42:16 - Ricardo Herrera
+Digo, si lo adjuntan, eh? Puede ser que uno que otro ejecutivo lo adjunta para que sepa, porque si a mí se me fue, me equivoqué, coloqué el número y ahí tienes el documento para que certifique antes de la firma del cliente que ese es el número. Eso podría ser. Pero.
+
+42:36 - Rodolfo Blasser
+Tendría que balear, pero me parece que no están adjuntando ese documento. Te hago una pregunta. Si tú, si tú, si tú fueras una computadora. Y tú. Tú necesitas ese número.
+
+42:50 - Rodolfo Blasser
+¿Cómo se te facilitaría obtener ese número?
+
+42:55 - Unidentified Speaker
+Y asociarlo...
+
+42:56 - Ricardo Herrera
+Lo necesitaría adjunto dentro del sistema.
+
+43:01 - Rodolfo Blasser
+Y en términos de formalización, ¿es igualmente ok adjuntar el documento como poner directamente el número este que lo identifica?
+
+43:15 - Ricardo Herrera
+o sea es igualmente ok o tiene que estar también input el número yo lo puedo juntar pero si no coloco el número el sistema me va a dejar avanzar lo que va a recaer en el ejecutivo de firma el que va a poner a firmar el cliente que tenga que entrar al al incidente irse a los documentos que están adjuntos validar ese número y después colocarlo acá lo ideal sería que el formalizador de documento. Hay este número y otra pregunta.
+
+
+
+43:48 - Rodolfo Blasser
+Hay otro documento que tenga esta característica que deba ser el único, el jubilado, el único, lo que pudiéramos hacer lo siguiente, pero eso lo podemos ver en el tiempo. O sea, conceptualmente me queda claro. Lo más probable es que necesitamos que este documento escaneado sí termine en un lugar que pueda ser observado por el agente y que diga dije necesito necesito leer este documento ya sea en formato de imagen o de pdf para extraer ese número y que ese número sea indudablemente asociado a este caso de préstamo que estoy formalizando eso el eso sería algo eso sería una de que que pudiéramos entonces conversar luego bueno donde se pone ese documento eh si el documento está en si el documento lo lo adjuntan evaluamos el entonces el un método con método me refiero a lo siguiente el el la gente está allí y ve tengo el documento que eso tenía incluso esta puesto en pausa.
+
+ Pero. Se me ocurre algo. Vamos a hacer el escenario de que.
+
+45:19 - Ricardo Herrera
+Porque solamente va a pasar con los jubilados. Tú me dirás si la gente tiene la capacidad para reconocer esto o no. Me llegó físico, porque me llega físico. Yo soy el. Ya yo completé toda la otra información, pero no he podido formalizar, no he podido poner a firmar al cliente porque me falta este 20 26 11 0 1 6 7 4 7, porque no lo tengo. Lo voy a tener cuando reciba la información. Lo podemos hacer de dos vías.
+
+ Uno. Qué? Como te dije, la gente realice todo. Pero para los casos de jubilados no lo avance. Aunque ya se haya realizado todo en el sistema, porque tengo dependencia a un a un número faltante que necesito.
+
+46:17 - Unidentified Speaker
+Estoy de acuerdo.
+
+46:18 - Ricardo Herrera
+Y ese caso quede en Standby. O en Stopper, por así decirlo, para que ya entre la mano humana y coloca, coloca esa numeración, pero ya la habrá revisado lo que la gente colocó. Eso es uno para que el avance. La segunda sería que. El agente a los casos de jubilado le dé otra visual y reconozca la cantidad de documentos que ya venía junto en el sistema. Por poner un ejemplo, en el sistema, cuando él revisó, tenía dos a dos asuntos.
+
+ Por poner un ejemplo, si él reconoce que hay un tercero porque en el área de revisión documental fue un asunto, documentos en el área de revisión documental, adjunte, y cuando él vaya a hacer una segunda o tercera revisión, no sé, se pone en un periodo estipulado, él vea que en vez de dos, ahora tiene tres, ya él sepa, OK, ya está este documento, voy válido, ya ubiqué el número, voy y lo coloco, y avanza el el incidente, pudiese ser de esa manera, o de la otra, no sé, tú me dirás.
+
+
+
+47:26 - Unidentified Speaker
+Ah, son buenas.
+
+47:27 - Rodolfo Blasser
+A mí me gusta la la primera o sea me me gusta un un híbrido por lo siguiente porque lo que sea que uno le coloque como proceso programático a algo eh se soporta siempre en que ya existe una manera en la que formalmente se hace pues entonces como en el caso está obligado esa es hasta juntar el el documento puede que sí o puede que no puede que entonces lo que podemos hacer es lo siguiente o sea que se formalice y conformalizar me refiero a que hay un consenso con la parte de que cuando está disponible esta este documento del seguro social con eso adjunto entonces entiende bueno si eso se adjunta al BPM un humano entonces que haría el humano tendría que abrir ese adjunto que está en el BPM copiar el número y colocarlo en el link de texto para que siga y culmine entonces podemos tener la de cuál sería la parte híbrida vamos a hacer vamos a ponerle un ojo al a los casos de de jubilados yo puedo crear una bitácora digamos donde se yo puedo llevar ahí que bueno qué tipo de clientes se están se están procesando en la formalización esa es que yo tengo tantos jubilados se detectaron tantos jubilados eh y podemos hacer lo que tú indicas que bueno el esto es muy alto para que la gente diga ay parate tengo una lista de jubilados que están en pausa vamos a ver cómo están y diga dije encontré otro documento que antes no estaba ojo ese documento será mejor que sea este y que no sea ya sé yo otra cosa que no sea otra cosa si eso pudiese pasar ah porque te metieron algo porque coincidentalmente faltó otra cosa que no estaba en el radar y lo apuntaron entonces y es justamente este y que yo tendería a que hagamos inicialmente eso.
+
+ Nos volquemos a lo que no jubilado y el que es jubilado. Busquemos algo que le ponga en pausa y vamos a y y veamos en consenso con el área de revisión documental y cuando tengan eso nos tienen que apuntar sí sí o sí eso ahí y que utilicemos una nomenclatura de de documento. Sí, como por el nombre de certificado de jubilado, por poner un ejemplo, todo bajo ese mismo nombre para que reconozcan. Y que termine con la hemos de varias formas, pero digamos que sí y que siempre como sufijo, la cédula, o en algo que sea que indudablemente ese documento es de ese cliente.
+
+ Porque puede ser que se equivoquen y me coloquen el de otro jubilado. Eso también pudiese pasar.
+
+50:47 - Ricardo Herrera
+Porque ellos manejan volumen, en vez de ajuntar ese, fue otro.
+
+50:53 - Unidentified Speaker
+Correcto.
+
+50:53 - Rodolfo Blasser
+Entonces, como nuestro alcance acá, la gente va o va a ser, voy a utilizar la palabra consciente, el agente va a ser consciente de lo que usamos de tuves y él no sabe qué está pasando del lado de allá, no va a tener y no va a decir tampoco, esperate, es que este adjunto, la verdad es que es de otro cliente y lo voy a abordar por el momento, deberíamos delimitar la responsabilidad.
+
+51:20 - Ricardo Herrera
+Tengo una duda ahí Rodolfo, porque en este documento me dice el nombre del cliente. El agente no lo pudiese. Me dice el nombre y la cédula.
+
+51:31 - Unidentified Speaker
+No lo pudiese.
+
+51:32 - Rodolfo Blasser
+Sí, eso lo podemos hacer. Lo que lo que tú no quieres es que. Por ejemplo, te encuentres una. Lo que la verdad absoluta es el contenido del documento. Aquí dice claramente el nombre, cédula, etcétera. Ahora bien. El el el agente a descargar como un segundo paso, digamos que lo descarga, digamos que lo descarga, lo lee y dice si este es quien dice ser y este documento si pertenece a este cliente y este caso.
+
+ Lo que no quisiéramos es que, por ejemplo, si llegamos a un consenso a que los documentos deben tener esta nomenclatura de nombre, que ahí haya una discrepancia. Porque digamos que o no es para crearles a ellos más trabajo sino para del lado de la digamos del proceso de la gente sea más eficiente sí igualmente podemos hacer la descarga validar leer y decir este documento le pertenece a este cliente pero al mismo tiempo es una buena práctica tener como un estándar de nomenclatura en documento sobre todo cuando se trata de esto que puede ser propenso a con función con otro cuidado, por ejemplo, porque puede que te encuentres con qué sé yo.
+
+ Pueden haber muchos casos. Nos ayudaría si si para ello es complicado. Igual nosotros podemos poner una bárbara de seguridad y aunque ahí no diga lo que es, igualmente lo revisamos. Pues vamos a tener una segunda bárbara y si 100 por ciento lo que tú indicas es correcto. El contenido del documento es lo que prevalece sobre el nombre.
+
+53:15 - Unidentified Speaker
+OK. Vale, de acuerdo.
+
+53:17 - Ricardo Herrera
+Ahí lo vemos en el camino, porque al final tendríamos que ver para ver.
+
+53:22 - Rodolfo Blasser
+Si te vas a encontrar con muchos casos que posiblemente incluso lo que estamos en este momento, no mente como el escenario ideal. Ese happy party que el camino feliz. Pero puede ser que nos encontremos un poco de películas de terror en el momento. Y esto como cómo se resuelve este caso atípico que no fue ni siquiera el radar nunca. Bueno, buscamos la manera eso sea así, pues me explico. Lo que sí es importante es que no extendamos nuestra responsabilidad más allá del perímetro de lo que se hace para el proceso de formalización, es decir, que lo que tenga que ver, por ejemplo, con qué sé yo, el documento del cero social, que eso se siga haciendo y que no lo coloquen para poderlo consumir, ya sea en el BPM o idealmente en el BPM, para poder tener todo centralizado.
+
+ Y nosotros seguimos con el resto del proceso. Ya lo que tú indicas, podemos verlo con un poquito más de rigurosidad. Aquello de que hacemos, pausamos, verificamos que la gente sea consciente de que tiene unos jubilados pendientes de culminar y que cada dos días, qué sé yo, se meta y ya tenemos todo. Seguimos, por ejemplo, todo eso está dentro de las posibilidades. Sí, ok, de acuerdo, vale.
+
+54:44 - Ricardo Herrera
+No sé, Juan, ahí si nos apoyas compartiéndolo.
+
+54:48 - Rodolfo Blasser
+Para mí lo valioso de esto es uno que ya quedó determinado que ya sea de la forma tradicional o por modelo de préstamo. Todo viene, todo aterriza y se concentra en últimos. El resto comprendo que todos los los insumos documentales salvo la certificación de certificado de jubilado eso vive en el en el mundo físico tiene un delay de unos días eh y que necesita que un tercero lo escanee y lo coloque allí eh para culminar el proceso de formalización para jubilado eso y si hay otra cosa que pueda agregar también lo que sea eh que usted eh considera.
+
+
+
+55:42 - Ricardo Herrera
+Yo sí creo que vamos a tener que agregar algo ahí Rodolfo. Sí. Eh que van a ser los calendarios de cuando inician los descuentos porque casualmente jubilado y eh gobierno tienen tanto social como como contraloría déjame ver para ver si ubico el calendario ellos tienen un calendario de cuando inician su la efectividad de los descuentos no necesariamente porque viene la primera quincena o la segunda quincena de octubre para la contraloría tanto jubilado como gobierno y tanto para la caja de inician la orden de descuento comienza a regir este 30 de octubre.
+
+ Eso va por fechas de programación o de vigencia. Déjame buscarte a ver para ver si eso es una regla dura. Si es una no de caja de ahorro, ni siquiera los bancos de la plaza. Es una regla de la institución que va a aprobar la orden de descuento. Cuento. Déjame ver para ver si ubico el documento.
+
+57:09 - Unidentified Speaker
+Aquí está.
+
+57:14 - Ricardo Herrera
+un poco más. Mira, voy a mostrarte mi pantalla. Esto está alojado en un SharePoint. Vamos a ver el de Google En las fechas son fechas específicas.
+
+57:48 - Rodolfo Blasser
+Sí, cuando abre y cuando cierra.
+
+57:51 - Ricardo Herrera
+Por poner un ejemplo. La segunda de diciembre, o sea que se le va a comenzar a descontar el cliente en la segunda quincena de diciembre. Está disponible desde hoy, 21 de octubre hasta el 2 de noviembre. Esa es la fecha que corresponde, pero como es un préstamo personal, esta yo no la puedo tomar porque en préstamos personal yo no descuento los diciembre, yo descuento de enero a noviembre. Entonces me tengo que ir a la siguiente fecha, que es la.
+
+ Primera de enero, que es la que sigue cuando comienza a regir o cuando va a estar en apertura la primera de enero. Desde el 6 de noviembre. Hasta el 19 de noviembre. Por qué?
+
+58:46 - Unidentified Speaker
+Porque. Hay un calendario que rige cuando inician la fecha.
+
+58:53 - Ricardo Herrera
+Ahora vamos a buscar el de activo.
+
+58:58 - Unidentified Speaker
+Este es el

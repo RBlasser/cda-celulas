@@ -1,0 +1,64 @@
+Req. Técnico - Formalización PP
+Thu, Oct 22, 2026
+
+Summary:
+
+La reunión priorizó los requisitos tecnológicos para implementar la formalización de préstamos.
+• Servidores Windows y Linux requieren acceso seguro a Internet.
+• Ultimus contiene los documentos y datos necesarios.
+• La base de conocimiento y trazabilidad podrían usar SQLite.
+• Correo interno aportaría visibilidad, aunque no es indispensable.
+• Sigue sin definirse qué activa la formalización.
+
+
+Action Items:
+
+* Rodolfo Blasser: Comparte los destinos o servicios externos necesarios para gestionar la salida a Internet.
+* Mara Cordoba: Consulta internamente qué recursos puede proporcionar el banco y comunica los plazos aplicables según el SLA.
+* Mara Cordoba: Coordina una sesión breve con Ediel para que muestre la navegación y el proceso de formalización en Ultimus.
+* Mara: Consulta con el equipo de bases de datos cuál es la solución adecuada y qué opciones de almacenamiento están permitidas.
+* Mara: Envía la invitación para la sesión acordada el día 1 después de las 3.
+
+
+Key Discussion Points:
+
+Objetivo y contexto de la revisión técnica
+Tras los saludos iniciales, Juan presentó el propósito de revisar los requisitos técnicos de la iniciativa y pidió a Mara que condujera la sesión por su vínculo con TI. Mara propuso priorizar los requisitos para distinguir lo necesario en la primera fase de aquello que podría dejarse para más adelante.
+
+Entornos técnicos y conectividad a Internet
+Rodolfo describió los recursos que necesitaría el sistema para emular la operativa funcional y explicó que no serían necesarios ciertos accesos a datos y archivos ya disponibles en Ultimus. La discusión priorizó servidores Windows y Linux, salida segura a Internet para ambos y la flexibilidad de trabajo fuera del horario habitual.
+
+Accesos a Ultimus y coordinación de próximos pasos
+Mara revisó los requisitos de acceso y se aclaró que el usuario solicitado operaría en la etapa de formalización de préstamos en Ultimus. También se habló de consultar internamente la disponibilidad de recursos y sus plazos, y de coordinar con Ediel un recorrido por la navegación del sistema.
+
+Necesidades de información y calendarios
+Rodolfo distinguió el acceso a los modelos aprobados, ya contemplado, de la posible necesidad de una base de conocimiento propia del agente. Explicó que los calendarios institucionales deberían estandarizarse y actualizarse para determinar fechas de aplicación de descuentos.
+
+Base de conocimiento y trazabilidad
+Mara y Rodolfo analizaron si se requiere una base de datos y qué información podría almacenar, incluidos calendarios, bitácoras y fallos de procesos. Mara se comprometió a consultar las alternativas con el equipo de bases de datos; SQLite quedó como posible alternativa si las opciones administradas no estuvieran disponibles.
+
+Correo y visibilidad de la automatización
+El grupo evaluó el correo como canal para notificar avances o finalizaciones y comparó esa opción con los webhooks de Teams. Se concluyó que las notificaciones son valiosas para dar visibilidad, aunque no son imprescindibles para que la solución funcione.
+
+Cuenta del agente y disparador de formalización
+Rodolfo propuso una dirección de correo con dominio institucional para el agente. También planteó que debe definirse qué inicia el proceso de formalización; la decisión quedó pendiente de revisar el flujo de Ultimus.
+
+Coordinación de sesión y revisión de diagramas
+Mara coordinó con Christian una sesión con Ediel para tratar estrategia tecnológica y se consideró el día 1 entre las 3 y las 5, pendiente de verificación. Después, propuso revisar los diagramas desde la perspectiva de Ultimus e identificar posibles elementos adicionales.
+
+Acceso a Internet y necesidades de conectividad
+Mara presentó los diagramas de conectividad de IA para revisar las necesidades relacionadas con Ultimus. Rodolfo destacó que Windows y Linux necesitan acceso seguro a Internet para consultas y pruebas, y explicó que descargar dependencias directamente evitaría retrasos en la preparación de imágenes.
+
+Trazabilidad, documentos y almacenamiento
+Rodolfo explicó que guardar registros de las revisiones del agente podría servir para entender posteriormente cómo se procesaron documentos y detectar problemas, como posibles errores con documentos escaneados. Aclaró que esa trazabilidad era una característica, no una necesidad, y confirmó que los registros podían almacenarse en SQLite.
+
+Coordinación de la sesión de trabajo
+Mara indicó que quedaban pendientes de investigación y que era necesario coordinar la sesión con Ediel y Christian. Tras considerar los horarios disponibles y los compromisos del lunes, acordaron reunirse el martes 27 de 1 a 3 p. m. para revisar el flujo de formalización en Ultimus; Rodolfo confirmó que reservó el espacio.
+
+Fechas de entrega e invitación
+Marianella pidió mantenerse al tanto de las fechas de entrega de los requerimientos. Mara indicó que podían avisarle si era necesario agregar personas a la sesión o reenviarles directamente la invitación.
+
+
+Notepad:
+
+* No notes

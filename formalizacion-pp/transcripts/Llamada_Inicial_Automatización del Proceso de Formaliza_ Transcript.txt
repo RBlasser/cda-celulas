@@ -1,0 +1,335 @@
+Automatización del Proceso de Formalización de Préstamos Personales
+Thu, Oct 8, 2026
+
+0:00 - Nerio Peña
+completo y la idea es como conversamos en la sesión pasada por poder ver esa parte más técnica, ¿no? Con este sistema.
+
+0:13 - Ricardo Herrera
+Bueno, sí, ¿cómo están? Buen día. Voy a poner a grabar la sesión.
+
+0:21 - Mara Cordoba
+Sí.
+
+0:22 - Ricardo Herrera
+Déjenme nomás ver si Juan se va a unir por de un segundito. Sí, yo también lo estoy localizando.
+
+0:36 - Unidentified Speaker
+para entonces… Ok, yo creo que podemos arrancar.
+
+0:59 - Ricardo Herrera
+mientras que es bueno. Me comenta luis que no nos va a poder acompañar, pero bueno, ya tenemos el insight de lo que habíamos conversado. Si no me equivoco, fue esta semana, ayer o antes de ayer, el lunes. Acá con el equipo, no sé. Ahí vamos a necesitar, por eso invitamos a Adiel y a la señora Janice, le comentó un poco a Ediel y a la señora Yaniselly para ponerlo a bordo, lo que se está buscando ejecutar.
+
+ Como bien hoy sabemos, Ediel, señora Yaniselly, nosotros pues hoy en día hacemos procesos que pudiésemos simplificarlos.
+
+1:44 - Unidentified Speaker
+Bueno, yo lo conozco como un robón RPA, creo que es el nombre correcto. El equipo acá le conoce como un agente.
+
+1:55 - Ricardo Herrera
+de que este agente simule ciertas tareas que hoy en día lo hace un ser humano buscando el proceso de agilidad para que apenas que caiga un préstamo a la etapa de formalización este préstamo pues el robot entra en acción y comienza a simular y a a completar esos campos que hoy en día pues lo hace una persona que tiene que mirar el el un número de posición en el caso de los préstamos de público, en el caso de jubilados porque tiene que colocar el número de planilla y ciertos ciertos campos que tienen que completar de forma o a través de un catálogo lo que estábamos conversando en la primera sesión que tuvimos fue que este robot pues primero que aprenda lógicamente a realizar todos los procesos que hoy en día lo realizo un ser humano y entonces una vez él tenga la capacidad para poder ejecutarlo de solo, por así decirlo.
+
+ Entonces ese robot entra en acción para poder. Ejecutar y simular todos esos procesos. Y una vez terminó ese proceso, pues que le dé un espacio a este ser humano, a esta persona que está dentro de esta etapa para poder validar, hipotejar lo que con lo o relleno dentro de nuestro sistema está de forma correcta. Entonces Rodolfo me mencionaba de que ellos querían validar ciertos datos a través de la base de datos en base al a los campos que se completan en etapa de revisión documental hacia adelante, que es la etapa donde se formaliza toda la documentación para que nuestro cliente pueda firmar los mismos.
+
+ Ahí, Rodolfo, no sé si ampliar un poquito más en el en el detalle más técnico que es la necesidad que ustedes mantienen para que entonces el equipo de de los programadores del banco puedan ver si nos podemos alinear.
+
+4:03 - Rodolfo Blasser
+Sí, súper. Gracias Ricardo. ¿Qué tal todos? ¿Cómo estamos? Buenos días. Bueno, entonces, bueno, voy a hacer un pequeño ajuste y voy a hablar con términos un poco más técnicos para ir directo al al grano. Porque la idea es que nos a la base de datos de Ultimus para poder, en vez de tener un, digamos, un artefacto programático que está uniendo botones en la interfaz de Ultimus, que eso expone ciertos riesgos de diferente naturaleza, es realmente tener permisos de escritura directamente a la base de Ultimus, hacer un mapping de cuáles son esos campos de la a las tablas y adicionalmente yo entiendo que hay una hay una validación que se hace contra el core si bien no queremos bajo ningún aspecto tener acceso digamos de escritura en el core nos gustaría saber si eso que se hace contra el core esa validación eso eso posiblemente sea algo que ya está programado dentro o en el en el backend de últimos, porque comprendo que esa validación se refiere a que aquello que se obtuvo o aquello que se le dio input en últimos.
+
+ Se valida que en el core verdaderamente esa es la información del cliente. Entonces estos pasos, tanto ingresar datos directamente a la base como validar que el dato está correcto según core, es lo que deseamos hacer de manera programática. Y que cuando, por ejemplo, Ricardo accede al día siguiente o voy a poner el día siguiente, él se va a encontrar que hay una serie de casos que ya están allí disponibles para su revisión.
+
+ A grandes rasgos, poder acceder vía ODBC o la manera que dispongan, pero no por interfaz gráfica, a la base de datos de Ultimus y poder hacer ese trigger que hace el hace la validación contra el core, ya habiendo hecho el insert a la base de datos.
+
+6:12 - Unidentified Speaker
+No sé si me expliqué.
+
+6:15 - Yaniselly Oses
+Hola, sí, sí se explicó. Pero a ver, consulta. ¿Qué tipo de datos? ¿Préstamos, clientes?
+
+6:22 - Unidentified Speaker
+Los mismos.
+
+6:23 - Rodolfo Blasser
+Es el proceso que ellos tienen para préstamos, digamos, en últimos. Seguramente Ricardo puede elaborar mucho más de cuál es el input que se le da, pero es aquello que ellos transcriben directamente en la interfaz gráfica de Ultimus, la información del cliente, todas las características o los atributos del préstamo que ya se aprobó. Adicionalmente, esa parte creo que no la revisamos. Si Ultimus también en cartas, etcétera.
+
+ Pero digamos, todos sus insumos serían entonces la materia prima que utilizaríamos para luego de de preprocesar los datos, hacerle insert a la tabla de últimos.
+
+7:14 - Nerio Peña
+Sí, que quizás hay para aportar un un poquito, sería para la formalización de préstamos personales.
+
+7:22 - Ricardo Herrera
+Voy a compartirle la pantalla para poder que tengan va a seguir la misma línea en lo que estamos conversando y para contestar Rodolfo lo que menciona sí en efecto últimos eh él guarda toda la documentación que se se le coloque dentro de de del proceso de inicio a fin o sea la documentación no se pierde inclusive ya el préstamo integró y se constituyó como tal y sigue todo ese flujo que siempre y cuando el Ejecutivo adjuntó la documentación, porque ahí va a estar adjunto lo que el Ejecutivo en su momento adicionó al aplicativo.
+
+
+
+8:10 - Unidentified Speaker
+Dale, muestran.
+
+8:11 - Yaniselly Oses
+Es que me gustaría ver el tema que mencionaron de la validación que hace contra el IBS. Porque sé que en varios puntos hay integraciones, pero esa es la parte que quiero ver. ¿En qué punto llenan información? Y que si esa información, porque eso es lo que estamos suponiendo o estamos reemplazando, que ya esos campos los llenaba una persona. Entonces lo que se va a hacer es que se van a llenar directamente a través de la base de datos.
+
+ Pero que en algún punto se hace una validación con el IBS.
+
+8:52 - Unidentified Speaker
+Eso es lo que quiero.
+
+8:54 - Ricardo Herrera
+Quiero que me muestres. Ahí, mientras que Ricardo comparte la pantalla, si cualquiera que esté desembolsado. Mientras que Ricardo comparte, señora Yaniselly, ahí la integración en últimos actualmente está en esa misma etapa, en la etapa de revisión documental, que es la etapa donde hoy en día los compañeros completan la información y una vez avanza, entonces todos esos caballos donde se hace la reserva del préstamo, la reserva o número de orden, donde se hace todo ese proceso que hacemos llamamiento al coro, por así decirlo, y poder reservar ese número de préstamo antes de la constitución final o el desembolso final pero ya para
+
+9:41 - Sergio Sanchez
+También es bueno conocer si no solamente si hay este conexiones tipo DVC, sino también si de casualidad tienen APIs disponibles ya para el uso, sobre todo para el tema de las integraciones. También es bueno conocer esa esa opción. Qué tal, buenos días.
+
+10:07 - Ediel Euclides Urieta Acosta
+Para personal se utilizan, las integraciones con IBS se utilizan web service. Hay web service desarrollado que hacen esas integraciones. Excelente, mucho mejor. Yo tengo una consulta, Ricardo. O sea, la idea es que el robot, como indicas, en la etapa de revisión documental, te cargue toda esa información, la que hace falta. Ah, tiene, ok, dale. Explícanos. Aquí estamos compartiendo.
+
+10:36 - Unidentified Speaker
+Ajá. Ok.
+
+10:36 - Ricardo Herrera
+Sube un poquito Ricardo, por ejemplo, hoy en día. El ejecutivo que hace. El va al botón verde, como como bien conocemos, ahí él va al botoncito o la o la franja verde donde dice ejecución, creación, actualización del cliente. Si el cliente existe, ya él va. Ya va. Él va a tener un número de cliente que hace este botón al actualiza con los datos que se registraron nuevos en el BPM, pero lo hace hoy en día una persona.
+
+ La persona tiene que entrar a esta pestañita, tiene que entrar al incidente, tiene que entrar a la pestañita y tiene que tocar ese botón para que o cree el cliente o actualice el cliente. Una vez ejecutado eso, entonces va al segundo botón que dice ejecutar integración con número de préstamo y orden de descuento. El compañero toca este botón para crear el número de préstamo o la reserva. O reservar es el número de préstamos que si vemos en el segundo recuadro, ahí está el número de préstamos que le ejecutó el sistema al momento de la reserva que hizo el compañero al momento de tocar o darle click a ese botón.
+
+ Hay otro botón, una franja azul también, que si el cliente no tiene una cuenta de ahorro, en este caso ya no lo vamos a poder ver porque ya se ejecutó, le dice que crea de cuenta de ahorro, donde el ejecutivo va y toca ese botón y genera esa cuenta de ahorro, siempre y cuando el cliente no tenga una cuenta de ahorro que cumpla con las características que nosotros tenemos definidas para los desembolsos de préstamos personal.
+
+ Entonces él va y ejecuta ese botón para que haga la ejecución o la integración o busca el core, la información o los datos para poder colocarlo dentro del aplicativo. Betacálculo, Ricardo. Otra gestión que hace hoy en día el Ejecutivo, dale hasta el final. Es por poner un ejemplo, él elige el tipo de empresa que va a realizar el proceso, si es privada, si es contraloría activo, si es caja de seguro social activo, jubilado, contraloría jubilada, Si el si elige contraloría activo, el sistema le despliega unos campos adicionales donde le coloca planilla, número de posición.
+
+ Entonces lo que conversamos con con Rodolfo en la reunión que tuvimos el lunes fue de que si el robot tenía la capacidad de ir a ese documento, en este caso la pro forma leer a la planilla es 14 por poner un número. Viene el robot y ejecuta y coloca de forma manuscrita, no sé ahí, esa parte no sé cómo lo haría el robot, le coloca 14, la posición 10, 10, él lee que es 10, 10, entonces él ejecuta y coloca 10, 10, 10.
+
+ El robot se encargaría de hacer todo este proceso y una vez completado, antes de que se avance el proceso, Pues ahí entonces entra el compañero y valida a la planilla 14. Si el robo la colocó de forma correcta, la posición 10 10 10. Si la colocó de forma correcta, ya generó el número de reserva, ya generó el número de cliente, ya generó el número de cuenta. Vete nuevamente a integración IBS, Ricardo, por favor.
+
+ Y como bien conocemos aquí, mira, acá tenemos el losis que nos dice el sistema que ya se generó o se creó la actualización del cliente. Que lo fue y ya integró a Alcor. No sé qué más dice ahí, que lo borró. Creación, actualización, que el desembolso se realizó de forma correcta. En este caso, porque ya está desembolsado, no? Inclusive tuvo un error al momento del desembolso, inclusive el sistema te dice que no se ajustó la información y se volvió a correr la ejecución de desembolso y volvió a decir que no volvió a fallar por alguna algo que que haber estado pasando.
+
+ Hubo una tercera vez y ya vemos que el sí se coloca. Entonces eso es lo que queremos hacer con este robot, que el robot ejecute ciertos procesos. Hoy en día lo hacemos manual y una vez el proceso se realice, tengamos a una persona que certifique de que todo lo que colocó el robot hasta cierta instancia esté de forma correcta. Cuéntame Rodolfo.
+
+15:12 - Rodolfo Blasser1
+Una pregunta rápida. Estos mensajes que están a la derecha salen de manera automática provenientes de algún lado o eso es manual, por ejemplo, error ejecutar de desembolso.
+
+15:25 - Ricardo Herrera
+Eso lo trae el sistema cuando hace el llamamiento o hace o trata de hacer la integración con el core. Así es cierto.
+
+15:35 - Ediel Euclides Urieta Acosta
+Es correcto, es un habitáculo de integración. Y va registrando cada movimiento que está haciendo en IBS.
+
+15:44 - Unidentified Speaker
+Ok.
+
+15:44 - Rodolfo Blasser
+Y para que quede acá grabado la sesión y luego lo sacamos por transcripción, a mí me interesaría conocer todo el catálogo de mensajes, de digamos todos los errores, 400, 500, lo que fuera, que es el universo de posibles errores que pueden surgir al consultar a IBS para esa validación. Entonces comprendo que la conexión o digamos la el método para consultar al core es vía WebSockets. O sea, es vía web.
+
+ La conexión para el para Ultimus como tal, o sea, el backend de Ultimus. Cómo, cómo lo pudiésemos acceder? A la base me refiero. De datos de último, que contrario está separada del coro, ¿cierto?
+
+16:38 - Ediel Euclides Urieta Acosta
+Pero, a ver, cuando mencionas base de datos de últimos, últimos de la plataforma, ¿verdad? Lo que quieres, tú quieres tener acceso es a la información que estás viendo en pantalla, ¿cierto? O sea, la base real de empresas, de empresas, perdón, de préstamos personales. Esa es la información que tú quieres manipular, por lo que entiendo.
+
+17:00 - Rodolfo Blasser
+De hecho, sería así. El Por ejemplo, hay un préstamo aprobado del cliente tal y viene con sus condiciones y tenemos por otro lado los documentos que soportan la información para complementar del cliente. Lo que hoy en día hace el equipo es que le da input, se transcribe esto en últimos en la interfaz gráfica. Lo que nosotros queremos hacer es no utilizar la interfaz gráfica, sino ir directamente a la base de datos de últimos cual para darle input ahí directamente.
+
+
+
+17:31 - Ediel Euclides Urieta Acosta
+Pero por lo que entiendo, porque le entiendo a Ricardo son, qué sé yo, fueron cinco campos que metiste a Ricardo en esta etapa, por lo que entiendo, porque todo lo demás va a ser los botones. O sea, lo que tú quieres es actualizar cinco campos, que te verifique la planilla, si es jubilado, y lo demás todo es botón, porque creas la cuenta, creas el número de préstamo, creas...
+
+17:56 - Ricardo Herrera
+No son tantos campos, son son lo que hoy en día el ejecutivo en esta en esta etapa si no me falla la memoria son como como 10 campos aquí porque este caso si no me falla la memoria son como es una empresa privada si no me falla la memoria pero son como 10 campos que igual pudiésemos hacer un ejercicio y llevar un caso hasta esa etapa para poder certificar más que todo un público y certificar la cantidad de campos que hoy en día el Ejecutivo hace manual, no?
+
+ Y entonces podamos tener el detalle de la mayor cantidad de campos que este robot tuviese que entrar a elegir para poder ejecutar, ejecutar, disculpen, ejecutar todo el proceso. Pero si no me falla la memoria, no son superiores a 10 campos. Ojo, Aquí hay un punto importante, que nosotros igual estamos haciendo un proceso, un cambio que pudiese aumentar la cantidad de campos de 10 a 12 o 15 por ahí, porque estamos moviendo ciertos campos de una etapa a otra, así que esos campos también pudiesen elevarse, pero también son por catálogo, son elección de catálogo, no son elección de solamente hay dos campos que son manuscritos, que el ejecutivo lo tiene que completar escribiéndolo a través del teclado.
+
+
+
+19:28 - Yaniselly Oses
+Ok, otra consulta, el robot que estás mencionando es lo que nos está ofreciendo Rodolfo.
+
+19:36 - Unidentified Speaker
+Correcto. Es así. Sí, pongámoslo así. Sí, yo digo Rodolfo, porque... Yo también lo digo.
+
+19:44 - Yaniselly Oses
+Como me lo menciona Ricardo, Yo, ok, me está hablando de robot, pero ok, no sé si él está pensando en un robot y tú le estás pidiendo otra solución.
+
+19:54 - Rodolfo Blasser
+de repente para explicar un poco O más qué es lo que deseamos hacer y ver qué tanto en cuanto a los accesos existentes se pueden lograr. En general, por ejemplo, voy a utilizar el ejemplo que indicaba Ricardo al inicio, por ejemplo, un RPA lo que haría en estricto rigor con lo que hoy en día sucede con RPA es que emula el movimiento, por ejemplo, del mouse tal cual hace una persona, hace el clic, etcétera, tiene que esperar que se cargue la página, etcétera.
+
+ Ese mundo de RPA nos gustaría evitar porque es muy propenso a errores. Digamos, puede que el día de mañana hay un, qué sé yo, un campo de Ultimus que se le cambió el nombre y el RPA puede que falle. Pueden ocurrir cosas así, ¿cierto? La alternativa es omitir todo artefacto visual, que no exista algo que esté moviendo mouse ni colocando letras en un campo, sino ir directamente a la esencia que es donde se guarda la información.
+
+ Es decir, ahí donde ser, donde que seguramente es una base de datos. Entonces la idea es que ese es el deseo. Vamos a ver qué tanto se puede en términos de permisos o lo que fuera. Como en vez de ir. A la interfaz y emular un click vía mouse. Vamos directamente a escribir a la base de datos. Esa es la intención.
+
+21:31 - Ediel Euclides Urieta Acosta
+y no va a perder la bitácora. O sea, si vas a hacer ese insert directo a la base de datos, porque entiendo que quieres evitar el clic del botón, que cierto clic del botón inserta en varias tablas de seguimiento, por ejemplo, un ejemplo, te valida ciertos campos. O sea, quieres evitar todas esas emulaciones del clic de ese botón, insertando directamente a la base de datos. Cómo tú vas a registrar lo que es la bitácora, el seguimiento, quién lo hizo, qué clase de errores, o sea.
+
+ Todo. Haríamos todo.
+
+22:04 - Rodolfo Blasser
+O sea, porque digan, lo haríamos, buscáramos la forma de entender cómo el sistema hace todos esos locks, buscar la forma de que, de que, de que los, de que se, de que se siga en el territorio.
+
+22:18 - Nerio Peña
+Un robo, para, para, quizás ahí, este, para, para un unfortunate. Parte de lo que tenemos que balear es tema, porque se puede, incluso en sistemas de clase mundial como Oracle, SAP, Dynamics o cualquiera de estos sistemas, aunque se registre en la base de datos, si se hace, o sea, si aparece en la aplicación, obviamente en la consulta y hay un tracking de quién lo registró, lo registró el agente, en este caso a qué hora lo registró, todo eso queda solo que en vez de el data entry hacerlo por la la interfaz gráfica se hace a través de las tablas.
+
+ Es básicamente eso. Pero no se pierde trazabilidad ni nada. De hecho, sea el bot agéntico, sea un RPA, en cualquiera de los dos casos siempre hay bitácora.
+
+23:10 - Yaniselly Oses
+Otra cosa que también les iba a comentar, lo que mencionaba Ricardo, el botoncito verde, que después el botoncito azul. Aquí ya existen integraciones. O sea, no es que exactamente tengo una, por eso es que me quería saber más cuando usted mencionaba la validación contra el Core. No es que existe eso, sino es que en ese momento, cuando aprieta el botón, se genera una acción. Entonces, él va al IBS y hace otro proceso porque ejecuta otros programas.
+
+ En ese botoncito verde hay una integración para ir a reservar el En la actualización y creación del cliente, cuando creo el cliente o la actualizo, en ese momento hay una integración. El llama a un. Llama al Store Procedure o al servicio web. El servicio web llama a un Store Procedure. Él se conecta mediante los drivers y se pega a la IBS.
+
+24:13 - Unidentified Speaker
+El ejecuta un programa en el 400 que se llama Store Procedure.
+
+24:18 - Yaniselly Oses
+hace la creación o la actualización del cliente. Igual en el botón de al lado de la integración del número de préstamo. En ese botón hay una integración y va al IBS porque obviamente tiene que existir el número allá. Él crea el número en el IBS y se lo devuelve al BPM. ¿Es correcto?
+
+24:46 - Ediel Euclides Urieta Acosta
+No, es que le estoy comentando, pero que...
+
+24:49 - Yaniselly Oses
+No, pero súper, eso está súper bien. Tendría que, como, como, cuando tienes, tienes que considerar, pues, cuando vayas a, si se va a reemplazar ese, la acción de la persona, de que se haga esa, esa, esa ejecución, pues, de que va y regrese.
+
+25:04 - Rodolfo Blasser
+Claro, él debería parar en un momento. De hecho, entendería que sería una de los, de los, de las etapas iniciales de hacer esa validación. Entonces, digamos que voy a poner, bueno, ponerlo como verbalizado así de manera muy coloquial. O sea, si ya está el dato, estos primeros campos donde tiene el número de orden, número de préstamos, digamos la información básica, lo que lo que haríamos es ese trigger que hace que el que el SPS ejecute del lado del core para validar, él tiene que esperar esa respuesta e indicar cuál fue la resolución de esa consulta hacia el core.
+
+ Entonces. A grandes rasgos, sería un asunto de etapa número 1. Luego de hacer los inputs y web inputs, en realidad sería bueno insert a las tablas. Habría un una un artefacto ahí en el medio que dice que bueno, ahora vamos a preguntarle al core. Mediante el servicio web. Para que ejecuta su SP devuelva. Porque eso seguramente ese web bueno, un payload con la consulta y va a ser justamente eso. Pregunta acerca de este cliente con este número.
+
+ Y que devuelva y saque todo lo que aquellos que se requiera para validar. Si ya tienen evidentemente un SP y cosas que funcionan porque esto hace esa función, nosotros lo buscaríamos emular. Sin interactuar directamente con la página o con la interfaz gráfica, último, sino que nosotros haremos un propio componente que emularía eso, esa consulta. Les comentaba que todo aquello que sean todos los posibles mensajes de error que pueden surgir por una integración fallida, conexión, qué sé yo, de familia 400, 500, todo, que todo aquello lo podemos tener eventualmente para entender que en caso de porque incluso puede ser un proceso resiliente, que se yo, dependiendo del error se puede hacer un retry y posiblemente pues.
+
+ Ustedes yo sé que lo tienen bien esquematizado porque funciona con últimos. Nosotros haríamos no reemplazar últimos, sino buscar. Emular lo que hace últimos de manera programática. Sin interacciones. En interfaz gráfica.
+
+27:35 - Unidentified Speaker
+Ok.
+
+27:35 - Yaniselly Oses
+Con respecto al tema que mencionaban del acceso, sí tenemos que validar primeramente es con ciberseguridad. Ok. Porque entendería que esto va a ser a través de una aplicación, ¿no?
+
+27:56 - Rodolfo Blasser
+Es correcto, sí.
+
+27:58 - Unidentified Speaker
+Me imagino.
+
+28:00 - Yaniselly Oses
+de que va a haber una aplicación que es la que va a ser en los inseres, el llamado, la etapa 1, y todo eso.
+
+28:08 - Unidentified Speaker
+Sí.
+
+28:08 - Yaniselly Oses
+Entonces esa aplicación es la que va a tener, es la que se le van a dar los permisos de lectura y escritura. Sí, correcto.
+
+28:16 - Rodolfo Blasser
+Tendríamos una instancia dentro de la red, digamos, esto va a estar dentro de la infraestructura del banco, esto no va a estar por fuera, va a estar dentro de, y todas las configuraciones que nosotros hacemos, lo hacemos conectamos de manera segura un VPN, entramos a la instancia y hacemos nuestro trabajo allí. Y que eso se expone evidentemente, o sea, se hace toda la interconexión, pero dentro de la infra del banco.
+
+ Entonces no viviría afuera del hongo.
+
+28:55 - Yaniselly Oses
+¿Y están en proceso Ricardo de prueba o ya están desarrollando?
+
+29:13 - Ricardo Herrera
+Estamos en el inicio, señor Gariceli. Estabamos tocando las... Estos son los primeros toques, por así decirlo, para... Bueno, el equipo quiere conocer cómo es el proceso para saber cuáles son los pasos a seguir y cómo se implementaría esta gente en el sistema. Ahí le dejo la palabra igual a Rodolfo para que pueda explicar mejor que yo cuáles son los pasos a seguir Sí, quizás ahí para aportar un poco de nervios por aquí, por este lado.
+
+
+
+29:47 - Nerio Peña
+O sea, estamos apenas arrancando. Esta es la parte de entendimiento. Nosotros tenemos el requerimiento. Esto es a través de la célula de innovación de, digamos, de innovación, del área de innovación. Y como parte del entendimiento, nosotros tenemos que aterrizar el diseño ¿Cómo lo vamos a hacer? ¿Cómo va a interactuar? Por eso, en estas sesiones es más el comprender primero cómo está del lado de Ultimus y ver la factibilidad de conexión vía base de datos, tablas, etc.
+
+ Entonces, ya una vez teniendo ese entendimiento, ya nosotros aterrizamos en un diseño y nos dedicamos a lo que la parte ya propia de desarrollo técnico.
+
+30:42 - Unidentified Speaker
+Sí, es correcto, justamente lo que indica Mario.
+
+30:49 - Rodolfo Blasser
+Con este entendimiento inicial, es decir, es una conversación inicial para comprender a grandes rasgos del en el momento en el que estamos trabajando.
+
+31:13 - Unidentified Speaker
+proponemos un diseño. Entiendo.
+
+31:35 - Yaniselly Oses
+Igual, cuando estamos así en etapa de definición, Ricardo, tenemos que incluir al área de arquitectura. Ok, de acuerdo.
+
+31:44 - Ricardo Herrera
+Le comento igual a luis y a Juan, que son los que nos están acompañando en este proceso, para poder incluir al equipo. Y digo, seguro que esto pues vamos a iniciar a través de un ambiente de prueba, porque al final no vamos a poder hacer nada en productivo porque la gente no y lo mismo que tenemos en prueba lo tenemos en productivo y todos los cambios y modificaciones pues con toda confianza lo vamos a poder hacer desde el ambiente de prueba y ahí vamos haciendo el ensayo y error hasta buscar la la facilidad para certificar que este agente o este nuevo aliado esté funcionando de la forma correcta para entonces una vez hacer todas las certificaciones que correspondan y todas las validaciones y pruebas que correspondan eh nosotros poder eh implementarlo en en el área productiva igual ahí en en prueba vamos mapeando los tiempos cuánto en cuánto tiempo lo lo hizo esa gente versus cuánto tiempo se desmoraba hoy en día el humano, por así decirlo, vale la redundancia y ahí vamos también inclusive pudiendo ajustar los SLA que nosotros tenemos, considerando la revisión que tiene que hacer este compañero al momento de que este agente termine todo el proceso.
+
+ Pero sí, comenzaríamos desde un ambiente de prueba para hacer todas las validaciones y y correcciones que nos vayamos encontrando en el camino, porque como creo que me lo mencionó Rodolfo el lunes, él tiene que aprender primero, hay que enseñarle a lo que él tiene que procesar, lo que tienen que hacer para que entonces una vez nosotros certifiquemos que él está. Óptimo, por así decirlo, él puede entonces ir a un ambiente productivo y entonces comenzar a generar nosotros estamos buscando que genere.
+
+ No sé si Rodolfo o Nerio quieren ampliar algo ahí.
+
+34:02 - Rodolfo Blasser
+Y por supuesto, todo esto, digamos, nace, se hace un desarrollo de pruebas, hacemos las pruebas necesarias, exhaustivas, todo muy seguro. De hecho, hemos hecho otros desarrollos en otras partes. De hecho, uno de los inputs que vendría para esto, que proviene de un desarrollo que ya hicimos. Yo hice el desarrollo de préstamos aprobados personales y eso es un input para esto. Es decir, que sigue en el bloque del proceso para la formalización de préstamos y compramos perfectamente.
+
+ Pues los detalles de administrativo, etcétera. Es decir, que estamos habituados a la forma de trabajar de caja de ahorro y que también se comprende y se ha evidenciado trabajamos, hacemos pruebas, etcétera, suficientes antes de poner algo en productivo. Esto, bajo ningún aspecto, vamos a llegar un lunes en la mañana y decir, ya está listo y ahora, pues, ejecútenlo. Más bien, agotamos de manera exhaustiva pruebas hasta que haya un grado satisfactorio en la calidad del resultado esperado y luego, pues, formalizado, según la entrega productiva.
+
+ De acuerdo.
+
+35:17 - Ricardo Herrera
+No sé, Sarayani, Celi, Ediel, ¿cuál sería el paso a seguir aparte de balear con el equipo de infraestructura? Es arquitectura. Arquitectura es infraestructura, pero arquitectura es el inicio.
+
+35:32 - Yaniselly Oses
+Digo, yo no le veo inconveniente, pero seguir el proceso, porque sí he visto otra que han hecho ese tema de leer y escribir, pero sabes también que ahora con ciberseguridad tenemos también otros procesos, ¿no? Entonces lo ideal es iniciar pues con arquitectura. Buenos días equipo, ¿cómo está?
+
+36:01 - Oscar Samudio De Leon
+Hola, buen día. Le habla Oscar Sanmudio de arquitectura. Me quedó claro que necesitan una me quedó claro que necesitan del área de arquitectura para el proyecto.
+
+36:16 - Yaniselly Oses
+No, lo que le comentaba, porque ellos están iniciando, están en un proceso de análisis, revisión, viendo cómo van a realizar pues las acciones de automatización. Sí. Y lo primero que mencionó Rodolfo, bueno, una de las cosas que mencionó Rodolfo es a través de un agente, que se instalaría me imagino en Premisa, en el mismo servidor, estarían haciendo insert y llamados a los esterprocilios para hacer las automatizaciones.
+
+ ¿Qué se esperaría de arquitectura? Primero que todo, aunque lo he visto con otras aplicaciones, tendrías que dar a ese agente permisos de lectura y escritura a la base de datos de últimos.
+
+37:16 - Unidentified Speaker
+Sí, pero arquitectura no brinda permisos.
+
+37:19 - Yaniselly Oses
+No, pero si no recomiendas. ¿Cuál es el mejor o la mejor forma de procesar?
+
+37:26 - Oscar Samudio De Leon
+Ahí necesitamos definir qué tipo de agente es, cómo ejecuta, que utiliza ese tipo de agente, para entonces con esa información socializar con las áreas de tecnología, puede ser infraestructura, seguridad, base de datos y ver si el esquema que nos están proponiendo se puede implementar. Sí, yo creo. Hola, Oscar. ¿Cómo estás?
+
+37:51 - Unidentified Speaker
+¿Qué tal, Nerio? ¿Cómo estamos? Muy bien, muy bien.
+
+37:55 - Nerio Peña
+Yo entiendo, yo entiendo perfectamente lo que dices. En esta etapa, a ver, nosotros podemos indicarte cuál es el agente y todo eso, pero como en esta etapa estamos primero en la parte de entendimiento, de factibilidad también, y justamente lo que quiero aclarar es que si Ultimo permite poder insertar esa validación, esos datos, que en vez de hacerlo un bot directo en la gráfica, en interfaz gráfica, lo haga ya en una tabla o en una base de datos, hay sistemas permiten eso.
+
+ Entonces esa es la validación que nosotros necesitamos, si se puede, si se puede, en función de esa validación, ya nosotros entonces sí podemos armar todo, como decir, como sería el agente, ya toda esa arquitectura de solución de nuestro lado, ¿ves? Entonces ya con eso, si podríamos ya ahí ver contigo, Oscar, como infraestructura, ya todos esos otros detalles y si pasar a ciberseguridad. Porque por ahora ni, o sea, no vas a poder validar ni tú como infraestructura ni ciberseguridad mientras que no tengamos definido qué tipo de agente va a ser.
+
+ Pero eso no lo podemos tener nosotros hasta estar seguro de que se permite la inserción vía tabla o base de datos de últimos.
+
+39:16 - Unidentified Speaker
+¿Ves?
+
+39:17 - Nerio Peña
+No estamos en ese punto. Justo estamos en ese punto. No sé si con quién podríamos validar esa esa factibilidad de inserción de datos vía tabla o vía base de datos últimos. Si nos dicen que eso es factible, pues ya nosotros construimos en base a esa premisa. Ok, déjenme ver si recapitular lo que me acaban de comentar.
+
+39:40 - Oscar Samudio De Leon
+Lo que se desea es, a través de un agente, insertar una serie de datos que me imagino que son unos datos que van a utilizar para poder simular lo que hace el usuario, pero esta vez de manera automática a través del agente, ¿no? Y esos datos que se van a insertar serían en las tablas propias del aplicativo de último, no las tablas de la relacionada a los préstamos. Correcto, correcto. Sería para las tablas de último.
+
+ Bueno, no estoy seguro si eso tendríamos que socializarlo con el área de base de datos que administra el tema de base de datos, o si esto hay que hacer una consulta. Yo sé que a nivel interno aquí está nuestro compañero que administra el área, digo que desarrollaron en la herramienta de último, pero yo no sé si realmente ese tema de permitir el acceso directo a esta tabla tenga, o sea, si se permita realmente, ¿no?
+
+ Porque entiendo que es una, es como si fuera una tabla de, no es una tabla de sistema, pero es una tabla del sistema de último, cómo él hace su flujo de, por así decirlo, su flujo de proceso. Entonces yo no sé si eso sea realmente permitido, ¿no? Tendríamos que consultar ahí, mándenos la o decirlo así, el requerimiento de lo que necesitan que validemos y lo socializamos acá interno.
+
+41:10 - Unidentified Speaker
+Se te corta, Daniel. Ah, perdón. Voy.
+
+41:13 - Nerio Peña
+¿Ahí me escucha mejor? Sí, ahora sí. Ah, perdón. Vale, nosotros entonces vamos a redactar muy bien la pregunta desde el punto de vista técnico y se las compartimos para que nos ayuden a validar. ¿Te presto? Sí, está bien.
+
+41:31 - Oscar Samudio De Leon
+Gracias. Vale, vale. Gracias, Oscar. Gracias, Yaniselly.
+
+41:34 - Nerio Peña
+No sé si hasta aquí, si Rodolfo, tú tienes alguna otra pregunta, o Sergio, al punto de vista técnico, o esperamos esa validación que de eso depende, pues, hacia dónde nos movemos, ¿no? ¿Me parece? Sí, claro, por supuesto.
+
+41:52 - Rodolfo Blasser
+Sí, estoy de acuerdo, porque evidentemente el diseño que propongamos va a tener como como característica, incluso cualquier limitante técnica que se tenga en el momento. Así que podemos esperar.
+
+42:07 - Sergio Sanchez
+Lo importante en este caso que sí, sí se avanzó, es que sabemos que la conexión con el IBS es por web service, que es un avance.
+
+42:18 - Nerio Peña
+Sí. Sí. Vale, este, no, entonces con esto más bien agradecerle ahí al equipo de de Caja de Ahorro, Ricardo, eh, a todo el equipo, Ediel, Yaniselly, etc. Y nosotros enviamos la consulta, vamos a enviar la consulta dirigida a luis y a Juan y te copiamos, Ricardo. O quieres que la enviemos ya copiando todo el equipo, como ustedes manden.
+
+42:47 - Ricardo Herrera
+Como te sientas más cómodo, como te sientas más cómodo, si tienes los contactos del equipo que que tienen que dar el filtro como lo quieras manejar. Yo no tengo, no tengo objeción con eso.
+
+43:04 - Unidentified Speaker
+Vale, vale.
+
+43:05 - Nerio Peña
+Bueno, ahí se los envío y nada más me ayudan si falta alguien clave ustedes incluirlo y vamos avanzando entonces para saber este, para tener esa respuesta y nosotros poder definir en función de eso. De acuerdo.
+
+43:23 - Unidentified Speaker
+Vale. Muchísimas gracias a todos, que tengan un feliz día. Hasta luego, gracias.

@@ -1,0 +1,30 @@
+/* Custom CSS para Asesor Virtual de Auto - Caja de Ahorros */
+
+/* Fuentes e identidad visual */
+:root {
+  --cda-blue: #002855;
+  --cda-coral: #FF6565;
+  --cda-amber: #F5A623;
+  --cda-bg-user: #F4F6F8;
+}
+
+/* Tarjeta y estilo del Pase Digital */
+.cda-pass-box {
+  background: linear-gradient(135deg, #F8FAFC 0%, #EDF2F7 100%);
+  border: 2px dashed #002855;
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-top: 1rem;
+}
+
+/* Botones de acción / atajos interactivos */
+button[id^="action-"] {
+  border-radius: 20px !important;
+  font-weight: 500 !important;
+  transition: all 0.2s ease-in-out !important;
+}
+
+button[id^="action-"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 40, 85, 0.12) !important;
+}
