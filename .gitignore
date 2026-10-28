@@ -1,0 +1,23 @@
+# Entornos virtuales y credenciales / API Keys
+.env
+*.env
+*.env.*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+
+# Chainlit
+.files/
+
+# IDE y Sistema
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
