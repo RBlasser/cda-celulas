@@ -2,7 +2,7 @@
 setlocal enabledelayedexpansion
 title Git Commit and Push - CDA Celulas
 
-:: Asegurar que el script se ejecute siempre desde la raiz del repositorio
+REM Asegurar que el script se ejecute siempre desde la raiz del repositorio
 cd /d "%~dp0"
 
 echo ===============================================================================
@@ -14,7 +14,7 @@ git branch --show-current
 echo ===============================================================================
 echo/
 
-:: Verificar que Git este en PATH
+REM Verificar que Git este instalado y en PATH
 where git >nul 2>&1
 if errorlevel 1 (
     echo [ERROR] Git no esta disponible en el PATH del sistema.
@@ -22,12 +22,12 @@ if errorlevel 1 (
     exit /b 1
 )
 
-:: Mostrar estado actual
+REM Mostrar estado actual de archivos
 echo [1/4] Verificando estado del repositorio...
 git status -s
 echo/
 
-:: Comprobar si hay cambios o archivos no rastreados
+REM Comprobar si hay cambios o archivos no rastreados
 git status --porcelain | findstr /R "." >nul
 if errorlevel 1 (
     echo [INFO] No hay cambios pendientes ni archivos nuevos para commitear.
@@ -41,11 +41,11 @@ if errorlevel 1 (
     goto fin
 )
 
-:: Obtener mensaje de commit
+REM Obtener mensaje de commit
 set "MSG=%*"
 if not defined MSG (
     echo [2/4] Ingrese el mensaje del commit:
-    echo (Presione ENTER directamente para generar mensaje automatico)
+    echo (Presione ENTER directamente para generar mensaje automatico con fecha y hora)
     set /p "MSG=> "
 )
 
@@ -57,7 +57,7 @@ echo/
 echo [INFO] Mensaje de commit: "!MSG!"
 echo/
 
-:: Paso 3: git add
+REM Paso 3: git add
 echo [3/4] Agregando todos los cambios (git add -A)...
 git add -A
 if errorlevel 1 (
@@ -65,7 +65,7 @@ if errorlevel 1 (
     goto fin_error
 )
 
-:: Paso 4: git commit
+REM Paso 4: git commit
 echo/
 echo [4/5] Creando commit local...
 git commit -m "!MSG!"
@@ -73,7 +73,7 @@ if errorlevel 1 (
     echo [ADVERTENCIA] No se genero un nuevo commit (posiblemente sin diferencias).
 )
 
-:: Paso 5: git push
+REM Paso 5: git push
 echo/
 echo [5/5] Enviando cambios al repositorio remoto - git push origin main...
 git push origin main
@@ -93,6 +93,7 @@ echo ===========================================================================
 goto fin
 
 :fin_error
+echo/
 pause
 exit /b 1
 
