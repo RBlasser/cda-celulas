@@ -19,10 +19,13 @@ Actualmente, los ejecutivos comerciales del banco en el stand se saturan atendie
 
 Esta sobrecarga genera filas de espera, desalienta a prospectos calificados que se retiran sin atención y reduce el tiempo que el ejecutivo humano debería dedicar al cierre y formalización de solicitudes viables.
 
-### 1.1. La Solución Propuesta
-Implementar el **"Asesor Virtual de Auto — Caja de Ahorros"**: una herramienta web interactiva, ligera y responsiva, accesible por el visitante directamente en su teléfono móvil mediante el escaneo de un **código QR en los pendones del stand o en los mostradores de los concesionarios aliados**.
+### 1.1. Resumen Ejecutivo y Enfoque de la Solución (Opción 1: Pitch Institucional)
 
-El asistente utiliza capacidades de inteligencia artificial conversacional para interpretar de forma amigable la **Política Oficial de Préstamos de Auto del banco**, guiando al cliente con un **lenguaje formal, cordial y cercano**, resolviendo sus dudas y preparando su expediente antes de pasar a la mesa con el ejecutivo comercial.
+A través de un código QR visible en el stand y material promocional de la feria, el interesado accede de inmediato a un asesor virtual interactivo. La herramienta resuelve dudas frecuentes sobre requisitos documentales y lineamientos de financiamiento (basados estrictamente en aspectos no confidenciales de las políticas de crédito de autos) y le permite simular una letra mensual aproximada según sus supuestos de monto, abono inicial y plazo estimado.
+
+Lejos de constituir una aprobación o rechazo de crédito, el asesor actúa como un **canal de triaje y orientación preliminar**: antes de interactuar, el cliente registra sus datos básicos de contacto en un formulario obligatorio, y posteriormente el ejecutivo comercial dispone de dicha información junto con el historial completo de la conversación para comprender con precisión sus intereses específicos.
+
+Esto libera a la fuerza de ventas en stand de responder consultas informativas de primer nivel, destila prospectos altamente perfilados y facilita un seguimiento comercial consultivo, ágil y personalizado vía llamada, mensajería de texto o correo electrónico.
 
 ---
 
@@ -52,20 +55,44 @@ flowchart TD
 
 ---
 
-## 3. Módulos y Experiencia del Cliente en Feria
+## 3. Dinámica Operativa y Experiencia en Feria (Narrativa de Negocio)
+
+### 3.1. Narrativa Operativa y de Negocio Detallada (Opción 2: Los Tres Pilares en Feria)
+
+La dinámica operativa del asesor virtual se fundamenta en tres pilares sinérgicos concebidos para maximizar la conversión en el stand ferial:
+
+1. **Canal de Autoservicio *Phygital* y Puerta de Entrada:**  
+   El cliente escanea el código QR ubicado en el stand o material publicitario de la feria y completa un breve formulario de identificación (Nombre Completo, Cédula de Identidad Personal, Número de Celular y Correo Electrónico). Este paso garantiza la captura de contacto del 100% de los visitantes interesados antes de habilitar la sesión con el asesor virtual.
+
+2. **Orientación Normativa y Simulación sin Fricción:**  
+   El agente virtual atiende las dudas generales del interesado sobre requisitos documentales y políticas institucionales públicas (marcas financiadas, autos ecológicos, condiciones para jubilados e independientes), basándose exclusivamente en los criterios no confidenciales de la política de crédito. Adicionalmente, ofrece una estimación determinística de la letra mensual en función de los parámetros brindados por el cliente (monto del auto, abono inicial y plazo). Se establece con total transparencia que este ejercicio es meramente orientativo y no representa un compromiso vinculante de aprobación o rechazo crediticio.
+
+3. **Prospección Inteligente y Optimización del Talento Humano:**  
+   La herramienta actúa como un filtro calificado de alta eficiencia. En lugar de que los ejecutivos en stand inviertan tiempo valioso respondiendo consultas introductorias repetitivas, el sistema registra cada conversación y los datos del interesado en una base de datos SQLite dedicada (`cda_feria_autos.db`). El oficial de crédito accede a este expediente conversacional (con el historial serializado en formato JSON) para identificar el interés real del cliente, su presupuesto y dudas planteadas, permitiéndole ejecutar un seguimiento posterior certero y prioritario mediante llamada telefónica, mensajería instantánea o correo electrónico.
+
+### 3.2. Flujo de Interacción y Módulos de Servicio en Stand
 
 El flujo de interacción ha sido concebido para ser rápido, resolutivo y libre de fricciones:
 
 ```mermaid
 flowchart LR
-    SCAN["1. Escaneo de QR en Stand"] --> M1["2. Orientador de Requisitos<br>(Por perfil laboral y tipo de auto)"]
-    M1 --> M2["3. Asesor de Marcas y Políticas<br>(Respuestas a dudas comerciales)"]
-    M2 --> M3["4. Simulador Orientativo<br>(Verificación de abono y plazo)"]
-    M3 --> HANDOFF["5. Pase Calificado a Ejecutivo<br>(Atención prioritaria con lista lista)"]
+    SCAN["1. Escaneo de QR en Stand"] --> REG["2. Formulario Previo Obligatorio<br>(Nombre, Cédula, Celular, Correo)"]
+    REG --> M1["3. Orientador de Requisitos<br>(Por perfil laboral y tipo de auto)"]
+    M1 --> M2["4. Asesor de Marcas y Políticas<br>(Respuestas a dudas comerciales)"]
+    M2 --> M3["5. Simulador Orientativo<br>(Cálculo determinístico de letra)"]
+    M3 --> HANDOFF["6. Pase Calificado a Ejecutivo<br>(Atención prioritaria con lista lista)"]
 ```
 
-### 3.1. Módulo 1: Orientador Personalizado de Requisitos
-Mediante 2 preguntas interactivas y amables, el cliente obtiene la lista exacta de documentos requeridos para su caso:
+#### Módulo 0: Captura y Validación de Prospectos (Pre-Chat Gate)
+Antes de acceder al diálogo interactivo, el visitante completa un formulario con validaciones en tiempo real:
+* Nombre completo del solicitante.
+* Cédula de identidad personal (formato oficial panameño).
+* Número de teléfono celular (8 dígitos).
+* Correo electrónico de contacto.
+Los datos se almacenan de inmediato en la base de datos local y se emite un pase digital personalizado en pantalla.
+
+#### Módulo 1: Orientador Personalizado de Requisitos
+Mediante preguntas interactivas y amables, el cliente obtiene la lista exacta de documentos requeridos para su caso:
 1. *¿Cuál es su ocupación o condición laboral?*
    * *Empresa Privada:* Cédula, carta de trabajo (vigencia 45 días), ficha digital y último comprobante.
    * *Sector Educación o Salud:* Cédula, proforma de certificado de Contraloría o carta de RRHH y último talonario (aplica con solo 1 mes de permanencia).
@@ -73,18 +100,19 @@ Mediante 2 preguntas interactivas y amables, el cliente obtiene la lista exacta 
    * *Independiente Profesional:* Movimientos de cuenta y carta de ingresos de CPA.
 2. *¿Cuenta con la proforma de la agencia?* Se le recuerda que la cotización formal del auto es el requisito clave para abrir la solicitud.
 
-### 3.2. Módulo 2: Consultor de Políticas y Marcas (FAQ Inteligente)
+#### Módulo 2: Consultor de Políticas y Marcas (FAQ Inteligente)
 Responde en lenguaje natural preguntas comunes del visitante:
 * *"¿Financian autos eléctricos o de agencias como BYD?"* -> Confirma la elegibilidad de marcas ecológicas y agencias reconocidas.
 * *"¿Qué beneficios tengo si soy jubilado?"* -> Explica la exoneración de FECI y rebaja de comisión de cierre.
 * *"¿Tienen plazo a 8 años?"* -> Informa sobre el plazo máximo de hasta 96 meses para clientes regulares.
 
-### 3.3. Módulo 3: Simulador Orientativo Preliminar
-El cliente ingresa el valor de venta del vehículo y el abono que tiene presupuestado. El asistente valida:
-* Si el abono cumple con el mínimo exigido según la política (ej. 10%, 15% si el auto cuesta menos de B/. 10,000, o 30% si desea aplicar a la modalidad rápida *Fast Track*).
-* Le indica el plazo sugerido y le presenta una estimación referencial cordial.
+#### Módulo 3: Simulador Orientativo Preliminar (Motor Determinístico)
+El cliente ingresa el valor de venta del vehículo, abono previsto y plazo deseado. El motor de simulación:
+* Valida el cumplimiento del abono mínimo según la política (10% regular, 15% para autos menores a B/. 10,000, o 30% en modalidad ágil *Fast Track*).
+* Calcula de manera determinística la letra mensual aproximada (utilizando la fórmula financiera estándar $R = P \frac{i(1+i)^n}{(1+i)^n - 1}$), con tasa referencial de feria del 7.00% anual y desglose de seguro de vida estimado.
+* Muestra de forma destacada el descargo de responsabilidad indicando que el cálculo es orientativo.
 
-### 3.4. Módulo 4: Pase Calificado al Ejecutivo de Stand (*Handoff*)
+#### Módulo 4: Pase Calificado al Ejecutivo de Stand (*Handoff*)
 Al finalizar la consulta, el asistente le ofrece un botón destacado:  
 > **"Deseo que un ejecutivo me atienda ahora en el stand"**  
 El sistema genera un código o resumen digital en la pantalla del móvil que el cliente le muestra al ejecutivo bancario. El ejecutivo ya no tiene que indagar desde cero: conoce la marca, el perfil y sabe que el cliente tiene los requisitos claros.
@@ -136,22 +164,24 @@ Para asegurar que la herramienta jamás filtre información clasificada del banc
 
 ---
 
-## 6. Arquitectura Técnica de Implementación Ligera
+## 6. Arquitectura Técnica y Persistencia en Base de Datos
 
-Para garantizar que esta solución se despliegue de forma ágil sin tocar sistemas transaccionales del core bancario:
+Para garantizar que esta solución se despliegue de forma ágil, autónoma y sin tocar sistemas transaccionales del core bancario:
 
 ```mermaid
 flowchart TD
-    CLIENT_PHONE["Teléfono Móvil del Cliente<br>(Escaneo de Código QR)"] --> WEB_APP["Aplicación Web Ligera Responsiva<br>(HTML5 / CSS / JavaScript)"]
-    WEB_APP --> API_GATEWAY["Backend API Ligero (Python / FastAPI)"]
-    API_GATEWAY --> LLM_ENGINE["Motor Cognitivo (Gemini API)<br>• Base de Conocimiento Curada de la Política<br>• Guardrails de Confidencialidad Activos"]
-    API_GATEWAY --> LEADS_DB[("Base de Datos de Prospectos de Feria<br>(Registro de interesados para seguimiento)")]
+    CLIENT_PHONE["Teléfono Móvil del Cliente<br>(Escaneo de Código QR)"] --> WEB_APP["Aplicación Web Responsiva<br>(Chainlit / Custom UI Modal)"]
+    WEB_APP --> API_GATEWAY["Backend API & Orquestador<br>(Python / FastAPI / Chainlit)"]
+    API_GATEWAY --> LLM_ENGINE["Motor Cognitivo (Gemini API)<br>• Base de Conocimiento Curada de Política<br>• Guardrails de Confidencialidad Activos<br>• Motor Determinístico de Cuotas"]
+    API_GATEWAY --> SQLITE_DB[("Base de Datos SQLite Dedicada<br>(database/cda_feria_autos.db)<br>• Tabla clientes: PII verificada<br>• Tabla conversaciones: JSON íntegro")]
 ```
 
-* **Frontend:** Aplicación web estática optimizada para teléfonos móviles (carga rápida en redes móviles 4G/5G de feria).
-* **Backend:** Microservicio en Python con endpoints REST seguros para recibir la consulta del cliente y devolver la respuesta formateada.
-* **Inteligencia:** Conexión vía API a Gemini utilizando un contexto cerrado con la política pública de auto y reglas estrictas de confidencialidad.
-* **Captura de Oportunidades:** Registro del número de teléfono o correo si el cliente solicita ser contactado, alimentando la bandeja comercial de seguimiento.
+* **Frontend Móvil:** Interfaz web ligera adaptativa para teléfonos móviles con puerta de entrada obligatoria (formulario modal de registro con validaciones de cédula, celular y correo).
+* **Backend y Orquestación:** Servicio en Python (Chainlit / FastAPI) que gestiona el ciclo de vida de la sesión, valida parámetros financieros determinísticos y coordina las llamadas de inferencia.
+* **Inteligencia y Blindaje:** Conexión vía API a Gemini con contexto cerrado exclusivo de la política pública de auto y reglas estrictas de confidencialidad institucional.
+* **Persistencia Dedicada (SQLite):** Subdirectorio dedicado `database/` con el archivo `cda_feria_autos.db`, estructurado en:
+  * Tabla `clientes`: Almacena `nombre_completo`, `cedula`, `celular`, `correo` y marca de tiempo de registro.
+  * Tabla `conversaciones`: Almacena la sesión asociada, el cliente vinculado, el total de mensajes y el historial completo estructurado en formato `chat_json` para su posterior ingesta y auditoría por parte del equipo comercial.
 
 ---
 
@@ -163,3 +193,19 @@ flowchart TD
 | **Eficiencia del Ejecutivo Comercial** | Clientes llegan a la mesa con documentos completos y expectativas claras. |
 | **Posicionamiento Innovador** | Caja de Ahorros se proyecta como un banco moderno y accesible con atención digital asistida. |
 | **Cero Riesgo Institucional** | Total preservación de la confidencialidad de las políticas internas de riesgo. |
+
+### 7.1. Conclusiones y Factores Clave de Impacto (Opción 3: Narrativa Estratégica de Cierre)
+
+La implementación del Asesor Virtual en ferias de autos redefine la interacción entre el banco y los solicitantes a través de cuatro factores determinantes de impacto:
+
+1. **Filtro de Orientación y Gestión de Expectativas (No Decisorio):**  
+   Despeja dudas preliminares y educa al cliente sobre los requisitos reales de Caja de Ahorros antes de que se siente con un ejecutivo, eliminando la frustración por falta de documentación o expectativas irreales de cuota.
+
+2. **Captura Garantizada del 100% del Tráfico Interesado:**  
+   El formulario de registro previo asegura que ningún prospecto que se acerque al stand se pierda en el anonimato. Todo visitante queda registrado en la base de datos persistente con sus datos de contacto verificados (nombre, cédula, celular y correo).
+
+3. **Inteligencia Conversacional para el Cierre Efectivo:**  
+   El ejecutivo comercial no contacta a un lead 'frío'; dispone del expediente digital completo con el historial íntegro de la conversación (almacenado en formato JSON estructurado), permitiéndole conocer con exactitud qué vehículo busca el cliente, cuánto abono posee y cuáles fueron sus principales inquietudes antes de iniciar la llamada o mensaje.
+
+4. **Optimización Radical del Tiempo y Productividad en Stand:**  
+   Multiplica la capacidad de atención en momentos de alta afluencia (horas pico de feria), eliminando cuellos de botella informativos y reservando el talento del equipo comercial exclusivamente para la estructuración y cierre de solicitudes viables.
