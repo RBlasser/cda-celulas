@@ -12,11 +12,11 @@ echo Directorio: %CD%
 echo Rama actual:
 git branch --show-current
 echo ===============================================================================
-echo.
+echo/
 
 :: Verificar que Git este en PATH
 where git >nul 2>&1
-if %ERRORLEVEL% neq 0 (
+if errorlevel 1 (
     echo [ERROR] Git no esta disponible en el PATH del sistema.
     pause
     exit /b 1
@@ -25,14 +25,14 @@ if %ERRORLEVEL% neq 0 (
 :: Mostrar estado actual
 echo [1/4] Verificando estado del repositorio...
 git status -s
-echo.
+echo/
 
 :: Comprobar si hay cambios o archivos no rastreados
 git status --porcelain | findstr /R "." >nul
-if %ERRORLEVEL% neq 0 (
+if errorlevel 1 (
     echo [INFO] No hay cambios pendientes ni archivos nuevos para commitear.
     echo El repositorio local ya se encuentra completamente al dia.
-    echo.
+    echo/
     set /p PULL_OPTION="Desea sincronizar con 'git pull origin main'? (S/N): "
     if /i "!PULL_OPTION!"=="S" (
         echo Sincronizando con remoto...
@@ -53,32 +53,32 @@ if not defined MSG (
     set "MSG=chore: actualizacion de celulas %DATE% %TIME%"
 )
 
-echo.
+echo/
 echo [INFO] Mensaje de commit: "!MSG!"
-echo.
+echo/
 
 :: Paso 3: git add
 echo [3/4] Agregando todos los cambios (git add -A)...
 git add -A
-if %ERRORLEVEL% neq 0 (
+if errorlevel 1 (
     echo [ERROR] Fallo al ejecutar 'git add -A'. Revise archivos bloqueados o permisos.
     goto fin_error
 )
 
 :: Paso 4: git commit
-echo.
+echo/
 echo [4/5] Creando commit local...
 git commit -m "!MSG!"
-if %ERRORLEVEL% neq 0 (
+if errorlevel 1 (
     echo [ADVERTENCIA] No se genero un nuevo commit (posiblemente sin diferencias).
 )
 
 :: Paso 5: git push
-echo.
-echo [5/5] Enviando cambios al repositorio remoto (git push origin main)...
+echo/
+echo [5/5] Enviando cambios al repositorio remoto - git push origin main...
 git push origin main
-if %ERRORLEVEL% neq 0 (
-    echo.
+if errorlevel 1 (
+    echo/
     echo ===============================================================================
     echo [ERROR] Ocurrio un problema al hacer push hacia GitHub.
     echo Verifique su conexion a red o credenciales de acceso al repositorio.
@@ -86,7 +86,7 @@ if %ERRORLEVEL% neq 0 (
     goto fin_error
 )
 
-echo.
+echo/
 echo ===============================================================================
 echo [EXITO] Cambios enviados y sincronizados exitosamente con GitHub (origin/main)!
 echo ===============================================================================
@@ -97,6 +97,6 @@ pause
 exit /b 1
 
 :fin
-echo.
+echo/
 pause
 exit /b 0
