@@ -4,6 +4,12 @@
 *.env.*
 leads_*.json
 
+# SQLite Databases
+*.db
+*.sqlite
+*.sqlite3
+database/*.db
+
 # Python
 __pycache__/
 *.py[cod]

@@ -26,6 +26,11 @@ if sys.version_info >= (3, 14) and hasattr(asyncio.tasks, '_CTask'):
 
 from knowledge_base import SYSTEM_PROMPT, KNOWLEDGE_CONTEXT
 from gemini_client import stream_gemini_api, get_smart_local_response
+from database import (
+    guardar_cliente as db_guardar_cliente,
+    guardar_chat_json as db_guardar_chat_json,
+    DB_PATH
+)
 
 # Cargar variables de entorno (.env)
 load_dotenv()
@@ -282,9 +287,14 @@ def extraer_parametros_consulta(texto: str) -> dict:
 
 @cl.on_chat_start
 async def on_chat_start():
-    """Inicializa la sesión de chat."""
+    """Inicializa la sesión de chat y crea el registro base en SQLite."""
+    session_id = cl.user_session.get("id") or str(random.randint(100000, 999999))
+    cl.user_session.set("session_id", session_id)
     cl.user_session.set("messages", [])
     cl.user_session.set("client_data", None)
+    
+    # Inicializar sesión en la base de datos SQLite
+    db_guardar_chat_json(session_id, [])
     
     await cl.Message(
         content=(
@@ -318,9 +328,13 @@ async def on_message(message: cl.Message):
 
 
 async def process_user_query(user_query: str):
-    """Procesa la consulta del usuario aplicando reglas determinísticas o streaming con Gemini."""
+    """Procesa la consulta del usuario persistiendo clientes y chat JSON en SQLite."""
+    session_id = cl.user_session.get("session_id") or cl.user_session.get("id") or "default-session"
     messages = cl.user_session.get("messages", [])
     messages.append({"role": "user", "content": user_query})
+    
+    # Persistir turno de usuario en SQLite
+    db_guardar_chat_json(session_id, messages)
     
     # 0. CASO DETERMINÍSTICO PREVIO: Registro de Formulario del Cliente
     if "Registro de Precalificación:" in user_query or "[REGISTRO_CLIENTE]" in user_query:
@@ -337,6 +351,15 @@ async def process_user_query(user_query: str):
         }
         
         cl.user_session.set("client_data", client_data)
+        
+        # Guardar cliente en SQLite en el subfolder dedicado database/
+        db_guardar_cliente(
+            session_id=session_id,
+            nombre=client_data["nombre"],
+            cedula=client_data["cedula"],
+            celular=client_data["celular"],
+            correo=client_data["correo"]
+        )
         guardar_lead_registro(client_data)
         
         bienvenida = (
@@ -366,6 +389,8 @@ async def process_user_query(user_query: str):
         
         messages.append({"role": "assistant", "content": bienvenida})
         cl.user_session.set("messages", messages)
+        db_guardar_chat_json(session_id, messages)
+        
         await cl.Message(content=bienvenida, actions=actions).send()
         return
 
@@ -374,6 +399,8 @@ async def process_user_query(user_query: str):
         contenido, acciones = obtener_mensaje_solicitud_datos()
         messages.append({"role": "assistant", "content": contenido})
         cl.user_session.set("messages", messages)
+        db_guardar_chat_json(session_id, messages)
+        
         await cl.Message(content=contenido, actions=acciones).send()
         return
 
@@ -393,6 +420,16 @@ async def process_user_query(user_query: str):
         
         messages.append({"role": "assistant", "content": response_text})
         cl.user_session.set("messages", messages)
+        
+        # Persistir en SQLite con datos de la cotización y pase digital
+        db_guardar_chat_json(
+            session_id=session_id,
+            messages=messages,
+            pase_digital=sim_data["codigo_pase"],
+            precio=sim_data["precio"],
+            cuota=sim_data["cuota_total"]
+        )
+        
         await cl.Message(content=response_text).send()
         return
 
@@ -425,7 +462,7 @@ async def process_user_query(user_query: str):
         except Exception:
             streamed_anything = False
 
-    # 3. Fallback determinista local en caso de no haber API o fallo de conexión
+    # 4. Fallback determinista local en caso de no haber API o fallo de conexión
     if not streamed_anything:
         fallback_text = get_smart_local_response(user_query)
         words = fallback_text.split(" ")
@@ -440,3 +477,6 @@ async def process_user_query(user_query: str):
 
     messages.append({"role": "assistant", "content": reply_content})
     cl.user_session.set("messages", messages)
+    
+    # Persistir en SQLite
+    db_guardar_chat_json(session_id, messages)
