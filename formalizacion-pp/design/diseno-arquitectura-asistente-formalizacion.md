@@ -5,7 +5,7 @@
 **Liderazgo Técnico:** Célula de Innovación (StraTech / Caja de Ahorros)  
 **Audiencia:** Dirección de Operaciones, Vicepresidencia de Crédito, Arquitectura de TI y Seguridad  
 **Fecha:** Octubre 2026  
-**Versión:** 1.2 (Especificación de Arquitectura de Producto Mínimo Viable - MVP)  
+**Versión:** 1.3 (Especificación de Arquitectura MVP con Medición Empírica de Eficiencias)  
 
 ---
 
@@ -13,9 +13,9 @@
 
 La formalización de préstamos personales constituye el eslabón crítico entre la aprobación de un crédito y la entrega efectiva de los fondos al cliente. En este proceso, el personal operativo del banco debe validar que los documentos físicos o digitales del expediente cumplan con todas las políticas normativas, transcribir manualmente información sensible hacia el sistema de gestión de procesos (Ultimus BPM) y elaborar contratos, pagarés notariales y cartas de promesa de pago a otras entidades financieras en casos de compra de saldo.
 
-El **Asistente Inteligente de Formalización de Préstamos Personales** se concibe y estructura como un **Producto Mínimo Viable (MVP)** de productividad operativa diseñado bajo el paradigma de *Copiloto Asistencial Desacoplado*. Su propósito como MVP no es sustituir los sistemas bancarios centrales ni reemplazar el juicio del analista humano, sino proveer una capa de asistencia ágil que inspecciona expedientes en segundos, extrae datos con precisión milimétrica y pre-redacta la documentación legal requerida, manteniendo en todo momento al analista bancario en control decisional (*Human-in-the-Loop*).
+El **Asistente Inteligente de Formalización de Préstamos Personales** se concibe y estructura como un **Producto Mínimo Viable (MVP)** de productividad operativa diseñado bajo el paradigma de *Copiloto Asistencial Desacoplado*. Su propósito como MVP no es sustituir los sistemas bancarios centrales ni reemplazar el juicio del analista humano, sino proveer una capa de asistencia ágil que inspecciona expedientes, extrae datos con alta precisión y pre-redacta la documentación legal requerida, manteniendo en todo momento al analista bancario en control decisional (*Human-in-the-Loop*).
 
-Como MVP, la solución unifica la atención de sus tres casos de uso en **una sola interfaz de usuario**, eliminando la fragmentación operativa, e incorpora un componente de **persistencia en una base de datos local embebida** para registrar la trazabilidad de tiempos e interacciones. Este mecanismo permite cuantificar con datos duros las ganancias de eficiencia del banco, midiendo el ahorro de horas-hombre y validando la viabilidad del modelo antes de afrontar inversiones mayores o integraciones complejas con la infraestructura tecnológica central.
+Como MVP, la solución unifica la atención de sus tres casos de uso en **una sola interfaz de usuario**, eliminando la fragmentación operativa, e incorpora un componente de **persistencia en una base de datos local embebida** para registrar la trazabilidad de tiempos e interacciones. Este mecanismo permite cuantificar con datos duros y contrastables las ganancias de eficiencia del banco, midiendo el ahorro efectivo de esfuerzo operativo y validando la viabilidad del modelo antes de afrontar inversiones mayores o integraciones complejas con la infraestructura tecnológica central.
 
 Este documento establece el diseño de arquitectura técnica y operativa del MVP, contemplando su mapa de componentes, estrategia de seguridad, capacidades de inteligencia artificial, flujo de trabajo, cobertura de riesgos y la justificación de sus decisiones de implementación.
 
@@ -24,24 +24,24 @@ Este documento establece el diseño de arquitectura técnica y operativa del MVP
 ## 2. Visión de Negocio
 
 ### 2.1. El Problema Operativo Actual
-En las sesiones de levantamiento técnico y funcional con las áreas de Crédito y Tecnología, se identificaron tres cuellos de botella que incrementan el tiempo de ciclo por expediente de forma sustancial:
+En las sesiones de levantamiento técnico y funcional con las áreas de Crédito y Tecnología, se identificaron tres cuellos de botella que incrementan el tiempo de ciclo por expediente y elevan la carga de trabajo del personal:
 
-1. **Expedientes Retenidos por Documentación Faltante:** En clientes jubilados, la formalización no puede avanzar a firma sin el certificado físico emitido por la Caja de Seguro Social (CSS), un trámite externo que toma entre 7 y 20 días hábiles. Iniciar la gestión en Ultimus sin este documento provoca que el caso quede trabado y consuma esfuerzo innecesario de seguimiento.
+1. **Expedientes Retenidos por Documentación Faltante:** En clientes jubilados, la formalización no puede avanzar a firma sin el certificado físico emitido por la Caja de Seguro Social (CSS), un trámite externo que depende de la emisión física por parte de un tercero. Iniciar la gestión en Ultimus sin este documento provoca que el caso quede trabado en la bandeja de trabajo y consuma esfuerzo innecesario de seguimiento.
 2. **Transcripción Manual y Riesgo de Rechazo:** Para cada préstamo aprobado, el analista digita entre 10 y 15 campos numéricos y textuales. En talonarios de empleados públicos (Contraloría), la búsqueda de números de "Planilla" y "Posición" en tipografías diminutas genera fatiga visual y errores de tipeo que resultan en rechazos inmediatos por parte de los servicios web del Core Bancario (IBS).
-3. **Confección Artesanal de Compra de Saldo:** La consolidación de deudas exige redactar cartas de compromiso y pagarés individualizados hacia terceros bancos (Banco General, Banistmo, BAC, etc.), copiando números de cuenta y montos al centavo desde documentos escaneados en plantillas de procesador de texto, demandando de 20 a 35 minutos por operación.
+3. **Confección Artesanal de Compra de Saldo:** La consolidación de deudas exige redactar cartas de compromiso y pagarés individualizados hacia terceros bancos (Banco General, Banistmo, BAC, etc.), copiando números de cuenta y montos al centavo desde documentos escaneados en plantillas de procesador de texto, lo que demanda un esfuerzo manual considerable y eleva la probabilidad de errores en cifras contractuales críticas.
 
 ```mermaid
 flowchart LR
-    subgraph ANTES ["Proceso Tradicional (~60 min)"]
+    subgraph ANTES ["Proceso Tradicional Manual"]
         direction TB
-        A1["Revisión manual de PDFs<br>(20 min)"] --> A2["Tipeo manual en Ultimus<br>(10 min - Riesgo error IBS)"]
-        A2 --> A3["Redacción de cartas en Word<br>(30 min)"]
+        A1["Revisión visual de expedientes<br>(Inspección manual y fatiga)"] --> A2["Tipeo campo por campo en Ultimus<br>(Riesgo de rechazo en IBS)"]
+        A2 --> A3["Redacción manual de cartas y pagarés<br>(Transcripción propensa a error)"]
     end
 
-    subgraph DESPUES ["Con Asistente MVP (<2 min)"]
+    subgraph DESPUES ["Con Asistente Copiloto (MVP)"]
         direction TB
-        B1["Auditoría y Semáforo IA<br>(5 segundos)"] --> B2["Smart Clipboard 1-Clic<br>(40 segundos - Cero error)"]
-        B2 --> B3["Ensamblaje Legal Automático<br>(15 segundos)"]
+        B1["Auditoría y Semáforo IA<br>(Detección inmediata de faltantes)"] --> B2["Smart Clipboard 1-Clic<br>(Copiado asistido sin errores de tipeo)"]
+        B2 --> B3["Ensamblaje Legal Automático<br>(Generación digital sobre plantillas)"]
     end
 ```
 
@@ -51,14 +51,14 @@ Uno de los mayores valores del MVP para la Dirección de Operaciones y la Gesti�
 | Riesgo Operativo Tradicional | Causa Raíz en Operación Manual | Mitigación Automatizada del Copiloto MVP | Impacto Institucional |
 | :--- | :--- | :--- | :--- |
 | **Errores en Transcripción de Datos Críticos** | Tipeo manual de números de cuenta, cédulas o posiciones de Contraloría en Ultimus BPM. | Extracción con visión espacial y pegado en 1 clic (*Smart Clipboard*) con datos normalizados y reconciliados. | **Cero rechazos en Web Services de IBS**, evitando reprocesos y bloqueos transaccionales. |
-| **Omisión de Documentos Vencidos** | Pasar por alto cartas de trabajo o talonarios con más de 30 días de antigüedad por fatiga visual. | Verificación cronológica determinística que compara fechas de emisión contra la fecha actual del sistema. | **Semáforo Amarillo o Rojo preventivo**, impidiendo formalizar con documentación no vigente. |
-| **Apertura Prematura de Casos de Jubilados** | Iniciar el caso en Ultimus sin contar con el certificado físico de jubilación de la CSS. | Regla de negocio que detecta perfil de jubilado y exige la presencia del documento de la CSS. | **Detención inmediata (Semáforo Rojo)**, evitando expedientes paralizados de 7 a 20 días hábiles en bandeja. |
+| **Omisión de Documentos Vencidos** | Pasar por alto cartas de trabajo o talonarios que exceden la vigencia reglamentaria institucional por fatiga visual. | Verificación cronológica determinística que compara fechas de emisión contra la fecha actual del sistema conforme a la política vigente. | **Semáforo Amarillo o Rojo preventivo**, impidiendo formalizar con documentación no vigente. |
+| **Apertura Prematura de Casos de Jubilados** | Iniciar el caso en Ultimus sin contar con el certificado físico de jubilación de la CSS. | Regla de negocio que detecta perfil de jubilado y exige la presencia del documento de la CSS. | **Detención inmediata (Semáforo Rojo)**, evitando expedientes paralizados en bandeja por trámites externos de terceros. |
 | **Infracción de Calendarios de Descuento** | Programar descuentos por planilla en periodos no autorizados por las instituciones públicas. | Regla lógica codificada que bloquea descuentos en diciembre para préstamos personales. | **Cumplimiento estricto de convenios institucionales** y calendarios oficiales de Contraloría y CSS. |
 
 ### 2.3. Objetivos y Retorno de Inversión del MVP
-* **Validación Empírica en Campo:** Comprobar en un entorno operativo controlado la reducción del tiempo promedio de formalización de aproximadamente 60 minutos a menos de 2 minutos por caso (aceleración superior al 95%).
+* **Medición y Optimización de Tiempos Operativos:** Establecer una línea base cuantitativa mediante la telemetría del MVP para registrar y analizar los tiempos reales invertidos en revisión, transcripción y redacción, evaluando de forma objetiva las eficiencias alcanzadas frente al proceso manual previo.
 * **Calidad y Cero Rechazos:** Eliminar discrepancias tipográficas en la comunicación hacia el Core IBS mediante extracción estructurada y copiado asistido.
-* **Medición Objetiva:** Trazabilidad precisa de tiempos por etapa almacenada en una base de datos local embebida para evaluar ganancias reales de productividad y sustentar la evolución del producto hacia fases institucionales definitivas.
+* **Medición Objetiva con Datos Reales:** Trazabilidad precisa de tiempos por etapa almacenada en una base de datos local embebida para sustentar la evolución del producto hacia fases institucionales definitivas con métricas empíricas comprobables.
 
 ---
 
@@ -113,7 +113,7 @@ flowchart TD
      * **Panel Inferior / Ensamblador Legal:** En casos de compra de saldo, botón de generación y descarga inmediata del paquete contractual completo (`.docx` y `.pdf`).
 2. **Servidor o Servicio de Aplicación:**
    * En la Variante Desktop, opera como un proceso local ligero en el equipo del analista. En la Variante Web, reside en un servidor de aplicaciones interno del banco.
-   * Ejecuta el motor determinístico de validación normativa (control de vigencia de 30 días, exclusión de descuentos en diciembre y detección de certificados requeridos).
+   * Ejecuta el motor determinístico de validación normativa (control de vigencia reglamentaria de documentos, exclusión de descuentos en diciembre y detección de certificados requeridos).
    * Contiene el motor de ensamblaje documental que toma las variables extraídas y las inyecta en las plantillas oficiales pre-aprobadas de Caja de Ahorros.
 3. **Base de Datos Local de Auditoría y Tiempos (Motor Embebido):**
    * Motor de base de datos embebido, ligero y autónomo, que opera integrado en la propia solución sin requerir administración de servidores de bases de datos adicionales ni licenciamientos de infraestructura pesada.
@@ -201,16 +201,16 @@ sequenceDiagram
     alt Inconsistencia o Falta Certificado CSS en Jubilado
         Copiloto-->>Analista: Emite 🔴 Semáforo Rojo (Stopper: caso devuelto a sucursal)
         Copiloto->>Metricas: Registra rechazo preventivo y tiempo de auditoría
-    else Vencimiento Cercano (<48 hrs)
+    else Vencimiento Cercano o Advertencia Preventiva
         Copiloto-->>Analista: Emite 🟡 Semáforo Amarillo (Advertencia de firma prioritaria)
         Copiloto->>Metricas: Registra alerta preventiva de vigencia
-    else Expediente 100% Conforme
+    else Expediente Conforme y Validado
         Copiloto-->>Analista: Emite 🟢 Semáforo Verde (Expediente Certificado)
         Copiloto->>Metricas: Registra certificación conforme
         
         Analista->>Copiloto: Presiona botón de copiado de campo requerido
         Copiloto->>Analista: Copia al portapapeles del sistema (1 Clic)
-        Analista->>BPM: Pega valor en formulario de Ultimus (Ctrl + V en 40 seg)
+        Analista->>BPM: Pega valor en formulario de Ultimus (Ctrl + V asistido sin errores)
         Copiloto->>Metricas: Registra métrica de tiempo de copiado/transcripción
         
         opt Caso de Compra de Saldo
@@ -226,15 +226,15 @@ sequenceDiagram
 ### Descripción de las Fases en la Consola Única del MVP:
 1. **Fase 1: Auditoría y Semáforo de Pre-Formalización:**
    * El analista arrastra el expediente aprobado al panel superior.
-   * La solución audita consistencia de identidad y vigencias normativas (<30 días).
+   * La solución audita consistencia de identidad y vigencias reglamentarias de los documentos según la política del banco.
    * Si el cliente es jubilado y carece del certificado de la CSS, el sistema genera de forma instantánea un **Semáforo Rojo**, permitiendo devolver el expediente a la sucursal antes de perder tiempo procesándolo en Ultimus.
 2. **Fase 2: Smart Clipboard en Pantalla Dividida:**
-   * Una vez obtenido el **Semáforo Verde**, el panel central presenta tarjetas ordenadas con los 10 a 15 campos necesarios para Ultimus.
-   * El analista hace clic sobre el campo deseado y lo pega directamente en el formulario del BPM. Esta acción toma entre 30 y 50 segundos por expediente, erradicando errores tipográficos hacia el Core IBS.
+   * Una vez obtenido el **Semáforo Verde**, el panel central presenta tarjetas ordenadas con los campos requeridos para Ultimus.
+   * El analista hace clic sobre el campo deseado y lo pega directamente en el formulario del BPM. Esta interacción agiliza sustancialmente el traslado de datos y erradica los errores tipográficos hacia el Core IBS.
 3. **Fase 3: Ensamblaje Documental de Compra de Saldo:**
-   * En créditos destinados a consolidar pasivos, el panel inferior extrae las obligaciones de las cartas externas y completa automáticamente las **Promesas Irrevocables de Pago**, el **Pagaré Notarial** y la **Orden de Descuento** en formato editable `.docx` y visualizable `.pdf`, reduciendo 30 minutos de redacción a 15 segundos.
+   * En créditos destinados a consolidar pasivos, el panel inferior extrae las obligaciones de las cartas externas y completa automáticamente las **Promesas Irrevocables de Pago**, el **Pagaré Notarial** y la **Orden de Descuento** en formato editable `.docx` y visualizable `.pdf`, generando el paquete documental de forma inmediata a partir de los datos extraídos y eliminando la redacción manual artesanal.
 4. **Fase Continua de Métricas en el Repositorio Local:**
-   * En segundo plano y sin fricción para el usuario, cada paso alimenta la base de datos local embebida con los tiempos reales invertidos, generando el insumo analítico para justificar la eficiencia del MVP ante la Dirección del banco.
+   * En segundo plano y sin fricción para el usuario, cada paso alimenta la base de datos local embebida con los tiempos reales invertidos, generando el insumo analítico para justificar la eficiencia del MVP ante la Dirección del banco mediante datos empíricos contrastables.
 
 ---
 
@@ -249,7 +249,7 @@ La arquitectura descrita adopta decisiones estratégicas deliberadas que respond
 ### 7.2. Elección de Base de Datos Local Embebida para Telemetría y Métricas de Tiempos
 * **Autonomía y Cero Mantenimiento:** La adopción de un motor relacional embebido y autónomo responde directamente a los objetivos de un MVP: opera integrado en el proceso de la aplicación sin requerir instalación, configuración ni administración de servidores de bases de datos dedicados.
 * **Rendimiento Inmediato:** Permite registrar trazas de auditoría y marcas de tiempo en microsegundos, asegurando que la medición de eficiencias no introduzca ninguna latencia perceptible para el analista.
-* **Facilidad de Extracción:** El archivo de base de datos resultante puede consultarse o exportarse periódicamente mediante reportes analíticos para la toma de decisiones y sustento del caso de negocio ante la alta gerencia.
+* **Facilidad de Extracción:** El archivo de base de datos resultante puede consultarse o exportarse periódicamente mediante reportes analíticos para la toma de decisiones y sustento del caso de negocio ante la alta gerencia con métricas reales.
 
 ### 7.3. Salida Segura a Internet vía Gateway Corporativo
 El consumo de modelos de inteligencia artificial mediante llamadas API a través del proxy/gateway del banco representa la alternativa técnica y económica más eficiente para el MVP:

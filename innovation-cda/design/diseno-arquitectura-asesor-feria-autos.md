@@ -5,7 +5,7 @@
 **Liderazgo Técnico:** Célula de Innovación (StraTech / Caja de Ahorros)  
 **Audiencia:** Vicepresidencia de Negocio, Dirección de Canales, Mercadeo, Tecnología y Seguridad  
 **Fecha:** Octubre 2026  
-**Versión:** 1.2 (Especificación de Arquitectura de Producto Mínimo Viable - MVP)  
+**Versión:** 1.3 (Especificación de Arquitectura de Producto Mínimo Viable - MVP)  
 
 ---
 
@@ -26,21 +26,21 @@ Asimismo, el documento establece la visión de una **Fase Evolutiva posterior al
 ### 2.1. El Desafío Comercial en Ferias y Eventos Masivos
 En la dinámica habitual de las ferias automotrices se generan cuellos de botella que limitan el aprovechamiento de la inversión institucional:
 
-1. **Pérdida de Prospectos por Filas y Tiempos de Espera:** Durante los periodos de mayor afluencia, los visitantes superan con creces la capacidad física de atención del personal del stand. Un cliente que debe esperar más de 10 minutos suele abandonar el lugar o acudir a stands bancarios competidores.
-2. **Registro Manual Ineficiente y Descentralizado:** La recopilación manual de datos en libretas o formularios físicos genera extravío de información, errores de digitación de números telefónicos o correos y demoras de días antes de que los contactos puedan ser contactados formalmente.
+1. **Pérdida de Prospectos por Filas y Tiempos de Espera:** Durante los periodos de mayor afluencia, los visitantes superan con creces la capacidad física de atención del personal del stand. Un cliente que debe esperar en filas físicas suele desmotivarse, abandonar el lugar o acudir a stands bancarios competidores.
+2. **Registro Manual Ineficiente y Descentralizado:** La recopilación manual de datos en libretas o formularios físicos genera extravío de información, errores de digitación de números telefónicos o correos y demoras antes de que los contactos puedan ser contactados formalmente.
 3. **Pérdida de Inmediatez Comercial:** El visitante de una feria toma decisiones en caliente. Si el banco no recopila sus preferencias e información de contacto en el momento exacto en que está interesado frente al vehículo, el costo de volver a contactar a ese prospecto se multiplica.
 
 ```mermaid
 flowchart LR
     subgraph ATENCION_TRADICIONAL ["Atención Tradicional en Stand"]
         direction TB
-        A1["Cliente espera en fila<br>(15 a 20 min)"] --> A2["Ejecutivo toma datos a mano<br>(Cuello de botella)"]
+        A1["Cliente espera en fila física<br>(Fricción y pérdida de interés)"] --> A2["Ejecutivo toma datos a mano<br>(Cuello de botella de atención)"]
         A2 --> A3["Registro manual en papel<br>(Riesgo de extravío y demora)"]
     end
 
     subgraph ASESOR_MVP ["Con Asesor Virtual MVP por Código QR"]
         direction TB
-        B1["Escaneo de QR al instante<br>(0 segundos de espera)"] --> B2["Perfilación amigable y breve<br>(Sin fatiga, 3 a 5 turnos)"]
+        B1["Escaneo de QR al instante<br>(Atención inmediata)"] --> B2["Perfilación amigable y breve<br>(Sin fatiga, 3 a 5 turnos)"]
         B2 --> B3["Lead estructurado y conversación<br>(Descarga inmediata para ventas)"]
     end
 ```
@@ -48,7 +48,7 @@ flowchart LR
 ### 2.2. Principio de Perfilación Conversacional sin Fatiga al Usuario
 Uno de los factores determinantes para el éxito del MVP es el **equilibrio en la profundidad de las preguntas**:
 
-* **Evitar Cuestionarios Extensos:** Obligar al usuario en una feria a responder decenas de preguntas técnicas o formularios interminables en su pantalla móvil ocasiona una tasa de abandono superior al 60%.
+* **Evitar Cuestionarios Extensos:** Obligar al usuario en una feria a responder decenas de preguntas técnicas o formularios interminables en su pantalla móvil ocasiona una alta tasa de abandono y fatiga.
 * **Perfilación Enfocada y Progresiva:** El asistente guía la conversación en un rango óptimo de **3 a 5 intervenciones naturales**, recopilando los datos indispensables para que el ejecutivo comercial pueda actuar:
   * Identificación básica: Nombre completo y cédula.
   * Datos de contacto: Número telefónico y correo electrónico.
@@ -58,7 +58,7 @@ Uno de los factores determinantes para el éxito del MVP es el **equilibrio en l
 
 ### 2.3. Objetivos Estratégicos y Retorno de Negocio del MVP
 * **Validación Comercial Rápida:** Comprobar la receptividad y efectividad de la captación digital por código QR en un entorno de feria real.
-* **Atención Simultánea Ilimitada:** Atender a cientos de visitantes en paralelo durante los días pico de la feria sin requerir la contratación de personal adicional en el stand.
+* **Atención Simultánea Ilimitada:** Atender a múltiples visitantes en paralelo durante los días pico de la feria sin requerir la contratación de personal adicional en el stand.
 * **Captura Estructurada de Oportunidades:** Cada interacción concluye con una ficha de prospecto completa y el historial de la conversación listo para análisis comercial.
 * **Empoderamiento del Equipo de Negocio:** Mediante el módulo administrativo del MVP, los supervisores extraen la información en tiempo real para canalizarla hacia los ejecutivos con mayor disponibilidad o alimentar campañas comerciales focalizadas.
 
@@ -269,7 +269,7 @@ Las decisiones arquitectónicas adoptadas para el MVP priorizan la agilidad de l
 
 ### 7.2. Delimitación a Captura y Perfilación sin Cálculo de Letras en Fase de MVP
 * **Evitar Discrepancias Comerciales:** En ferias, las tasas de interés y condiciones de seguro suelen variar según el concesionario, promociones de marca y negociaciones de abono. Generar simulaciones automáticas en un chat web sin evaluación de buró crediticio formal (APC) podría crear expectativas erradas en el cliente.
-* **Optimización de Tiempos de Interacción:** Eliminar la simulación matemática permite que el diálogo se mantenga enfocado en la perfilación rápida (3 a 5 preguntas), reduciendo a menos de un minuto el tiempo de atención y maximizando el número de prospectos capturados por hora.
+* **Optimización de Tiempos de Interacción:** Eliminar la simulación matemática permite que el diálogo se mantenga enfocado en la perfilación rápida (3 a 5 preguntas), agilizando sustancialmente la interacción, evitando el agotamiento del usuario y maximizando el número de prospectos capturados durante la jornada ferial.
 
 ### 7.3. Módulo Administrativo de Autoservicio para el Negocio
 * **Autonomía Operativa para Negocio y Mercadeo:** En lugar de depender de personal técnico para extraer listados de contactos de bases de datos mediante solicitudes formales, el módulo administrativo integrado permite que los supervisores descarguen la información en hojas de cálculo con un solo clic.
