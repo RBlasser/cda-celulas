@@ -135,10 +135,8 @@ Para formalizar en Ultimus, el analista debe transcribir manualmente entre 10 y 
 3. El motor realiza la reconciliación aritmética: comprueba que `Salario Bruto - Deducciones = Salario Neto`.
 
 #### C. Entregable para el Analista
-* **Smart Clipboard (Portapapeles con 1 Clic):** La pantalla del copiloto presenta una tarjeta con cada uno de los campos que pide Ultimus. Al lado de cada dato hay un botón azul de **"Copiar"**. El analista simplemente hace clic en la herramienta y pega (`Ctrl + V`) en el formulario de Ultimus.
+* **Smart Clipboard Asistido (Portapapeles con 1 Clic):** La pantalla del copiloto presenta una tarjeta organizada en el mismo orden secuencial que pide Ultimus. Al lado de cada dato hay un botón de **"Copiar"** con retroalimentación visual inmediata.
 * **Descarga de Ficha en JSON / Excel:** Permite descargar un archivo estructurado con todos los datos extraídos para respaldo de auditoría o para una futura importación masiva.
-
-> **Impacto:** Reduce el tiempo de digitación de 10 minutos a menos de 45 segundos por caso y elimina el error humano de transcripción en un 100%.
 
 ```mermaid
 flowchart LR
@@ -148,6 +146,29 @@ flowchart LR
     FIELDS --> JSON_OUT["Exportación JSON / CSV"]
     CLIPBOARD -->|Pegado rápido sin errores| ULTIMUS_INPUT["Formulario de Ultimus BPM"]
 ```
+
+#### D. Consideraciones Técnicas, de Ciberseguridad y Ergonomía Operativa (UX)
+
+Para que la promesa de reducción de tiempos (de ~10 minutos a 30–50 segundos) y mitigación de errores sea viable en el entorno real de Caja de Ahorros, el diseño incorpora los siguientes controles:
+
+1. **Viabilidad Técnica e Inocuidad ante Ciberseguridad:**
+   * **Implementación Web Nativa:** Se utiliza la API estándar del navegador (`navigator.clipboard.writeText`), sin requerir privilegios de administrador (`Admin Rights`) ni instalación de ejecutables locales en la estación de trabajo.
+   * **Descarte Justificado de Extensiones de Navegador:** Las extensiones `.crx` en Chrome/Edge son descartadas porque suelen ser bloqueadas por políticas de Directorio Activo (GPO) bancario y requieren permisos invasivos de lectura de pantalla.
+   * **Descarte Justificado de Scripts de Emulación (AutoHotkey / PyAutoGUI):** Los scripts que simulan pulsaciones automáticas son detectados y neutralizados por las soluciones antivirus/EDR corporativas del banco (CrowdStrike, Defender for Endpoint) como potenciales amenazas de captura de teclado (*keylogger*).
+   * **Conclusión de Seguridad:** El Smart Clipboard web es 100% inocuo, no inyecta código en Ultimus y no genera alertas de seguridad.
+
+2. **Mitigación del Error Residual de Asignación:**
+   * Aunque se eliminan los errores tipográficos (tipeo manual de números o nombres), persiste el riesgo de que el analista pegue el *Salario Bruto* en la casilla de *Salario Neto*.
+   * **Solución de Secuencia Guiada (*Sequential Copy Buffer*):** Los campos en el Copiloto se ordenan con estricta fidelidad a la secuencia de tabulación del formulario de Ultimus. El sistema resalta visualmente el campo copiado y avanza automáticamente al siguiente, reduciendo la carga cognitiva.
+
+3. **Ergonomía de Pantalla (Eliminación de la Fricción `Alt + Tab`):**
+   * En estaciones con **doble monitor**, el analista mantiene el Copiloto en la pantalla secundaria y Ultimus en la principal.
+   * En estaciones de **un solo monitor**, el procedimiento estandariza el uso de pantalla dividida nativa de Windows (`Win + Flecha Izquierda` para el Copiloto y `Win + Flecha Derecha` para Ultimus), eliminando la fatiga de alternar ventanas y permitiendo una cadencia de 3 a 5 segundos por campo.
+
+4. **Retroalimentación Visual Inmediata (*Visual Feedback*):**
+   * Al pulsar el botón "Copiar", este cambia instantáneamente de color (azul a verde) y muestra el texto `"✓ ¡Copiado!"` durante 1.5 segundos, eliminando cualquier duda del usuario sobre el éxito de la operación.
+
+> **Impacto Calibrado:** Copiar, posicionar y pegar toma entre 3 y 5 segundos por campo. Para un total de 10 a 12 campos requeridos, el tiempo total se reduce de 10 minutos a un rango de 30 a 50 segundos, representando un ahorro real superior al 90% con cero errores tipográficos.
 
 ---
 
