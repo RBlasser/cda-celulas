@@ -93,18 +93,15 @@ def create_deck():
     s1 = prs.slides.add_slide(blank_layout)
     set_slide_background(s1, CDA_BLUE)
 
-    # Decorative frame with matching CDA Blue background so logo seamlessly blends
     dec_card = s1.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(0.7), Inches(11.733), Inches(6.1))
     dec_card.fill.solid()
     dec_card.fill.fore_color.rgb = CDA_BLUE
     dec_card.line.color.rgb = ACCENT_CYAN
     dec_card.line.width = Pt(2.0)
 
-    # Prominent Logo on Cover
     if os.path.exists(logo_path):
         s1.shapes.add_picture(logo_path, Inches(1.3), Inches(1.2), width=Inches(3.8))
 
-    # Badge
     pill = s1.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(1.3), Inches(2.7), Inches(4.8), Inches(0.42))
     pill.fill.solid()
     pill.fill.fore_color.rgb = ACCENT_CYAN
@@ -118,7 +115,6 @@ def create_deck():
     p_p.font.bold = True
     p_p.font.color.rgb = CDA_DARK_BLUE
 
-    # Main Title
     t_box = s1.shapes.add_textbox(Inches(1.3), Inches(3.25), Inches(10.5), Inches(1.4))
     t_tf = t_box.text_frame
     t_tf.word_wrap = True
@@ -134,13 +130,11 @@ def create_deck():
     p2.font.color.rgb = RGBColor(195, 230, 255)
     p2.space_before = Pt(8)
 
-    # Divider line
     div = s1.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(1.3), Inches(4.85), Inches(10.5), Inches(0.03))
     div.fill.solid()
     div.fill.fore_color.rgb = ACCENT_CYAN
     div.line.fill.background()
 
-    # Footer Metadata
     meta_box = s1.shapes.add_textbox(Inches(1.3), Inches(5.05), Inches(10.5), Inches(1.3))
     m_tf = meta_box.text_frame
     m_p1 = m_tf.paragraphs[0]
@@ -183,7 +177,7 @@ def create_deck():
     c1_hdr.line.color.rgb = ACCENT_CYAN
     c1_tf = c1_hdr.text_frame
     c1_p = c1_tf.paragraphs[0]
-    c1_p.text = "🚗 PRODUCTO 01: Venta y Canales"
+    c1_p.text = "PRODUCTO 01: Venta y Canales"
     c1_p.font.bold = True
     c1_p.font.size = Pt(12.5)
     c1_p.font.color.rgb = CDA_BLUE
@@ -221,7 +215,7 @@ def create_deck():
     c1_metric.line.color.rgb = ACCENT_CYAN
     m_tf1 = c1_metric.text_frame
     mp1 = m_tf1.paragraphs[0]
-    mp1.text = "⏱️ Tiempo de Atención: De 20 min a 90 seg  |  +40% Captura de Prospectos"
+    mp1.text = "Tiempo de Atención: De 20 min a 90 seg  |  +40% Captura de Prospectos"
     mp1.alignment = PP_ALIGN.CENTER
     mp1.font.bold = True
     mp1.font.size = Pt(10)
@@ -240,7 +234,7 @@ def create_deck():
     c2_hdr.line.color.rgb = ACCENT_GREEN
     c2_tf = c2_hdr.text_frame
     c2_p = c2_tf.paragraphs[0]
-    c2_p.text = "📄 PRODUCTO 02: Operaciones y Eficiencia"
+    c2_p.text = "PRODUCTO 02: Operaciones y Eficiencia"
     c2_p.font.bold = True
     c2_p.font.size = Pt(12.5)
     c2_p.font.color.rgb = ACCENT_GREEN
@@ -255,7 +249,7 @@ def create_deck():
 
     items2 = [
         ("Objetivo de Negocio", "Acelerar la confección y firma de préstamos personales aprobados sin alterar sistemas bancarios (Cero riesgo de IT)."),
-        ("Auditoría & Semáforo", "Filtra en 5 seg expedientes incompletos; detiene casos de jubilados sin certificado de CSS (evita 20 días de espera)."),
+        ("Auditoría y Semáforo", "Filtra en 5 seg expedientes incompletos; detiene casos de jubilados sin certificado de CSS (evita 20 días de espera)."),
         ("Smart Clipboard", "Extracción de cartas y talonarios de Contraloría. Copiado en 1 clic hacia Ultimus (de 10 min a 40 seg, 0% error tipeo)."),
         ("Ensamblador Contractual", "Procesa cartas de saldo de otros bancos y genera pagarés y promesas de pago listas para firma del cliente en 15 seg.")
     ]
@@ -278,7 +272,7 @@ def create_deck():
     c2_metric.line.color.rgb = ACCENT_GREEN
     m_tf2 = c2_metric.text_frame
     mp2 = m_tf2.paragraphs[0]
-    mp2.text = "⚡ Reducción Operativa: De 60 min a 2 min por préstamo  |  0% Error en Core IBS"
+    mp2.text = "Reducción Operativa: De 60 min a 2 min por préstamo  |  0% Error en Core IBS"
     mp2.alignment = PP_ALIGN.CENTER
     mp2.font.bold = True
     mp2.font.size = Pt(10)
@@ -292,7 +286,6 @@ def create_deck():
     set_slide_background(s3, CDA_LIGHT_BG)
     add_header(s3, "Agente para Feria de Autos: El Reto en el Stand Comercial", "PRODUCTO 01 — ASESOR VIRTUAL DE AUTO")
 
-    # Column 1: Dolor Actual (Izquierda)
     p_box = s3.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.6), Inches(1.4), Inches(5.8), Inches(5.4))
     p_box.fill.solid()
     p_box.fill.fore_color.rgb = SOFT_RED_BG
@@ -302,7 +295,7 @@ def create_deck():
     p_hdr = s3.shapes.add_textbox(Inches(0.9), Inches(1.55), Inches(5.2), Inches(0.45))
     p_tf = p_hdr.text_frame
     p_p = p_tf.paragraphs[0]
-    p_p.text = "⚠️ La Fricción Operativa Actual en Ferias"
+    p_p.text = "La Fricción Operativa Actual en Ferias"
     p_p.font.size = Pt(15)
     p_p.font.bold = True
     p_p.font.color.rgb = ACCENT_RED
@@ -330,7 +323,6 @@ def create_deck():
         run.font.size = Pt(10)
         run.font.color.rgb = TEXT_DARK
 
-    # Column 2: La Solución del Asesor Virtual (Derecha)
     s_box = s3.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(6.8), Inches(1.4), Inches(5.9), Inches(5.4))
     s_box.fill.solid()
     s_box.fill.fore_color.rgb = SOFT_GREEN_BG
@@ -340,7 +332,7 @@ def create_deck():
     s_hdr = s3.shapes.add_textbox(Inches(7.1), Inches(1.55), Inches(5.3), Inches(0.45))
     s_tf = s_hdr.text_frame
     s_p = s_tf.paragraphs[0]
-    s_p.text = "💡 La Propuesta de Valor del Asesor Virtual"
+    s_p.text = "La Propuesta de Valor del Asesor Virtual"
     s_p.font.size = Pt(15)
     s_p.font.bold = True
     s_p.font.color.rgb = ACCENT_GREEN
@@ -357,7 +349,7 @@ def create_deck():
     s_ctf.word_wrap = True
     for idx, (t, d) in enumerate(sol_points):
         sp = s_ctf.paragraphs[0] if idx == 0 else s_ctf.add_paragraph()
-        sp.text = f"✔ {t}: "
+        sp.text = f"• {t}: "
         sp.font.bold = True
         sp.font.size = Pt(10.5)
         sp.font.color.rgb = ACCENT_GREEN
@@ -390,25 +382,25 @@ def create_deck():
     start_x = Inches(0.6)
 
     steps_data = [
-        ("PASO 01", "👋 Bienvenida y Prospección", CDA_BLUE, [
+        ("PASO 01", "Bienvenida y Prospección", CDA_BLUE, [
             "Cliente escanea QR o toca pantalla.",
             "IA saluda cordialmente e indaga marca y modelo de interés.",
             "Pregunta si es auto nuevo o de segunda.",
             "Tono cercano, empático y 100% institucional."
         ]),
-        ("PASO 02", "📋 Filtro de Política CDA", ACCENT_AMBER, [
+        ("PASO 02", "Filtro de Política CDA", ACCENT_AMBER, [
             "Verifica edad del solicitante (21 a 75 años al vencer el crédito).",
             "Consulta ingreso mensual aproximado.",
             "Valida tipo de empleo (empresa privada, gobierno o independiente).",
             "Filtra viabilidad antes de ilusionar al cliente."
         ]),
-        ("PASO 03", "🧮 Simulación de Cuota", ACCENT_CYAN, [
+        ("PASO 03", "Simulación de Cuota", ACCENT_CYAN, [
             "Aplica parámetros oficiales de tasa y plazo CDA.",
             "Calcula cuota mensual y quincenal.",
             "Permite al cliente ajustar abono (ej. 10%, 15%, 20%) para ver cómo baja su letra.",
             "Calcula capacidad de pago en segundos."
         ]),
-        ("PASO 04", "🎯 Captura y Cierre", ACCENT_GREEN, [
+        ("PASO 04", "Captura y Cierre", ACCENT_GREEN, [
             "Captura Nombre, Cédula, Teléfono y Correo.",
             "Genera Ficha de Lead Calificado en PDF/JSON.",
             "Notifica en tiempo real al ejecutivo comercial del stand.",
@@ -468,7 +460,7 @@ def create_deck():
     sp_tf = sum_pill.text_frame
     sp_tf.word_wrap = True
     sp_p = sp_tf.paragraphs[0]
-    sp_p.text = "🚀 Impacto Operativo para el Banco: Reduce el tiempo de cotización de 20 minutos a 90 segundos. El ejecutivo del stand recibe un prospecto 100% calificado según política, eliminando clientes fuera de perfil y cerrando ventas en el acto."
+    sp_p.text = "Impacto Operativo para el Banco: Reduce el tiempo de cotización de 20 minutos a 90 segundos. El ejecutivo del stand recibe un prospecto 100% calificado según política, eliminando clientes fuera de perfil y cerrando ventas en el acto."
     sp_p.font.size = Pt(10.5)
     sp_p.font.color.rgb = RGBColor(16, 120, 50)
     sp_p.font.bold = True
@@ -495,21 +487,21 @@ def create_deck():
     c_h = Inches(4.95)
 
     pain_cards = [
-        ("🔴 Stopper 01: Certificado CSS", ACCENT_RED, [
+        ("Stopper 01: Certificado CSS", ACCENT_RED, [
             ("Situación en Jubilados:", "Para firmar la orden de descuento, se requiere obligatoriamente el certificado físico de jubilación."),
             ("Demora de 7 a 20 Días:", "Este documento depende de la CSS y demora semanas. Si el analista avanza en Ultimus sin él, el expediente queda bloqueado."),
             ("Dolor Declarado:", "'Aunque tenga el préstamo aprobado, no puedo mover para que el cliente firme porque necesito ese número para llenar la orden' (Ricardo Herrera).")
-        ], "⏱️ Demora: 7 a 20 días hábiles en CSS"),
-        ("🟡 Stopper 02: Transcripción Manual", ACCENT_AMBER, [
+        ], "Demora: 7 a 20 días hábiles en CSS"),
+        ("Stopper 02: Transcripción Manual", ACCENT_AMBER, [
             ("10 a 15 Campos a Mano:", "El analista debe transcribir manualmente salarios, descuentos, deducciones y razón social desde PDFs no estandarizados."),
             ("Grilla Densa de Contraloría:", "Debe buscar 'con lupa' el número de Planilla (ej. 14) y Posición (ej. 101010) en talonarios diminutos."),
             ("Riesgo de Rechazo en IBS:", "Cualquier error tipográfico provoca el rechazo automático de los Web Services hacia el Core Bancario IBS en Ultimus.")
-        ], "⚠️ Riesgo: Errores tipográficos rechazan en IBS"),
-        ("🔵 Stopper 03: Compra de Saldo", CDA_BLUE, [
+        ], "Riesgo: Errores tipográficos rechazan en IBS"),
+        ("Stopper 03: Compra de Saldo", CDA_BLUE, [
             ("Papelería Legal Artesanal:", "Una gran parte de los préstamos cancela deudas en otros bancos (Banco General, BAC, Banistmo, financieras)."),
             ("Cartas de Promesa de Pago:", "Ultimus no redacta cartas a terceros bancos. El analista abre plantillas Word, busca números de cuenta, saldos y vigencias a mano."),
             ("Consumo de Tiempo Humano:", "Redactar pagarés, órdenes de descuento y promesas de pago toma entre 20 y 35 minutos por cliente.")
-        ], "⏳ Carga: 20 a 35 min redactando en Word")
+        ], "Carga: 20 a 35 min redactando en Word")
     ]
 
     for idx, (title, color, bullets, metric_text) in enumerate(pain_cards):
@@ -577,10 +569,10 @@ def create_deck():
     fp6.font.color.rgb = TEXT_DARK
 
     pillars = [
-        ("🚫 Cero Acceso a Ultimus BPM", "No requiere licencias de desarrollo, RPA invasivos ni APIs propietarias de Ultimus. El sistema no toca el BPM directamente."),
-        ("🛡️ Cero Conexión al Core IBS", "Elimina cualquier riesgo de corrupción de datos transaccionales bancarios. El analista mantiene la custodia de la transacción final."),
-        ("⚡ Cero VPN ni Permisos de Red", "Opera como una herramienta web ágil para el analista. No requiere apertura de puertos de firewall internos ni dependencias de Active Directory."),
-        ("👤 Control Humano (Human-in-the-Loop)", "La IA audita, extrae y redacta en segundos; el analista humano valida en pantalla y confirma el ingreso. Máxima seguridad y gobernanza.")
+        ("Cero Acceso a Ultimus BPM", "No requiere licencias de desarrollo, RPA invasivos ni APIs propietarias de Ultimus. El sistema no toca el BPM directamente."),
+        ("Cero Conexión al Core IBS", "Elimina cualquier riesgo de corrupción de datos transaccionales bancarios. El analista mantiene la custodia de la transacción final."),
+        ("Cero VPN ni Permisos de Red", "Opera como una herramienta web ágil para el analista. No requiere apertura de puertos de firewall internos ni dependencias de Active Directory."),
+        ("Control Humano (Human-in-the-Loop)", "La IA audita, extrae y redacta en segundos; el analista humano valida en pantalla y confirma el ingreso. Máxima seguridad y gobernanza.")
     ]
 
     pil_w = Inches(5.8)
@@ -625,7 +617,7 @@ def create_deck():
     takeaway.line.color.rgb = ACCENT_GREEN
     t_tf = takeaway.text_frame
     tp = t_tf.paragraphs[0]
-    tp.text = "🎯 Conclusión para Negocio y Ciberseguridad: Se puede desplegar y probar en días sin riesgo operativo ni auditorías de red complejas."
+    tp.text = "Conclusión para Negocio y Ciberseguridad: Se puede desplegar y probar en días sin riesgo operativo ni auditorías de red complejas."
     tp.font.bold = True
     tp.font.size = Pt(10.5)
     tp.font.color.rgb = RGBColor(16, 120, 50)
@@ -634,44 +626,48 @@ def create_deck():
 
     # =========================================================================
     # SLIDE 7: AGENTE FORMALIZACIÓN - DIAGRAMA DE LOS 3 CASOS DE USO
+    # (AQUÍ ESTÁN LOS ÚNICOS EMOJIS DEL DOCUMENTO: 🟢, 🟡, 🔴)
     # =========================================================================
     s7 = prs.slides.add_slide(blank_layout)
     set_slide_background(s7, CDA_LIGHT_BG)
     add_header(s7, "Los 3 Casos de Uso del Copiloto de Formalización", "DIAGRAMA DE ARQUITECTURA FUNCIONAL")
 
-    intro7 = s7.shapes.add_textbox(Inches(0.6), Inches(1.3), Inches(12.133), Inches(0.45))
+    intro7 = s7.shapes.add_textbox(Inches(0.6), Inches(1.25), Inches(12.133), Inches(0.45))
     i_tf7 = intro7.text_frame
     ip7 = i_tf7.paragraphs[0]
     ip7.text = "El copiloto acompaña al analista en tres fases continuas, resolviendo cada cuello de botella de manera precisa y medible:"
-    ip7.font.size = Pt(12)
+    ip7.font.size = Pt(11.5)
     ip7.font.color.rgb = TEXT_DARK
 
     cu_w = Inches(3.8)
     cu_gap = Inches(0.36)
-    cu_top = Inches(1.85)
-    cu_h = Inches(5.1)
+    cu_top = Inches(1.78)
+    cu_h = Inches(5.2)
 
+    # Note: ONLY 🟢, 🟡, 🔴 are used here, as explicitly requested!
     cu_data = [
         ("CASO 1: SEMÁFORO", "Auditoría Inteligente", ACCENT_GREEN, [
-            ("Insumo:", "Expediente digital del cliente (PDFs)."),
-            ("Qué hace la IA:", "Inspecciona cédula, carta de trabajo y talonario. Comprueba identidad cruzada y vigencia < 30 días."),
-            ("Regla de Jubilado:", "Si falta el Certificado de Jubilación de la CSS, emite 🔴 Semáforo Rojo de inmediato, devolviendo a sucursal y evitando retener el caso."),
-            ("Regla de Fechas:", "Aplica calendario de descuentos y la regla: 'en diciembre no se descuenta préstamo personal'."),
-            ("Entrega:", "🟢 Expediente Certificado CDA.")
-        ], "⏱️ Auditoría: De 20 min a 5 seg | Cero trabas"),
+            ("Insumo:", "Expediente digital del cliente (PDFs de cédula, carta y talonario)."),
+            ("Qué hace la IA:", "Inspecciona identidad cruzada, vigencias (<30 días) y calendarios (no descuento en diciembre)."),
+            ("Dictamen Semafórico:", "Clasifica en 3 estados normativos:"),
+            ("• 🟢 Verde (Conforme):", "Expediente consistente y vigente; listo para formalizar."),
+            ("• 🟡 Amarillo (Alerta):", "Vencimiento cercano (<48h); firma prioritaria."),
+            ("• 🔴 Rojo (Bloqueo):", "Falta certificado CSS de jubilado o cédula inconsistente; devolución inmediata a sucursal."),
+            ("Entrega:", "Ficha de Certificación de Calidad CDA.")
+        ], "Semáforo: 🟢 Verde  |  🟡 Amarillo  |  🔴 Rojo"),
         ("CASO 2: SMART CLIPBOARD", "Extracción Estructurada", ACCENT_CYAN, [
             ("Insumo:", "Carta de trabajo y talonario comprobante."),
             ("Qué hace la IA:", "Lee tablas complejas y ubica con precisión espacial 'PLANILLA' y 'POSICIÓN' de Contraloría."),
             ("Reconciliación:", "Verifica matemáticamente que Salario Bruto - Descuentos = Salario Neto."),
             ("Interacción Humana:", "Panel con botón 'Copiar' (1 clic). El analista copia y pega (Ctrl+V) en Ultimus BPM en pantalla dividida."),
             ("Impacto:", "De 10 min a 40 segundos, con 0% error.")
-        ], "⚡ Carga: De 10 min a 40 seg | Cero error"),
+        ], "Smart Clipboard: De 10 min a 40 seg | Cero error"),
         ("CASO 3: ENSAMBLADOR", "Confección Contractual", CDA_BLUE, [
             ("Insumo:", "Cartas de saldo externas (BG, BAC, Banistmo) y condiciones aprobadas CDA."),
             ("Qué hace la IA:", "Extrae banco acreedor, cuenta/tarjeta a pagar, saldo exacto y fecha límite de vigencia."),
             ("Templating Legal:", "Inyecta los datos sobre plantillas oficiales .docx de Caja de Ahorros."),
             ("Entrega:", "Paquete Contractual Completo (.docx y .pdf) listo para firma (Promesas de pago, pagaré notarial, órdenes de descuento).")
-        ], "📄 Contratos: De 30 min a 15 seg en .docx")
+        ], "Contratos: De 30 min a 15 seg en .docx")
     ]
 
     for idx, (badge, title, color, pts, metric_lbl) in enumerate(cu_data):
@@ -699,25 +695,25 @@ def create_deck():
         bp2.font.color.rgb = WHITE
         bp2.alignment = PP_ALIGN.CENTER
 
-        b_body = s7.shapes.add_textbox(cx + Inches(0.15), cu_top + Inches(0.65), cu_w - Inches(0.3), Inches(3.8))
+        b_body = s7.shapes.add_textbox(cx + Inches(0.15), cu_top + Inches(0.62), cu_w - Inches(0.3), Inches(3.95))
         bbtf = b_body.text_frame
         bbtf.word_wrap = True
         for p_idx, (pt_t, pt_d) in enumerate(pts):
             pp = bbtf.paragraphs[0] if p_idx == 0 else bbtf.add_paragraph()
             pp.text = f"{pt_t} "
             pp.font.bold = True
-            pp.font.size = Pt(9.5)
-            pp.font.color.rgb = color
-            if p_idx > 0: pp.space_before = Pt(5)
+            pp.font.size = Pt(9)
+            pp.font.color.rgb = color if "•" not in pt_t else TEXT_DARK
+            if p_idx > 0: pp.space_before = Pt(4)
             run = pp.add_run()
             run.text = pt_d
             run.font.bold = False
-            run.font.size = Pt(9)
+            run.font.size = Pt(8.5)
             run.font.color.rgb = TEXT_DARK
 
-        bmetric = s7.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, cx + Inches(0.15), cu_top + Inches(4.5), cu_w - Inches(0.3), Inches(0.45))
+        bmetric = s7.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, cx + Inches(0.15), cu_top + Inches(4.62), cu_w - Inches(0.3), Inches(0.45))
         bmetric.fill.solid()
-        bmetric.fill.fore_color.rgb = SOFT_GREEN_BG if color == ACCENT_GREEN else (SOFT_BLUE_BG)
+        bmetric.fill.fore_color.rgb = SOFT_GREEN_BG if color == ACCENT_GREEN else SOFT_BLUE_BG
         bmetric.line.color.rgb = color
         bm_tf = bmetric.text_frame
         bmp = bm_tf.paragraphs[0]
