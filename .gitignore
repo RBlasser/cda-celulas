@@ -2,6 +2,7 @@
 .env
 *.env
 *.env.*
+leads_*.json
 
 # Python
 __pycache__/

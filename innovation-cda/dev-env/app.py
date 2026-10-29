@@ -86,7 +86,27 @@ def calculate_loan_summary(
     }
 
 
-def format_loan_markdown(data: dict) -> str:
+def guardar_lead_registro(client_data: dict):
+    """Almacena el lead registrado en un archivo JSON local para seguimiento comercial."""
+    import json
+    leads_file = "leads_feria_autos.json"
+    registro = {
+        **client_data,
+        "fecha_hora": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    }
+    try:
+        leads = []
+        if os.path.exists(leads_file):
+            with open(leads_file, "r", encoding="utf-8") as f:
+                leads = json.load(f)
+        leads.append(registro)
+        with open(leads_file, "w", encoding="utf-8") as f:
+            json.dump(leads, f, indent=2, ensure_ascii=False)
+    except Exception as e:
+        print(f"Error al guardar lead: {e}")
+
+
+def format_loan_markdown(data: dict, client_data: dict = None) -> str:
     """Formatea la simulación y el pase digital en un mensaje markdown profesional y determinístico."""
     if data["es_jubilado"]:
         feci_str = "B/. 0.00 *(Exonerado 100% por Ley 6 de 1987)*"
@@ -97,6 +117,16 @@ def format_loan_markdown(data: dict) -> str:
     else:
         feci_str = f"B/. {data['cuota_feci']:,.2f}/mes"
         beneficio_perfil = ""
+    
+    # Inclusión de datos del titular registrado
+    if client_data and client_data.get("nombre"):
+        titular_str = (
+            f"• **Titular:** {client_data['nombre']}\n"
+            f"• **Cédula de Identidad:** `{client_data.get('cedula', 'N/A')}`\n"
+            f"• **Contacto:** {client_data.get('celular', 'N/A')} | {client_data.get('correo', 'N/A')}\n"
+        )
+    else:
+        titular_str = ""
     
     md = (
         f"### 🧮 Simulación Estimada de Financiamiento\n\n"
@@ -113,7 +143,8 @@ def format_loan_markdown(data: dict) -> str:
         f"• **Seguro de Auto y Vida Estimado:** B/. {data['seguro_estimado']:,.2f}/mes\n\n"
         f"---\n"
         f"### 🎫 Pase Digital de Atención en Stand\n"
-        f"**Código de Turno:** `{data['codigo_pase']}`\n\n"
+        f"**Código de Turno:** `{data['codigo_pase']}`\n"
+        f"{titular_str}\n"
         f"Presente este código o menciónelo al oficial de crédito en nuestro stand de **Caja de Ahorros** en la feria para agilizar su cotización y precalificación formal.\n\n"
         f"*Orientación preliminar sujeta a la evaluación crediticia formal del banco.*"
     )
@@ -251,29 +282,17 @@ def extraer_parametros_consulta(texto: str) -> dict:
 
 @cl.on_chat_start
 async def on_chat_start():
-    """Inicializa la sesión de chat y envía el mensaje de bienvenida con atajos interactivos."""
+    """Inicializa la sesión de chat."""
     cl.user_session.set("messages", [])
-    
-    actions = [
-        cl.Action(name="salud_educadores", payload={"value": "¿Cuáles son los requisitos y el tiempo de permanencia si soy educador o trabajo en el sector salud?"}, label="🏥 Salud y Educadores"),
-        cl.Action(name="marcas_chinas", payload={"value": "¿Puedo financiar un vehículo de marcas de origen chino como BYD, Geely o Changan con Caja de Ahorros?"}, label="🇨🇳 Marcas Chinas (BYD, Geely)"),
-        cl.Action(name="fast_track", payload={"value": "¿Cuánto es el porcentaje de abono mínimo y cómo funciona la modalidad Fast Track de feria?"}, label="⚡ Abonos y Fast Track"),
-        cl.Action(name="jubilados", payload={"value": "¿Qué beneficios aplican para jubilados y tercera edad según la Ley 6 de 1987?"}, label="👴 Jubilados (Ley 6)"),
-        cl.Action(name="solicitar_letra", payload={"value": "Quiero saber cuál sería mi letra, qué necesitas saber de mí?"}, label="🧮 ¿Cuál sería mi letra?"),
-    ]
+    cl.user_session.set("client_data", None)
     
     await cl.Message(
         content=(
-            "¡Bienvenido a la Feria de Autos con **Caja de Ahorros**! 🚗🇵🇦\n\n"
-            "Soy su **Asesor Virtual de Auto**. Es un placer saludarle y orientarle en la elección de su próximo financiamiento.\n\n"
-            "Puedo brindarle información sobre:\n"
-            "• **Requisitos documentales** según su perfil laboral (Salud, Educación, Empresa Privada, Jubilados o Independientes).\n"
-            "• **Abonos mínimos, plazos y marcas autorizadas** (incluyendo modelos ecológicos y marcas chinas con respaldo).\n"
-            "• **Beneficios por Ley 6** para jubilados y pensionados.\n"
-            "• **Simulaciones de cuotas** mensuales para su presupuesto.\n\n"
-            "Seleccione una de las siguientes opciones frecuentes o escriba su consulta con total libertad:"
-        ),
-        actions=actions
+            "### 🚗 ¡Bienvenido a la Feria de Autos con **Caja de Ahorros**!\n"
+            "*El Banco de la Familia Panameña 🇵🇦*\n\n"
+            "👋 **Paso previo obligatorio:** Por favor complete el formulario en pantalla con su **Nombre Completo, Cédula de Identidad, Celular y Correo** para habilitar la atención del **Asesor Virtual** y asignarle su Pase Digital de feria.\n\n"
+            "*Una vez enviado el formulario, el asistente activará inmediatamente todas las opciones de consulta y simulación.*"
+        )
     ).send()
 
 
@@ -303,6 +322,53 @@ async def process_user_query(user_query: str):
     messages = cl.user_session.get("messages", [])
     messages.append({"role": "user", "content": user_query})
     
+    # 0. CASO DETERMINÍSTICO PREVIO: Registro de Formulario del Cliente
+    if "Registro de Precalificación:" in user_query or "[REGISTRO_CLIENTE]" in user_query:
+        nombre_m = re.search(r'Nombre:\s*([^|]+)', user_query)
+        cedula_m = re.search(r'C[eé]dula:\s*([^|]+)', user_query)
+        celular_m = re.search(r'Celular:\s*([^|]+)', user_query)
+        correo_m = re.search(r'Correo:\s*([^\s|]+)', user_query)
+        
+        client_data = {
+            "nombre": nombre_m.group(1).strip() if nombre_m else "Cliente Estimado",
+            "cedula": cedula_m.group(1).strip() if cedula_m else "N/A",
+            "celular": celular_m.group(1).strip() if celular_m else "N/A",
+            "correo": correo_m.group(1).strip() if correo_m else "N/A"
+        }
+        
+        cl.user_session.set("client_data", client_data)
+        guardar_lead_registro(client_data)
+        
+        bienvenida = (
+            f"### ¡Mucho gusto y bienvenido/a, **{client_data['nombre']}**! 🚗🇵🇦\n"
+            f"*Caja de Ahorros — El Banco de la Familia Panameña*\n\n"
+            f"Hemos registrado exitosamente sus datos de contacto para su cotización:\n"
+            f"• **Titular:** {client_data['nombre']}\n"
+            f"• **Cédula de Identidad:** `{client_data['cedula']}`\n"
+            f"• **Celular:** `{client_data['celular']}`\n"
+            f"• **Correo:** `{client_data['correo']}`\n\n"
+            f"---\n"
+            f"Soy su **Asesor Virtual de Auto**. Puedo orientarle en:\n"
+            f"• **Requisitos documentales** según su perfil (Salud, Educación, Empresa Privada, Jubilados o Independientes).\n"
+            f"• **Abonos mínimos, plazos y marcas autorizadas** (incluyendo BYD, Geely, Changan y modelos ecológicos).\n"
+            f"• **Beneficios por Ley 6** para jubilados (exoneración total de FECI).\n"
+            f"• **Simulación de su letra mensual** y emisión de su **Pase Digital prioritario**.\n\n"
+            f"Seleccione una de las siguientes opciones o escriba su consulta con total libertad:"
+        )
+        
+        actions = [
+            cl.Action(name="solicitar_letra", payload={"value": "Quiero saber cuál sería mi letra, qué necesitas saber de mí?"}, label="🧮 ¿Cuál sería mi letra?"),
+            cl.Action(name="salud_educadores", payload={"value": "¿Cuáles son los requisitos y el tiempo de permanencia si soy educador o trabajo en el sector salud?"}, label="🏥 Salud y Educadores"),
+            cl.Action(name="marcas_chinas", payload={"value": "¿Puedo financiar un vehículo de marcas de origen chino como BYD, Geely o Changan con Caja de Ahorros?"}, label="🇨🇳 Marcas Chinas (BYD, Geely)"),
+            cl.Action(name="fast_track", payload={"value": "¿Cuánto es el porcentaje de abono mínimo y cómo funciona la modalidad Fast Track de feria?"}, label="⚡ Abonos y Fast Track"),
+            cl.Action(name="jubilados", payload={"value": "¿Qué beneficios aplican para jubilados y tercera edad según la Ley 6 de 1987?"}, label="👴 Jubilados (Ley 6)"),
+        ]
+        
+        messages.append({"role": "assistant", "content": bienvenida})
+        cl.user_session.set("messages", messages)
+        await cl.Message(content=bienvenida, actions=actions).send()
+        return
+
     # 1. CASO DETERMINÍSTICO A: El usuario pregunta qué se necesita para saber su letra
     if es_pregunta_solicitud_datos_letra(user_query):
         contenido, acciones = obtener_mensaje_solicitud_datos()
@@ -314,6 +380,7 @@ async def process_user_query(user_query: str):
     # 2. CASO DETERMINÍSTICO B: Cálculo de simulación de cuota / letra
     if es_intencion_simulacion(user_query):
         params = extraer_parametros_consulta(user_query)
+        client_data = cl.user_session.get("client_data")
         sim_data = calculate_loan_summary(
             precio=params["precio"],
             pct_abono=params["pct_abono"],
@@ -322,7 +389,7 @@ async def process_user_query(user_query: str):
             es_jubilado=params["es_jubilado"],
             es_salud_educacion=params["es_salud_educacion"]
         )
-        response_text = format_loan_markdown(sim_data)
+        response_text = format_loan_markdown(sim_data, client_data)
         
         messages.append({"role": "assistant", "content": response_text})
         cl.user_session.set("messages", messages)

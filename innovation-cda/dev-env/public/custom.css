@@ -1,11 +1,13 @@
 /* Custom CSS para Asesor Virtual de Auto - Caja de Ahorros */
 
-/* Fuentes e identidad visual */
 :root {
   --cda-blue: #002855;
+  --cda-blue-dark: #001B3A;
   --cda-coral: #FF6565;
   --cda-amber: #F5A623;
   --cda-bg-user: #F4F6F8;
+  --cda-gray-border: #E2E8F0;
+  --cda-gray-text: #64748B;
 }
 
 /* Tarjeta y estilo del Pase Digital */
@@ -27,4 +29,199 @@ button[id^="action-"] {
 button[id^="action-"]:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 40, 85, 0.12) !important;
+}
+
+/* ==========================================================================
+   MODAL DE REGISTRO PREVIO (FORMULARIO OBLIGATORIO PRE-CHAT)
+   ========================================================================== */
+
+.cda-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 40, 85, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999999;
+  padding: 16px;
+  animation: cdaFadeIn 0.3s ease-out;
+}
+
+.cda-modal-card {
+  background: #FFFFFF;
+  border-radius: 18px;
+  width: 100%;
+  max-width: 470px;
+  box-shadow: 0 25px 60px -15px rgba(0, 20, 50, 0.45);
+  padding: 30px 28px;
+  box-sizing: border-box;
+  animation: cdaSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: #1E293B;
+  max-height: 94vh;
+  overflow-y: auto;
+}
+
+@keyframes cdaFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes cdaSlideUp {
+  from { opacity: 0; transform: translateY(24px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.cda-modal-header {
+  text-align: center;
+  margin-bottom: 22px;
+}
+
+.cda-modal-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #FFF5EB;
+  color: #C05621;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 20px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 1px solid #FEEBC8;
+}
+
+.cda-modal-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #002855;
+  margin: 0 0 6px 0;
+  letter-spacing: -0.3px;
+}
+
+.cda-modal-subtitle {
+  font-size: 13.5px;
+  color: #475569;
+  margin: 0 0 8px 0;
+  line-height: 1.45;
+}
+
+.cda-modal-desc {
+  font-size: 12px;
+  color: #64748B;
+  margin: 0;
+  line-height: 1.4;
+  background: #F8FAFC;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border-left: 3px solid #002855;
+}
+
+.cda-form-group {
+  margin-bottom: 14px;
+  text-align: left;
+}
+
+.cda-form-group label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #1E293B;
+  margin-bottom: 5px;
+}
+
+.cda-form-group label .req {
+  color: #EF4444;
+  font-weight: bold;
+}
+
+.cda-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.cda-input-wrapper input {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 14px;
+  border: 1.5px solid #CBD5E1;
+  border-radius: 9px;
+  background: #FFFFFF;
+  color: #0F172A;
+  transition: all 0.2s ease;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.cda-input-wrapper input:focus {
+  border-color: #002855;
+  box-shadow: 0 0 0 3px rgba(0, 40, 85, 0.12);
+}
+
+.cda-input-wrapper input::placeholder {
+  color: #94A3B8;
+  font-size: 13px;
+}
+
+.cda-form-error {
+  background: #FEF2F2;
+  border: 1px solid #FCA5A5;
+  color: #B91C1C;
+  font-size: 12.5px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin-bottom: 14px;
+  display: none;
+  font-weight: 500;
+}
+
+.cda-form-security {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 11px;
+  color: #64748B;
+  line-height: 1.35;
+  margin-bottom: 18px;
+  background: #F1F5F9;
+  padding: 8px 10px;
+  border-radius: 8px;
+}
+
+.cda-btn-submit {
+  width: 100%;
+  padding: 12px 18px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #FFFFFF;
+  background: linear-gradient(135deg, #002855 0%, #001B3A 100%);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(0, 40, 85, 0.25);
+  transition: all 0.2s ease;
+}
+
+.cda-btn-submit:hover {
+  background: linear-gradient(135deg, #001F42 0%, #00132A 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 40, 85, 0.35);
+}
+
+.cda-btn-submit:active {
+  transform: translateY(0);
 }
