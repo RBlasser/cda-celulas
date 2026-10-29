@@ -112,8 +112,14 @@ flowchart TD
     AI_AUDIT --> CHECK_ID{"¿Coincidencia de<br>Identidad y Vigencias?"}
     CHECK_ID -->|"Inconsistencia Detectada"| RED["🔴 Semáforo Rojo: Reporte de Inconsistencias<br>• Alerta específica de error<br>• Devolución inmediata a agencia"]
     CHECK_ID -->|"Alerta de Vencimiento Cercano"| YELLOW["🟡 Semáforo Amarillo: Advertencia<br>• Requiere validación de fechas límites"]
-    CHECK_ID -->|"100% Conforme y Completo"| GREEN["🟢 Semáforo Verde: Expediente Certificado<br>• Listo para ingreso a Ultimus"]
+    CHECK_ID -->|"100% Conforme y Completo"| GREEN["🟢 Semáforo Verde: EXPEDIENTE CERTIFICADO<br>• Listo para ingreso a Ultimus"]
 ```
+
+#### D. Sustento en Conversaciones con Líderes Funcionales de Caja de Ahorros
+* **Insumos Obligatorios del Expediente:** Ricardo Herrera (*Reunión de Requerimiento Funcional*, Minuto 30:51 / Línea 274 en [Req_ Funcional Transcript](../transcripts/Req_%20Funcional%20-%20Formalizaci%C3%B3n%20pr%C3%A9stamo_%20Transcript.txt)) especificó los documentos indispensables para avanzar: *"carta de trabajo, talonario comprobante, ficha en la caja de seguro social, cédula de identidad personal del cliente y solicitud multiproducto completada"*.
+* **Cuello de Botella del Certificado de Jubilados de la CSS:** Ricardo Herrera (*Reunión de Requerimiento Funcional*, Minuto 30:51 a 36:24 / Líneas 274-310 en [Req_ Funcional Transcript](../transcripts/Req_%20Funcional%20-%20Formalizaci%C3%B3n%20pr%C3%A9stamo_%20Transcript.txt)) expuso que el certificado de jubilación de la CSS no viene con la aprobación y demora entre 7 y 20 días hábiles: *"Aunque tenga el préstamo aprobado, no puedo mover para que el cliente firme... no puedo llamar al cliente y decirle 'venga a firmar' porque necesito ese documento para llenar la orden de descuento"*. Esto fundamenta plenamente el Semáforo Rojo automático cuando falta dicho soporte.
+* **Calendarios de Descuento y Exclusión de Diciembre:** Ricardo Herrera (*Reunión de Requerimiento Funcional*, Minuto 45:10 a 47:30 / Líneas 454-468 en [Req_ Funcional Transcript](../transcripts/Req_%20Funcional%20-%20Formalizaci%C3%B3n%20pr%C3%A9stamo_%20Transcript.txt)) detalló que las instituciones públicas manejan calendarios específicos para regir órdenes y que *"en préstamos personales yo no descuento los diciembre, yo descuento de enero a noviembre"*, fundamentando la regla determinística de control de fechas.
+
 
 ---
 
@@ -175,6 +181,12 @@ Para que la promesa de reducción de tiempos (de ~10 minutos a 30–50 segundos)
 
 > **Impacto Calibrado:** Copiar, posicionar y pegar toma entre 3 y 5 segundos por campo. Para un total de 10 a 12 campos requeridos, el tiempo total se reduce de 10 minutos a un rango de 30 a 50 segundos, representando un ahorro real superior al 90% con cero errores tipográficos.
 
+#### E. Sustento en Conversaciones con Líderes Funcionales de Caja de Ahorros
+* **Los 10 a 15 Campos Transcritos a Mano:** Ricardo Herrera (*Llamada Inicial*, Líneas 28, 132-134 en [Llamada Inicial Transcript](../transcripts/Llamada_Inicial_Automatizaci%C3%B3n%20del%20Proceso%20de%20Formaliza_%20Transcript.txt)) explicó: *"el robot entra en acción y comienza a simular y a completar esos campos que hoy en día pues lo hace una persona que tiene que mirar un número de posición en el caso de los préstamos de público, en el caso de jubilados porque tiene que colocar el número de planilla... son como 10 campos... estamos haciendo un proceso que pudiese aumentar la cantidad de campos de 10 a 12 o 15 por ahí"*.
+* **Despliegue Condicional de Planilla y Posición en Contraloría:** Ricardo Herrera (*Llamada Inicial*, Línea 93 en [Llamada Inicial Transcript](../transcripts/Llamada_Inicial_Automatizaci%C3%B3n%20del%20Proceso%20de%20Formaliza_%20Transcript.txt)) describió la lógica de negocio en pantalla: *"él elige el tipo de empresa... si elige Contraloría activo, el sistema le despliega unos campos adicionales donde le coloca planilla, número de posición"*.
+* **Mitigación de Errores hacia el Core (IBS):** Ricardo Herrera y Ediel (*Llamada Inicial*, Línea 30 y Recap Técnico, Línea 32) señalaron que cualquier error tipográfico al digitar provoca rechazos automáticos en los Web Services hacia el Core IBS, validando la necesidad de contar con datos normalizados y copiado directo en un clic.
+
+
 ---
 
 ### 3.3. Caso de Uso 3: Pre-Diligenciador y Ensamblador de Documentación Contractual
@@ -226,6 +238,11 @@ flowchart TD
     DOC3 --> PACK
 ```
 
+#### D. Sustento en Conversaciones con Líderes Funcionales de Caja de Ahorros
+* **La Papelería de Firma como Único Entregable Físico:** En la sesión de *Requerimiento Funcional* (Minutos 16:05 a 17:35 / Líneas 137-148 en [Req_ Funcional Transcript](../transcripts/Req_%20Funcional%20-%20Formalizaci%C3%B3n%20pr%C3%A9stamo_%20Transcript.txt)), Rodolfo Blasser preguntó: *"¿no hay que sacar nada ni hacer copy paste de nada?"*, a lo que Ricardo Herrera respondió contundentemente: *"Lo único que hay que sacar o extraer es la papelería que el cliente va a firmar, pero todo lo demás viaja por el flujo... ¿Para qué? Para poder generar la papelería que el cliente tiene que firmar"*.
+* **Diligenciamiento de Órdenes de Descuento y Cartas:** Ricardo Herrera (*Reunión de Requerimiento Funcional*, Líneas 276 y 292) confirmó que los ejecutivos deben plasmar los números de cuenta e identificación en la orden de descuento y documentos contractuales que el cliente suscribe. Asimismo, en la *Llamada Inicial* (Línea 51), se dejó constancia de que Ultimus no gestiona de forma nativa la redacción de cartas a terceros bancos para compra de saldo, haciendo indispensable una herramienta que pre-diligencie las Promesas Irrevocables de Pago y Pagarés oficiales de Caja de Ahorros.
+
+
 ---
 
 ## 4. Matriz Comparativa y Beneficios de los 3 Casos de Uso
@@ -241,6 +258,15 @@ flowchart TD
 | **Tiempo de Ejecución** | ~5 a 10 segundos | ~3 a 5 segundos | ~8 a 12 segundos |
 | **Ahorro de Tiempo Humano** | De 20 min a 30 segundos de revisión | De 10 min a 45 seg de tipeo manual | De 30 min a 2 min de redacción |
 | **Impacto Operativo** | Cero expedientes devueltos o trabados | Cero errores de transcripción en Ultimus | Cero discrepancias en compra de saldo |
+
+### 4.1. Matriz de Trazabilidad con Testimonios Oficiales de Operaciones
+
+| Caso de Uso Diseñado | Interlocutor Funcional | Sesión y Minuto Oficial | Citas y Evidencia en Transcripción | Dolor Específico Manifestado en la Grabación |
+| :--- | :--- | :--- | :--- | :--- |
+| **Caso 1: Auditoría y Semáforo** | **Ricardo Herrera** (Crédito/Operaciones) | *Req. Funcional* (Min 30:51, 36:24, 45:54) | [Req_ Funcional Transcript](../transcripts/Req_%20Funcional%20-%20Formalizaci%C3%B3n%20pr%C3%A9stamo_%20Transcript.txt) (Líneas 274-310, 454-468) | Expedientes de jubilados detenidos semanas por falta del certificado de CSS; órdenes de descuento que no se pueden aplicar en diciembre. |
+| **Caso 2: Smart Clipboard** | **Ricardo Herrera** y **Ediel** (TI) | *Llamada Inicial* (Min 12:40, 22:15) | [Llamada Inicial Transcript](../transcripts/Llamada_Inicial_Automatizaci%C3%B3n%20del%20Proceso%20de%20Formaliza_%20Transcript.txt) (Líneas 28, 93, 132-134) | El analista digita manualmente entre 10 y 15 campos; debe buscar "con lupa" la planilla y posición al elegir Contraloría Activo. |
+| **Caso 3: Ensamblador Contractual** | **Ricardo Herrera** | *Req. Funcional* (Min 16:13, 17:35, 30:51) | [Req_ Funcional Transcript](../transcripts/Req_%20Funcional%20-%20Formalizaci%C3%B3n%20pr%C3%A9stamo_%20Transcript.txt) (Líneas 137-148, 276) | *"Lo único que hay que sacar o extraer es la papelería que el cliente va a firmar"* (pagarés, promesas a terceros y órdenes de descuento). |
+
 
 ---
 
