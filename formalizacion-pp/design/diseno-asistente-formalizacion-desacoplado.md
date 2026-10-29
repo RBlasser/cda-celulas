@@ -168,6 +168,11 @@ Para que la promesa de reducción de tiempos (de ~10 minutos a 30–50 segundos)
 4. **Retroalimentación Visual Inmediata (*Visual Feedback*):**
    * Al pulsar el botón "Copiar", este cambia instantáneamente de color (azul a verde) y muestra el texto `"✓ ¡Copiado!"` durante 1.5 segundos, eliminando cualquier duda del usuario sobre el éxito de la operación.
 
+5. **Potencial Evolución a Validar: Cola de Portapapeles Secuencial (*FIFO Clipboard Queue*):**
+   * **Concepto:** Permitir que el analista realice un único clic en `"Copiar Expediente Completo"` en el Copiloto y luego, dentro de Ultimus BPM, ejecute una cadencia fluida de `Ctrl + V` (pega Empresa) -> `Tab` -> `Ctrl + V` (pega Salario) -> `Tab` -> `Ctrl + V` (pega Deducciones), consumiendo secuencialmente los datos en cola (FIFO: *First-In, First-Out*).
+   * **Decisión de Diseño Actual:** Se establece como solución base y oficial el modelo tradicional de **copiado y pegado campo por campo**, garantizando operación 100% web nativa, sin procesos residentes en segundo plano y con cero fricción de homologación.
+   * **Criterio de Validación Futura:** La alternativa de cola FIFO queda consignada como una potencial mejora evolutiva para ser evaluada en fases posteriores junto a Ciberseguridad, determinando la viabilidad de un asistente local de portapapeles sin vulnerar las políticas de seguridad del sistema operativo.
+
 > **Impacto Calibrado:** Copiar, posicionar y pegar toma entre 3 y 5 segundos por campo. Para un total de 10 a 12 campos requeridos, el tiempo total se reduce de 10 minutos a un rango de 30 a 50 segundos, representando un ahorro real superior al 90% con cero errores tipográficos.
 
 ---
