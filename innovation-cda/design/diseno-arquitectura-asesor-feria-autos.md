@@ -5,7 +5,7 @@
 **Liderazgo Técnico:** Célula de Innovación (StraTech / Caja de Ahorros)  
 **Audiencia:** Vicepresidencia de Negocio, Dirección de Canales, Mercadeo, Tecnología y Seguridad  
 **Fecha:** Octubre 2026  
-**Versión:** 1.3 (Especificación de Arquitectura de Producto Mínimo Viable - MVP)  
+**Versión:** 1.4 (Especificación de Arquitectura de Producto Mínimo Viable - MVP)  
 
 ---
 
@@ -13,11 +13,9 @@
 
 La presencia de Caja de Ahorros en ferias comerciales automotrices (como el Panamá Motor Show y exhibiciones regionales) constituye una de las principales iniciativas de originación de préstamos de auto para la institución. Durante estos eventos masivos, miles de visitantes recorren el stand con el interés de cotizar opciones de financiamiento para vehículos nuevos o de segunda mano.
 
-El **Asesor Virtual de Préstamo de Auto** se concibe y estructura como un **Producto Mínimo Viable (MVP)** accesible de manera instantánea mediante el escaneo de códigos QR distribuidos en los vehículos de exhibición, volantes y quioscos táctiles del stand. En su **alcance de MVP**, el sistema se enfoca estrictamente en **captar la información del cliente, registrar las conversaciones íntegras y realizar una perfilación comercial preliminar**. La solución **no realiza simulaciones de cálculo de letra ni proyecciones de cuotas financieras en esta fase**, garantizando una interacción ágil, natural y cordial, orientada a obtener la información justa y necesaria para el negocio sin causar agotamiento o abandono por parte del usuario.
+El **Asesor Virtual de Préstamo de Auto** se concibe y estructura como un **Producto Mínimo Viable (MVP)** accesible de manera instantánea mediante el escaneo de códigos QR distribuidos en los vehículos de exhibición, volantes y quioscos táctiles del stand. En su **alcance actual**, el sistema se enfoca estrictamente en **captar la información del cliente, registrar las conversaciones íntegras y realizar una perfilación comercial preliminar**. La solución **no realiza simulaciones de cálculo de letra ni proyecciones de cuotas financieras**, garantizando una interacción ágil, natural y cordial, orientada a obtener la información justa y necesaria para el negocio sin causar agotamiento o abandono por parte del usuario.
 
-Como parte fundamental de este MVP, el diseño incorpora un **Módulo Administrativo de Extracción de Datos**, concebido para que los supervisores de negocio y mercadeo consulten, filtren y descarguen con un solo clic el registro consolidado de prospectos y conversaciones en formatos tabulares estándar (hojas de cálculo estructuradas), permitiendo una distribución inmediata a la fuerza de ventas en el stand o su incorporación al seguimiento comercial post-feria.
-
-Asimismo, el documento establece la visión de una **Fase Evolutiva posterior al MVP**, basada en una iniciativa interna de Caja de Ahorros, orientada a integrar validación de identidad por código único (OTP) y consulta en tiempo real a las bases de datos de clientes preaprobados, supeditada a los accesos y aperturas de red interna bancaria correspondientes.
+Como parte fundamental de este MVP, el diseño incorpora un **Módulo Administrativo de Extracción de Datos**, concebido para que los supervisores de negocio y mercadeo consulten, filtren y descarguen con un solo clic el registro consolidado de prospectos y conversaciones en formatos tabulares estándar (hojas de cálculo estructuradas), permitiendo una distribución inmediata a la fuerza de ventas en el stand o su incorporación al seguimiento comercial posterior al evento.
 
 ---
 
@@ -54,7 +52,7 @@ Uno de los factores determinantes para el éxito del MVP es el **equilibrio en l
   * Datos de contacto: Número telefónico y correo electrónico.
   * Interés vehicular: Marca, modelo o categoría de auto (SUV, sedán, comercial) y condición (nuevo o usado).
   * Perfil laboral general: Sector de empleo (público, privado, independiente o jubilado) y rango salarial aproximado.
-* **Tono Cercano y Sin Cálculos Complejos:** Al no realizar cálculos matemáticos de letra en esta etapa de MVP, la interacción se mantiene libre de fricciones o discusiones técnicas sobre tasas, abonos o tablas de amortización, preservando la expectativa de una atención personalizada por parte del ejecutivo de crédito.
+* **Tono Cercano y Sin Cálculos Complejos:** Al no realizar cálculos matemáticos de letra, la interacción se mantiene libre de fricciones o discusiones técnicas sobre tasas, abonos o tablas de amortización, preservando la expectativa de una atención personalizada por parte del ejecutivo de crédito.
 
 ### 2.3. Objetivos Estratégicos y Retorno de Negocio del MVP
 * **Validación Comercial Rápida:** Comprobar la receptividad y efectividad de la captación digital por código QR en un entorno de feria real.
@@ -142,7 +140,7 @@ Dado que la solución de MVP recopila datos personales e identificadores de cont
 
 ### 4.2. Seguridad Perimetral y Resguardo de la Información
 * **Cifrado en Tránsito (HTTPS con TLS 1.3):** Toda la comunicación entre los navegadores móviles y los servidores de la aplicación se efectúa bajo certificados digitales de nivel bancario.
-* **Aislamiento de Infraestructura:** El servidor web y su repositorio operan en un entorno perimetral protegido (zona desmilitarizada o nube segura), **sin conexión directa ni dependencias con el Core Bancario (IBS)** en esta fase de MVP. Este desacoplamiento total salvaguarda los sistemas transaccionales del banco frente a cualquier eventualidad de tráfico público.
+* **Aislamiento de Infraestructura:** El servidor web y su repositorio operan en un entorno perimetral protegido (zona desmilitarizada o nube segura), **sin conexión directa ni dependencias con el Core Bancario (IBS)**. Este desacoplamiento total salvaguarda los sistemas transaccionales del banco frente a cualquier eventualidad de tráfico público.
 * **Control de Acceso al Módulo Administrativo:** El acceso a la consola de extracción está restringido mediante credenciales institucionales y perfiles de usuario autorizados.
 * **Pistas de Auditoría de Descargas:** Cada operación de exportación de datos genera un registro de auditoría con la identificación del usuario, dirección IP, fecha, hora y número de registros extraídos.
 
@@ -170,14 +168,14 @@ flowchart TD
 * La inteligencia artificial mantiene el control del diálogo: si el usuario menciona de inicio su nombre y el modelo de vehículo que le gusta, el asistente agradece el detalle y pasa de inmediato a preguntar por su contacto y sector laboral, evitando redundancias.
 * Si el cliente formula preguntas abiertas sobre requisitos generales (por ejemplo: *"¿qué papeles piden para independientes?"*), el asistente responde de forma concisa y retoma el flujo de captura de datos amablemente.
 
-### 5.3. Delimitación Estricta de Alcance en el MVP (Sin Simulación Financiera)
-* El asistente está instruido para aclarar con total transparencia que en esta etapa de MVP no efectúa simulaciones matemáticas de cuotas ni tablas de amortización, informando que las condiciones especiales de feria (tasas preferenciales y promociones de concesionarios) serán personalizadas directamente por el ejecutivo de crédito que lo contactará.
+### 5.3. Delimitación Estricta de Alcance (Sin Simulación Financiera)
+* El asistente está instruido para aclarar con total transparencia que en esta etapa no efectúa simulaciones matemáticas de cuotas ni tablas de amortización, informando que las condiciones especiales de feria (tasas preferenciales y promociones de concesionarios) serán personalizadas directamente por el ejecutivo de crédito que lo contactará.
 
 ---
 
 ## 6. Flujo de Proceso
 
-### 6.1. Flujo Operativo Actual del MVP: Captura, Perfilación y Extracción
+El flujo operativo del MVP contempla la interacción completa desde el contacto inicial en el stand hasta la extracción y habilitación del equipo de ventas:
 
 ```mermaid
 sequenceDiagram
@@ -214,48 +212,11 @@ sequenceDiagram
     end
 ```
 
-**Etapas Clave del Flujo de MVP:**
-1. **Acceso Inmediato por QR (Pasos 1-2):** El visitante abre el asistente en su teléfono móvil sin instalaciones previas.
-2. **Perfilación Progresiva (Pasos 3-8):** En 3 a 5 intercambios directos se obtienen los datos de contacto, vehículo de interés y perfil laboral básico.
-3. **Resguardo Seguro (Paso 9):** Se almacena la información estructurada del cliente junto con la transcripción completa de la conversación.
+### Detalle de las Etapas del Flujo:
+1. **Acceso Inmediato por QR (Pasos 1-2):** El visitante abre el asistente en su teléfono móvil sin instalaciones previas tras escanear el código QR ubicado en el vehículo o quiosco.
+2. **Perfilación Progresiva sin Fatiga (Pasos 3-8):** En 3 a 5 intercambios directos se obtienen los datos de contacto, vehículo de interés y perfil laboral básico, facilitando la respuesta mediante botones de selección rápida.
+3. **Resguardo Seguro (Paso 9):** Se almacena la información estructurada del cliente junto con la transcripción completa de la conversación en el repositorio central.
 4. **Extracción y Habilitación de Ventas (Pasos 10-14):** El supervisor comercial extrae los registros en formato tabular para asignación inmediata a ejecutivos en el stand o seguimiento telefónico posterior.
-
----
-
-### 6.2. Fase Evolutiva Posterior al MVP: Flujo Integrado de Preaprobación por QR (Iniciativa Interna CDA)
-
-La evolución de la solución contempla materializar la visión estratégica plasmada en la iniciativa conceptual interna de Caja de Ahorros. Esta fase plantea una experiencia integral de auto-servicio crediticio conectada a los sistemas centrales del banco.
-
-> **Condición Habilitadora para la Fase Evolutiva:** La implementación de esta fase **depende estrictamente de contar con accesos, canales y servicios web seguros hacia las bases de datos de clientes preaprobados y el Core Bancario de Caja de Ahorros**, requiriendo autorizaciones de seguridad de la información y apertura de redes internas.
-
-```mermaid
-flowchart TD
-    E1["1. Escaneo de QR en Vehículo de Feria<br>o Catálogo Digital"] --> E2["2. Despliegue de Ficha Técnica del Auto<br>(Precio de feria, modelo, equipamiento)"]
-    
-    E2 --> E3["3. Captura de Cédula de Identidad<br>y Aceptación de Políticas de Datos"]
-    
-    E3 --> E4["4. Validación de Identidad vía OTP<br>(Código enviado por mensajería al teléfono registrado)"]
-    
-    E4 --> E5["5. Consulta a Base de Datos Interna<br>de Clientes Preaprobados de Caja de Ahorros"]
-    
-    E5 --> COND{"Resultado de Consulta de Preaprobación"}
-    
-    COND -->|"Caso A: Cliente Preaprobado y Califica"| F6A["6a. Califica Plenamente para el Auto<br>• Muestra letra estimada y plazo aprobado<br>• Solicitud de crédito auto-llenada digitalmente"]
-    F6A --> F7A["7a. Generación de Número de Solicitud<br>y Notificación a Ejecutivo de Ventas en Stand"]
-    
-    COND -->|"Caso B: Preaprobado con Capacidad Insuficiente"| F6B["6b. Capacidad Parcial Detectada<br>• El monto aprobado no cubre el auto escaneado<br>• Asistente sugiere autos alternativos del catálogo acordes a su capacidad"]
-    F6B --> F7B["7b. Cliente escoge auto alternativo sugerido<br>o solicita evaluación de abono adicional con ejecutivo"]
-    
-    COND -->|"Caso C: Cliente No Registrado en Base de Preaprobados"| F6C["6c. No Figura en Base Preaprobada<br>• Captura datos de contacto y perfil laboral<br>• Deriva a oficial de crédito para evaluación tradicional"]
-```
-
-**Módulos de la Fase Evolutiva:**
-* **Autenticación Fuerte de Identidad (OTP):** Asegura que la persona que consulta la preaprobación sea la titular de la cédula mediante el envío de una clave temporal de un solo uso a su teléfono registrado.
-* **Consulta Automatizada de Capacidad Crediticia:** Enlace en tiempo real con la base de datos de preaprobados para determinar si el cliente cuenta con cupo disponible para financiamiento de auto.
-* **Bifurcación Inteligente de Escenarios:**
-  * **Aprobación Directa:** Facilita la generación instantánea de la solicitud formal.
-  * **Recomendación Inteligente de Catálogo:** Si el cliente tiene un cupo inferior al valor del vehículo escaneado, la herramienta no rechaza la oportunidad; en su lugar, le presenta modelos alternativos dentro de la feria que sí se ajustan a su capacidad preaprobada.
-  * **Canalización Comercial Asistida:** En caso de prospectos no bancarizados o sin precalificación previa, se capturan sus datos para que un oficial de crédito analice su expediente por la vía estándar.
 
 ---
 
@@ -267,13 +228,10 @@ Las decisiones arquitectónicas adoptadas para el MVP priorizan la agilidad de l
 * **Cero Barreras para el Visitante:** El acceso mediante navegador web activado por código QR elimina la fricción de descarga en tiendas de aplicaciones, permitiendo que cualquier visitante participe de inmediato independientemente de la marca o capacidad de su teléfono.
 * **Despliegue Inmediato y Seguro:** Al no conectarse directamente a las bases de datos transaccionales del banco (IBS), el MVP puede ponerse en producción rápidamente para las fechas de feria sin requerir autorizaciones complejas de red interna ni comprometer la seguridad perimetral de la institución.
 
-### 7.2. Delimitación a Captura y Perfilación sin Cálculo de Letras en Fase de MVP
+### 7.2. Delimitación a Captura y Perfilación sin Cálculo de Letras
 * **Evitar Discrepancias Comerciales:** En ferias, las tasas de interés y condiciones de seguro suelen variar según el concesionario, promociones de marca y negociaciones de abono. Generar simulaciones automáticas en un chat web sin evaluación de buró crediticio formal (APC) podría crear expectativas erradas en el cliente.
 * **Optimización de Tiempos de Interacción:** Eliminar la simulación matemática permite que el diálogo se mantenga enfocado en la perfilación rápida (3 a 5 preguntas), agilizando sustancialmente la interacción, evitando el agotamiento del usuario y maximizando el número de prospectos capturados durante la jornada ferial.
 
 ### 7.3. Módulo Administrativo de Autoservicio para el Negocio
 * **Autonomía Operativa para Negocio y Mercadeo:** En lugar de depender de personal técnico para extraer listados de contactos de bases de datos mediante solicitudes formales, el módulo administrativo integrado permite que los supervisores descarguen la información en hojas de cálculo con un solo clic.
 * **Agilidad en la Derivación Comercial:** Esta capacidad asegura que los prospectos generados durante la mañana de la feria puedan ser asignados a los ejecutivos de ventas durante la misma jornada, aprovechando la intención de compra del cliente mientras continúa en el recinto ferial.
-
-### 7.4. Arquitectura de MVP Preparada para la Transición Evolutiva
-* La estructura modular de componentes del MVP (gestor web, motor conversacional y repositorio de prospectos) sirve como base directa sobre la cual se acoplarán, en la fase posterior, el conector de verificación OTP y las interfaces de consulta a la base de clientes preaprobados de Caja de Ahorros.

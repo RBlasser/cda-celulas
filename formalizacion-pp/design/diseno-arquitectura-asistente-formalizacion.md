@@ -58,7 +58,7 @@ Uno de los mayores valores del MVP para la Dirección de Operaciones y la Gesti�
 ### 2.3. Objetivos y Retorno de Inversión del MVP
 * **Medición y Optimización de Tiempos Operativos:** Establecer una línea base cuantitativa mediante la telemetría del MVP para registrar y analizar los tiempos reales invertidos en revisión, transcripción y redacción, evaluando de forma objetiva las eficiencias alcanzadas frente al proceso manual previo.
 * **Calidad y Cero Rechazos:** Eliminar discrepancias tipográficas en la comunicación hacia el Core IBS mediante extracción estructurada y copiado asistido.
-* **Medición Objetiva con Datos Reales:** Trazabilidad precisa de tiempos por etapa almacenada en una base de datos local embebida para sustentar la evolución del producto hacia fases institucionales definitivas con métricas empíricas comprobables.
+* **Medición Objetiva con Datos Reales:** Trazabilidad precisa de tiempos por etapa almacenada en una base de datos local embebida para respaldar las decisiones operativas con métricas empíricas comprobables.
 
 ---
 
