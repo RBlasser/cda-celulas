@@ -5,7 +5,7 @@
 **Liderazgo Técnico:** Célula de Innovación (StraTech / Caja de Ahorros)  
 **Audiencia:** Dirección de Operaciones, Vicepresidencia de Crédito, Arquitectura de TI y Seguridad  
 **Fecha:** Octubre 2026  
-**Versión:** 1.0 (Documento Técnico-Funcional de Arquitectura)  
+**Versión:** 1.1 (Actualización con Consola Única, Base de Datos SQLite de Métricas y Matriz de Riesgos Operativos)  
 
 ---
 
@@ -15,7 +15,9 @@ La formalización de préstamos personales constituye el eslabón crítico entre
 
 El **Asistente Inteligente de Formalización de Préstamos Personales** se concibe como una herramienta de productividad operativa diseñada bajo el paradigma de *Copiloto Asistencial Desacoplado*. Su propósito no es sustituir los sistemas bancarios centrales ni reemplazar el juicio del analista humano, sino proveer una capa de asistencia ágil que inspecciona expedientes en segundos, extrae datos con precisión milimétrica y pre-redacta la documentación legal requerida, manteniendo en todo momento al analista bancario en control decisional (*Human-in-the-Loop*).
 
-Este documento establece el diseño de arquitectura técnica y operativa del asistente, contemplando su mapa de componentes, estrategia de seguridad, capacidades de inteligencia artificial, flujo de trabajo y la justificación de sus decisiones de implementación.
+La solución unifica la atención de sus tres casos de uso en **una sola interfaz de usuario**, eliminando la fragmentación operativa, e incorpora un componente de persistencia local en **SQLite** para registrar la trazabilidad de tiempos e interacciones, permitiendo cuantificar con datos duros las ganancias de eficiencia del banco.
+
+Este documento establece el diseño de arquitectura técnica y operativa del asistente, contemplando su mapa de componentes, estrategia de seguridad, capacidades de inteligencia artificial, flujo de trabajo, cobertura de riesgos y la justificación de sus decisiones de implementación.
 
 ---
 
@@ -43,10 +45,20 @@ flowchart LR
     end
 ```
 
-### 2.2. Objetivos y Retorno de Inversión
+### 2.2. Cobertura Integral de Riesgos Operativos Bancarios
+Uno de los mayores valores de la solución para la Dirección de Operaciones y la Gestión de Riesgos es el blindaje sistemático ante fallas humanas recurrentes:
+
+| Riesgo Operativo Tradicional | Causa Raíz en Operación Manual | Mitigación Automatizada del Copiloto | Impacto Institucional |
+| :--- | :--- | :--- | :--- |
+| **Errores en Transcripción de Datos Críticos** | Tipeo manual de números de cuenta, cédulas o posiciones de Contraloría en Ultimus BPM. | Extracción con visión espacial y pegado en 1 clic (*Smart Clipboard*) con datos normalizados y reconciliados. | **Cero rechazos en Web Services de IBS**, evitando reprocesos y bloqueos transaccionales. |
+| **Omisión de Documentos Vencidos** | Pasar por alto cartas de trabajo o talonarios con más de 30 días de antigüedad por fatiga visual. | Verificación cronológica determinística que compara fechas de emisión contra la fecha actual del sistema. | **Semáforo Amarillo o Rojo preventivo**, impidiendo formalizar con documentación no vigente. |
+| **Apertura Prematura de Casos de Jubilados** | Iniciar el caso en Ultimus sin contar con el certificado físico de jubilación de la CSS. | Regla de negocio que detecta perfil de jubilado y exige la presencia del documento de la CSS. | **Detención inmediata (Semáforo Rojo)**, evitando expedientes paralizados de 7 a 20 días hábiles en bandeja. |
+| **Infracción de Calendarios de Descuento** | Programar descuentos por planilla en periodos no autorizados por las instituciones públicas. | Regla lógica codificada que bloquea descuentos en diciembre para préstamos personales. | **Cumplimiento estricto de convenios institucionales** y calendarios oficiales de Contraloría y CSS. |
+
+### 2.3. Objetivos y Retorno de Inversión
 * **Reducción de Tiempo de Ciclo:** Disminuir el tiempo promedio de formalización de aproximadamente 60 minutos a menos de 2 minutos por caso (aceleración superior al 95%).
 * **Calidad y Cero Rechazos:** Eliminar discrepancias tipográficas en la comunicación hacia el Core IBS mediante extracción estructurada y copiado asistido.
-* **Agilidad de Despliegue:** Operar de manera inmediata sin exigir desarrollos complejos ni modificaciones en Ultimus BPM o el Core IBS.
+* **Medición Objetiva:** Trazabilidad precisa de tiempos por etapa almacenada en una base de datos local SQLite para evaluar ganancias reales de productividad.
 
 ---
 
@@ -57,57 +69,67 @@ La arquitectura del asistente se fundamenta en un diseño desacoplado que opera 
 * **Variante A (Aplicación Desktop / Agente Local):** Desplegada en la estación de trabajo del analista bancario. Ideal para una adopción inmediata sin requerir servidores web dedicados ni certificados de intranet institucional.
 * **Variante B (Aplicación Web Interna / Portal de Intranet):** Alojada en un servidor de aplicaciones interno dentro de la red corporativa del banco, accesible mediante navegador web por los analistas autorizados.
 
-Ambas variantes comparten exactamente los mismos componentes lógicos, protocolos de seguridad y canales de salida hacia el modelo de inteligencia artificial.
+Ambas variantes convergen en una **interfaz de usuario unificada** y comparten exactamente los mismos componentes lógicos, protocolos de seguridad y canales de salida hacia el modelo de inteligencia artificial.
 
 ### 3.1. Diagrama de Arquitectura de Componentes
 
 ```mermaid
 flowchart TD
-    subgraph USUARIO ["Estación de Trabajo del Analista"]
-        UI["Interfaz de Usuario<br>(Aplicación Desktop o Web Interna)"]
-        CLIPBOARD["Portapapeles del Sistema<br>(Copiado Rápido con 1 Clic)"]
-        ULTIMUS["Pantalla de Ultimus BPM<br>(Formulario Bancario)"]
+    subgraph WORKSPACE ["Estación del Analista: Interfaz Unificada (Desktop o Web)"]
+        UI["Consola Única de Formalización<br>• Módulo 1: Carga y Semáforo (Auditoría)<br>• Módulo 2: Smart Clipboard (Carga Ultimus)<br>• Módulo 3: Ensamblador (Compra de Saldo)"]
+        CLIPBOARD["Portapapeles del Sistema Operativo<br>(Copiado Rápido con 1 Clic)"]
+        ULTIMUS["Pantalla de Ultimus BPM<br>(Formulario Bancario en Split-Screen)"]
         UI -.->|"Copiado ergonómico"| CLIPBOARD
         CLIPBOARD -.->|"Pegado asistido Ctrl+V"| ULTIMUS
     end
 
-    subgraph APLICACION ["Capa de Servicio de la Solución"]
-        APP_SRV["Servidor / Servicio de Aplicación<br>• Motor de Reglas Normativas<br>• Gestor de Plantillas Contractuales (.docx)<br>• Reconciliación Aritmética"]
-        STORAGE["Almacén Local de Plantillas<br>• Pagarés y Cartas Oficiales CDA"]
+    subgraph MOTOR_LOCAL ["Capa de Servicio y Persistencia Local"]
+        APP_SRV["Servidor / Servicio de Aplicación<br>• Motor de Reglas Normativas y Fechas<br>• Gestor de Plantillas Contractuales (.docx)<br>• Reconciliación Aritmética de Salarios"]
+        STORAGE["Almacén de Plantillas Oficiales<br>• Pagarés, Minutas y Promesas CDA"]
+        SQLITE_DB[("Base de Datos SQLite de Métricas<br>• Logs de Interacción y Tiempos<br>• Telemetría de Eficiencias por Caso<br>• Auditoría de Semáforos Emitidos")]
         APP_SRV --- STORAGE
+        APP_SRV <-->|"Registro de eventos y latencias"| SQLITE_DB
     end
 
     subgraph RED_BANCO ["Infraestructura de Red Caja de Ahorros"]
-        GATEWAY["Gateway Corporativo / Proxy Seguro<br>• Inspección de Tráfico Saliente<br>• Control de Dominios Permitidos<br>• Cifrado TLS 1.3"]
+        GATEWAY["Gateway Corporativo / Proxy Seguro<br>• Inspección de Tráfico Saliente<br>• Control de Dominios Autorizados<br>• Cifrado TLS 1.3"]
     end
 
     subgraph CLOUD_AI ["Servicios Cognitivos Externos"]
         LLM_API["API de Modelo de Lenguaje Multimodal<br>• Inferencia Visual de Alta Precisión<br>• Extracción de Tablas y Entidades<br>• Política Enterprise Cero Retención"]
     end
 
-    UI <-->|"Interacción y Despliegue"| APP_SRV
+    UI <-->|"Interacción fluida en pantalla única"| APP_SRV
     APP_SRV <-->|"Solicitud de Inferencia (Payload Seguro)"| GATEWAY
     GATEWAY <-->|"Salida Segura a Internet (HTTPS / API)"| LLM_API
 ```
 
 ### 3.2. Descripción Detallada de Componentes
 
-1. **Interfaz de Usuario (Desktop o Web Interna):**
-   * Ofrece un panel ergonómico diseñado para trabajo en pantalla dividida (*Split-Screen*).
-   * Presenta la bandeja de carga de documentos arrastrables (drag & drop) para los expedientes del crédito.
-   * Despliega las tarjetas de datos extraídos con botones individuales de copiado rápido ("Smart Clipboard") y los botones de descarga de paquetes contractuales generados.
+1. **Consola de Interfaz Única (Single-Pane Workspace):**
+   * Ofrece un único entorno de trabajo visual donde el analista atiende de forma integrada los 3 casos de uso sin tener que alternar entre herramientas o pestañas dispersas:
+     * **Panel Superior / Auditoría:** Arrastre de documentos y despliegue del Semáforo normativo con alertas de inconsistencias.
+     * **Panel Central / Smart Clipboard:** Despliegue de tarjetas con los datos estructurados extraídos y botones individuales de copiado en 1 clic para trasladar a Ultimus BPM en pantalla dividida (*Win + Flechas*).
+     * **Panel Inferior / Ensamblador Legal:** En casos de compra de saldo, botón de generación y descarga inmediata del paquete contractual completo (`.docx` y `.pdf`).
 2. **Servidor o Servicio de Aplicación:**
-   * En la Variante Desktop, funciona como un proceso local ligero en el equipo del analista. En la Variante Web, reside en un servidor de aplicaciones interno del banco.
-   * Ejecuta el motor determinístico de validación normativa (fechas, exclusión de descuentos en diciembre y comprobación de certificados requeridos).
-   * Contiene el motor de ensamblaje documental que toma las variables extraídas y las fusiona en las plantillas oficiales pre-aprobadas de Caja de Ahorros.
-3. **Gateway Corporativo / Proxy Bancario:**
+   * En la Variante Desktop, opera como un proceso local ligero en el equipo del analista. En la Variante Web, reside en un servidor de aplicaciones interno del banco.
+   * Ejecuta el motor determinístico de validación normativa (control de vigencia de 30 días, exclusión de descuentos en diciembre y detección de certificados requeridos).
+   * Contiene el motor de ensamblaje documental que toma las variables extraídas y las inyecta en las plantillas oficiales pre-aprobadas de Caja de Ahorros.
+3. **Base de Datos Local de Auditoría y Tiempos (SQLite):**
+   * Motor de base de datos embebido, ligero y autónomo, sin requerir administración de servidores de bases de datos adicionales.
+   * **Objetivo de Métricas y Eficiencia:** Registra automáticamente los eventos de cada expediente:
+     * Marca de tiempo de carga del expediente (*timestamp* inicial).
+     * Tiempo de respuesta de la auditoría y semáforo resultante (Verde, Amarillo, Rojo).
+     * Tiempo dedicado al copiado y pegado de campos hacia Ultimus BPM.
+     * Tiempo de generación de los contratos de compra de saldo.
+     * Tiempo total invertido por expediente.
+   * Permite a la gerencia operativa generar reportes cuantitativos de productividad, comparar el desempeño frente al proceso tradicional manual y medir el retorno de inversión del copiloto.
+4. **Gateway Corporativo / Proxy Bancario:**
    * Canal obligatorio de intermediación para todo tráfico saliente de la red del banco hacia Internet.
    * Gestiona el túnel seguro hacia los extremos de la API del proveedor de inteligencia artificial, verificando certificados, aplicando listas blancas de destinos y auditando conexiones.
-4. **API de Modelo de Lenguaje Multimodal (Nube Segura):**
+5. **API de Modelo de Lenguaje Multimodal (Nube Segura):**
    * Recibe las páginas o secciones documentales pertinentes para aplicar reconocimiento espacial y razonamiento sobre estructuras tabulares densas.
    * Devuelve estructuras de datos limpias y normalizadas (nombres, montos, números de cuenta, fechas) bajo acuerdos de nivel de servicio corporativos.
-5. **Entorno de Procesamiento Temporal:**
-   * El sistema no utiliza bases de datos permanentes para almacenar expedientes. Los documentos viajan en la memoria de la sesión activa del analista y se eliminan una vez culminada la operación o cerrada la aplicación.
 
 ---
 
@@ -119,10 +141,14 @@ La arquitectura fue concebida bajo el principio de **Mínimo Privilegio y Cero R
 * **Sin conexión al Core Bancario (IBS):** El asistente no posee credenciales, puertos abiertos ni enlaces de conexión directa con la base de datos central de transacciones bancarias. Esto elimina cualquier vector de riesgo de alteración o fuga de saldos desde el core.
 * **Sin invasión sobre Ultimus BPM:** No se utilizan robots basados en automatización de interfaz (RPA) invasivos que pudieran bloquearse ante cambios de versión del BPM. La carga de datos la efectúa el analista humano mediante interacción de portapapeles asistido.
 
-### 4.2. Protección de Datos en Tránsito y Reposo
+### 4.2. Función y Seguridad de la Base de Datos SQLite
+* **Datos Operativos y Telemetría Exclusiva:** La base de datos SQLite almacena únicamente identificadores de sesión anonimizados, marcas de tiempo, resultados del semáforo y duración de eventos operativos.
+* **No Persistencia de Datos Financieros Centrales:** Los documentos del cliente y contratos generados no se acumulan en la base de datos; se procesan en la memoria volátil de la sesión y se descargan localmente por el analista.
+* **Ubicación Controlada:** El archivo de base de datos SQLite reside en el entorno de ejecución protegido del analista o en el almacenamiento seguro del servidor web interno, con permisos de lectura y escritura restringidos al perfil de la aplicación.
+
+### 4.3. Protección de Datos en Tránsito
 * **Cifrado Fuerte:** Todas las transmisiones hacia el Gateway y hacia la API del modelo de inteligencia artificial se realizan mediante protocolos seguros HTTPS sobre TLS 1.3.
-* **Efimeridad de Datos (Zero-Data Retention):** Los documentos procesados se mantienen exclusivamente en memoria volátil durante la sesión de trabajo. El servicio de modelo cognitivo opera bajo suscripción corporativa (*Enterprise Agreement*) con cláusula de no almacenamiento y no reutilización de datos para entrenamiento de modelos.
-* **Privacidad de la Información Personal:** Los identificadores y datos financieros extraídos solo viajan entre el analista y el servicio de inferencia temporal, sin persistirse en servidores intermedios de terceros.
+* **Efimeridad de Datos (Zero-Data Retention):** El servicio de modelo cognitivo opera bajo suscripción corporativa (*Enterprise Agreement*) con cláusula de no almacenamiento y no reutilización de datos para entrenamiento de modelos.
 
 ---
 
@@ -139,6 +165,8 @@ flowchart TD
     RULES --> OUT1["Semáforo de Calidad Documental"]
     RULES --> OUT2["Tarjetas Estructuradas para Copiado"]
     RULES --> OUT3["Variables Inyectadas en Plantillas Legales"]
+    
+    RULES -.->|"Registro de tiempos y eventos"| SQLITE[("Base de Datos SQLite<br>Logs de Tiempos y Eficiencias")]
 ```
 
 1. **Razonamiento Espacial sobre Tablas Complejas:**
@@ -154,49 +182,59 @@ flowchart TD
 
 ## 6. Flujo de Proceso
 
-El flujo operativo se estructura en tres etapas secuenciales gestionadas desde la pantalla del analista:
+El flujo operativo se estructura en tres etapas secuenciales gestionadas desde la **interfaz unificada** del analista:
 
 ```mermaid
 sequenceDiagram
     autonumber
     actor Analista as Analista de Crédito
-    participant Copiloto as Asistente de Formalización
+    participant Copiloto as Consola Única del Asistente
+    participant SQLite as Base de Datos SQLite
     participant Gateway as Gateway / LLM API
     participant BPM as Ultimus BPM / Core IBS
 
     Analista->>Copiloto: Carga expediente digital (PDFs del préstamo aprobado)
+    Copiloto->>SQLite: Registra timestamp de inicio del expediente
     Copiloto->>Gateway: Envía documentos para extracción e inspección multimodal
     Gateway-->>Copiloto: Retorna datos estructurados y verificación de vigencias
     
     alt Inconsistencia o Falta Certificado CSS en Jubilado
         Copiloto-->>Analista: Emite 🔴 Semáforo Rojo (Stopper: caso devuelto a sucursal)
+        Copiloto->>SQLite: Registra rechazo preventivo y tiempo de auditoría
     else Vencimiento Cercano (<48 hrs)
         Copiloto-->>Analista: Emite 🟡 Semáforo Amarillo (Advertencia de firma prioritaria)
+        Copiloto->>SQLite: Registra alerta preventiva de vigencia
     else Expediente 100% Conforme
         Copiloto-->>Analista: Emite 🟢 Semáforo Verde (Expediente Certificado)
+        Copiloto->>SQLite: Registra certificación conforme
         
         Analista->>Copiloto: Presiona botón de copiado de campo requerido
         Copiloto->>Analista: Copia al portapapeles del sistema (1 Clic)
         Analista->>BPM: Pega valor en formulario de Ultimus (Ctrl + V en 40 seg)
+        Copiloto->>SQLite: Registra métrica de tiempo de copiado/transcripción
         
         opt Caso de Compra de Saldo
             Analista->>Copiloto: Solicita generación de paquete contractual
             Copiloto->>Copiloto: Inyecta datos en plantillas oficiales CDA
             Copiloto-->>Analista: Descarga contratos, pagarés y promesas (.docx / .pdf)
+            Copiloto->>SQLite: Registra tiempo de ensamblaje documental
         end
     end
+    Copiloto->>SQLite: Registra tiempo total de formalización por expediente
 ```
 
-### Descripción de las Fases del Proceso:
+### Descripción de las Fases en la Consola Única:
 1. **Fase 1: Auditoría y Semáforo de Pre-Formalización:**
-   * El analista arrastra el expediente aprobado.
-   * La solución audita consistencia de identidad (cédula y nombre idénticos en todos los recaudos) y vigencias normativas.
+   * El analista arrastra el expediente aprobado al panel superior.
+   * La solución audita consistencia de identidad y vigencias normativas (<30 días).
    * Si el cliente es jubilado y carece del certificado de la CSS, el sistema genera de forma instantánea un **Semáforo Rojo**, permitiendo devolver el expediente a la sucursal antes de perder tiempo procesándolo en Ultimus.
-2. **Fase 2: Copiloto de Extracción y Portapapeles Asistido (Smart Clipboard):**
-   * Una vez obtenido el **Semáforo Verde**, la pantalla presenta tarjetas ordenadas con los 10 a 15 campos necesarios para Ultimus.
+2. **Fase 2: Smart Clipboard en Pantalla Dividida:**
+   * Una vez obtenido el **Semáforo Verde**, el panel central presenta tarjetas ordenadas con los 10 a 15 campos necesarios para Ultimus.
    * El analista hace clic sobre el campo deseado y lo pega directamente en el formulario del BPM. Esta acción toma entre 30 y 50 segundos por expediente, erradicando errores tipográficos hacia el Core IBS.
 3. **Fase 3: Ensamblaje Documental de Compra de Saldo:**
-   * En créditos destinados a consolidar pasivos, el sistema extrae las obligaciones de las cartas externas y completa automáticamente las **Promesas Irrevocables de Pago**, el **Pagaré Notarial** y la **Orden de Descuento** en formato editable `.docx` y visualizable `.pdf`, reduciendo 30 minutos de redacción a 15 segundos.
+   * En créditos destinados a consolidar pasivos, el panel inferior extrae las obligaciones de las cartas externas y completa automáticamente las **Promesas Irrevocables de Pago**, el **Pagaré Notarial** y la **Orden de Descuento** en formato editable `.docx` y visualizable `.pdf`, reduciendo 30 minutos de redacción a 15 segundos.
+4. **Fase Continua de Métricas en SQLite:**
+   * En segundo plano y sin fricción para el usuario, cada paso alimenta la base de datos local SQLite con los tiempos reales invertidos, generando el insumo analítico para justificar la eficiencia del proyecto ante la Dirección del banco.
 
 ---
 
@@ -208,11 +246,16 @@ La arquitectura descrita adopta decisiones estratégicas deliberadas para maximi
 * **Por qué habilitar la opción Desktop:** En escenarios de despliegue ágil, una aplicación de escritorio local permite iniciar pruebas piloto o producción de inmediato en un grupo controlado de analistas, sin depender de ventanas de mantenimiento de servidores corporativos, aprobaciones de infraestructura centralizada ni configuraciones de balanceadores de carga.
 * **Por qué contemplar la opción Web App Interna:** Si la gobernanza institucional exige centralizar el despliegue para evitar instalaciones individuales en puestos de trabajo y gestionar actualizaciones desde un único punto, la arquitectura web interna permite servir el copiloto a través del navegador estándar del banco, reutilizando los servidores de aplicaciones corporativos existentes.
 
-### 7.2. Salida Segura a Internet vía Gateway Corporativo
+### 7.2. Elección de SQLite para Telemetría y Métricas de Tiempos
+* **Autonomía y Cero Mantenimiento:** SQLite opera como una base de datos integrada directamente en el proceso de la aplicación, sin requerir instalación, administración ni costos de licencias de un motor de base de datos cliente-servidor dedicado.
+* **Rendimiento Inmediato:** Permite registrar trazas de auditoría y marcas de tiempo en microsegundos, asegurando que la medición de eficiencias no introduzca ninguna latencia perceptible para el analista.
+* **Facilidad de Extracción:** El archivo SQLite resultante puede consultarse o exportarse periódicamente mediante reportes analíticos para la toma de decisiones de la gerencia de operaciones.
+
+### 7.3. Salida Segura a Internet vía Gateway Corporativo
 El consumo de modelos de inteligencia artificial mediante llamadas API a través del proxy/gateway del banco representa la alternativa técnica y económica más eficiente:
 * Elimina la necesidad de adquirir, alojar y mantener servidores con aceleración por hardware (GPUs de alto costo) dentro de los centros de datos de la institución.
 * Asegura el acceso continuo a las versiones más recientes y precisas de los modelos cognitivos multimodales.
 * Garantiza la trazabilidad del tráfico mediante los registros y políticas de inspección ya implementados en el firewall perimetral del banco.
 
-### 7.3. Descarte de Soluciones Invasivas
-Se descartó expresamente el uso de automatizaciones robóticas (RPA) que interactúen a ciegas sobre las pantallas de Ultimus BPM o que modifiquen bases de datos directas. El enfoque de **Smart Clipboard** respeta íntegramente la arquitectura bancaria actual, preserva la responsabilidad operativa del analista y entrega resultados de negocio inmediatos con costo de mantenimiento cercano a cero.
+### 7.4. Descarte de Soluciones Invasivas
+Se descartó expresamente el uso de automatizaciones robóticas (RPA) que interactúen a ciegas sobre las pantallas de Ultimus BPM o que modifiquen bases de datos directas. El enfoque de **Smart Clipboard en Interfaz Única** respeta íntegramente la arquitectura bancaria actual, preserva la responsabilidad operativa del analista y entrega resultados de negocio inmediatos con costo de mantenimiento cercano a cero.
