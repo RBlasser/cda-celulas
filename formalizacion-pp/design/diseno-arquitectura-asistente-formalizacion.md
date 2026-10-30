@@ -256,6 +256,3 @@ El consumo de modelos de inteligencia artificial mediante llamadas API a través
 * Elimina la necesidad de adquirir, alojar y mantener servidores con aceleración por hardware (GPUs de alto costo) dentro de los centros de datos de la institución.
 * Asegura el acceso continuo a las versiones más recientes y precisas de los modelos cognitivos multimodales.
 * Garantiza la trazabilidad del tráfico mediante los registros y políticas de inspección ya implementados en el firewall perimetral del banco.
-
-### 7.4. Descarte de Soluciones Invasivas
-Se descartó expresamente el uso de automatizaciones robóticas (RPA) que interactúen a ciegas sobre las pantallas de Ultimus BPM o que modifiquen bases de datos directas. El enfoque de **Smart Clipboard en Interfaz Única** respeta íntegramente la arquitectura bancaria actual, preserva la responsabilidad operativa del analista y entrega resultados de negocio inmediatos con costo de mantenimiento cercano a cero, cumpliendo con la premisa fundamental de un MVP exitoso.
