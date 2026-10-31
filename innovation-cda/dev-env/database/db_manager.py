@@ -82,10 +82,63 @@ def init_db():
     );
     """)
 
+    # 4. Tabla de Logs del Servidor / HTTP (Errores y Eventos de la App)
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS logs_servidor (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nivel TEXT NOT NULL,
+        endpoint TEXT,
+        metodo TEXT,
+        codigo_estado INTEGER,
+        mensaje TEXT NOT NULL,
+        detalle_error TEXT,
+        ip_origen TEXT,
+        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+    """)
+
+    # 5. Tabla de Logs de AI Requests (Llamadas a APIs de Agentes / Modelos)
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS logs_ai_requests (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        session_id TEXT,
+        proveedor TEXT NOT NULL,
+        modelo TEXT,
+        tiempo_ms INTEGER,
+        estado TEXT NOT NULL,
+        prompt_tokens INTEGER,
+        error_detail TEXT,
+        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+    """)
+
+    # 6. Tabla de Logs de Auditoría y Negocio (Leads, Exportaciones, Configuración, Login)
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS logs_auditoria (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        tipo_evento TEXT NOT NULL,
+        usuario_origen TEXT,
+        detalles TEXT,
+        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+    """)
+
+    # 7. Tabla de Configuración Dinámica (Proveedores, API Keys y Parámetros del Sistema)
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS configuracion (
+        clave TEXT PRIMARY KEY,
+        valor TEXT NOT NULL,
+        actualizado_el TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+    """)
+
     # Índices para búsquedas ágiles
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_clientes_cedula ON clientes (cedula);")
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_conversaciones_session ON conversaciones (session_id);")
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_mensajes_session ON mensajes_log (session_id);")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_logs_servidor_nivel ON logs_servidor (nivel);")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_logs_ai_estado ON logs_ai_requests (estado);")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_logs_auditoria_evento ON logs_auditoria (tipo_evento);")
 
     conn.commit()
     conn.close()
@@ -264,5 +317,155 @@ def obtener_conversacion(session_id: str) -> Optional[Dict[str, Any]]:
     return d
 
 
+# =========================================================================
+# FUNCIONES DE LOGGING, TRAZABILIDAD Y CONFIGURACIÓN DINÁMICA
+# =========================================================================
+
+def registrar_log_servidor(
+    nivel: str,
+    mensaje: str,
+    endpoint: Optional[str] = None,
+    metodo: Optional[str] = None,
+    codigo_estado: Optional[int] = None,
+    detalle_error: Optional[str] = None,
+    ip_origen: Optional[str] = None
+):
+    """Registra eventos y errores del servidor HTTP y la aplicación."""
+    try:
+        conn = get_connection()
+        conn.execute("""
+        INSERT INTO logs_servidor (nivel, endpoint, metodo, codigo_estado, mensaje, detalle_error, ip_origen)
+        VALUES (?, ?, ?, ?, ?, ?, ?);
+        """, (nivel.upper(), endpoint, metodo, codigo_estado, mensaje, detalle_error, ip_origen))
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        print(f"Error escribiendo en logs_servidor: {e}")
+
+
+def registrar_log_ai(
+    session_id: str,
+    proveedor: str,
+    estado: str,
+    modelo: Optional[str] = None,
+    tiempo_ms: Optional[int] = None,
+    prompt_tokens: Optional[int] = None,
+    error_detail: Optional[str] = None
+):
+    """Registra cada ejecución (éxito o fallo) hacia los modelos / APIs de IA."""
+    try:
+        conn = get_connection()
+        conn.execute("""
+        INSERT INTO logs_ai_requests (session_id, proveedor, modelo, tiempo_ms, estado, prompt_tokens, error_detail)
+        VALUES (?, ?, ?, ?, ?, ?, ?);
+        """, (session_id, proveedor, modelo, tiempo_ms, estado.upper(), prompt_tokens, error_detail))
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        print(f"Error escribiendo en logs_ai_requests: {e}")
+
+
+def registrar_log_auditoria(
+    tipo_evento: str,
+    detalles: str = "",
+    usuario_origen: str = "sistema"
+):
+    """Registra eventos de negocio, cambios de configuración y acciones administrativas."""
+    try:
+        conn = get_connection()
+        conn.execute("""
+        INSERT INTO logs_auditoria (tipo_evento, usuario_origen, detalles)
+        VALUES (?, ?, ?);
+        """, (tipo_evento.upper(), usuario_origen, detalles))
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        print(f"Error escribiendo en logs_auditoria: {e}")
+
+
+def obtener_config(clave: str, default: str = "") -> str:
+    """Obtiene un parámetro de configuración desde SQLite con fallback seguro a variables de entorno."""
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT valor FROM configuracion WHERE clave = ?;", (clave,))
+        row = cur.fetchone()
+        conn.close()
+        if row and row["valor"]:
+            return row["valor"]
+    except Exception:
+        pass
+    return os.getenv(clave.upper(), default)
+
+
+def guardar_config(clave: str, valor: str):
+    """Guarda o actualiza un parámetro de configuración en SQLite (API keys, proveedor de IA, etc.)."""
+    conn = get_connection()
+    conn.execute("""
+    INSERT INTO configuracion (clave, valor, actualizado_el)
+    VALUES (?, ?, CURRENT_TIMESTAMP)
+    ON CONFLICT(clave) DO UPDATE SET
+        valor = excluded.valor,
+        actualizado_el = CURRENT_TIMESTAMP;
+    """, (clave, valor))
+    conn.commit()
+    conn.close()
+
+
+def obtener_logs(tipo_log: str = "servidor", limite: int = 100) -> List[Dict[str, Any]]:
+    """Obtiene los registros más recientes de la tabla de logs especificada."""
+    conn = get_connection()
+    cur = conn.cursor()
+    tabla = "logs_servidor"
+    if tipo_log == "ai":
+        tabla = "logs_ai_requests"
+    elif tipo_log == "auditoria":
+        tabla = "logs_auditoria"
+
+    cur.execute(f"SELECT * FROM {tabla} ORDER BY id DESC LIMIT ?;", (limite,))
+    rows = [dict(r) for r in cur.fetchall()]
+    conn.close()
+    return rows
+
+
+def obtener_todos_los_clientes() -> List[Dict[str, Any]]:
+    """Retorna todos los clientes registrados cruzados con su Pase Digital para exportación comercial."""
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("""
+    SELECT c.*, conv.pase_digital, conv.total_mensajes
+    FROM clientes c
+    LEFT JOIN conversaciones conv ON c.session_id = conv.session_id
+    ORDER BY c.id DESC;
+    """)
+    rows = [dict(r) for r in cur.fetchall()]
+    conn.close()
+    return rows
+
+
+def obtener_todas_las_conversaciones() -> List[Dict[str, Any]]:
+    """Retorna todas las conversaciones con su JSON y datos del cliente para exportación o auditoría."""
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("""
+    SELECT conv.session_id, conv.pase_digital, conv.total_mensajes, conv.chat_json,
+           c.nombre, c.cedula, c.celular, c.correo, conv.fecha_actualizacion
+    FROM conversaciones conv
+    LEFT JOIN clientes c ON conv.session_id = c.session_id
+    ORDER BY conv.id DESC;
+    """)
+    rows = []
+    for r in cur.fetchall():
+        d = dict(r)
+        try:
+            d["chat_json"] = json.loads(d["chat_json"])
+        except Exception:
+            pass
+        rows.append(d)
+    conn.close()
+    return rows
+
+
 # Inicializar automáticamente al importar el módulo
 init_db()
+

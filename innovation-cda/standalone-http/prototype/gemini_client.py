@@ -1,145 +1,296 @@
 """
-Cliente REST ligero para Google Gemini API sin dependencias externas pesadas.
-Permite consultar modelos Gemini (por defecto gemini-2.0-flash o gemini-1.5-flash)
-con soporte de fallback inteligente si no se dispone de conexión o clave API.
+Cliente de IA multi-proveedor y fallback inteligente para Asesor Virtual de Auto - Caja de Ahorros.
+Soporta:
+  1. Google Gemini (REST SSE)
+  2. OpenAI (REST SSE)
+  3. Anthropic Claude (REST SSE)
+  4. Motor Local de Reglas Institucionales (100% offline y de alta velocidad)
+
+Permite configuración dinámica de API keys y proveedores desde SQLite (tabla 'configuracion')
+o variables de entorno, registrando cada consulta en la tabla 'logs_ai_requests'.
 """
 
 import os
+import json
+import time
 import requests
-from typing import List, Dict, Tuple
+from typing import List, Dict, Generator, Tuple
 from dotenv import load_dotenv
-from knowledge_base import SYSTEM_PROMPT, KNOWLEDGE_CONTEXT
 
-# Cargar automáticamente variables de entorno desde .env si existe
+from knowledge_base import SYSTEM_PROMPT, KNOWLEDGE_CONTEXT
+from database.db_manager import (
+    obtener_config,
+    guardar_config,
+    registrar_log_ai
+)
+
 load_dotenv()
 
-GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent"
-FALLBACK_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemma-4-26b-a4b-it:generateContent"
+# Modelos predeterminados por proveedor
+DEFAULT_MODELS = {
+    "gemini": "gemini-2.0-flash",
+    "openai": "gpt-4o-mini",
+    "claude": "claude-3-5-haiku-20241022",
+    "local": "reglas-institucionales-cda"
+}
+
+
+def stream_ai_response(
+    messages: List[Dict[str, str]], 
+    session_id: str = "anonima"
+) -> Generator[str, None, None]:
+    """
+    Emite tokens en streaming según el proveedor seleccionado en la consola de administración.
+    Si el proveedor remoto falla o no tiene clave API configurada, utiliza el motor de reglas local
+    y registra el evento en SQLite (logs_ai_requests).
+    """
+    t_start = time.time()
+    proveedor = (obtener_config("ai_provider") or "gemini").lower().strip()
+    api_key = (obtener_config("ai_api_key") or os.getenv("GEMINI_API_KEY", "")).strip()
+    modelo = (obtener_config("ai_model") or DEFAULT_MODELS.get(proveedor, "default")).strip()
+
+    # Si el proveedor es local o no hay clave API configurada
+    if proveedor == "local" or (not api_key and proveedor != "local"):
+        ultimo_mensaje = messages[-1]["content"] if messages else ""
+        resp_local = get_smart_local_response(ultimo_mensaje)
+        elapsed_ms = int((time.time() - t_start) * 1000)
+        
+        # Registrar log en base de datos
+        registrar_log_ai(
+            session_id=session_id,
+            proveedor="local" if proveedor == "local" else f"{proveedor}-fallback-local",
+            modelo="reglas-cda",
+            tiempo_ms=elapsed_ms,
+            estado="SUCCESS",
+            prompt_tokens=len(ultimo_mensaje.split())
+        )
+        
+        # Emitir palabra por palabra para emular streaming fluido
+        words = resp_local.split(" ")
+        for i, w in enumerate(words):
+            yield w + (" " if i < len(words) - 1 else "")
+        return
+
+    # Proveedor: Google Gemini
+    if proveedor == "gemini":
+        exito = False
+        error_msg = ""
+        try:
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/{modelo}:streamGenerateContent?alt=sse&key={api_key}"
+            payload = {
+                "system_instruction": {
+                    "parts": [{"text": f"{SYSTEM_PROMPT}\n\nCONTEXTO INSTITUCIONAL:\n{KNOWLEDGE_CONTEXT}"}]
+                },
+                "contents": [
+                    {
+                        "role": "user" if m["role"] == "user" else "model",
+                        "parts": [{"text": m["content"]}]
+                    }
+                    for m in messages
+                ],
+                "generationConfig": {
+                    "temperature": 0.2,
+                    "maxOutputTokens": 2048,
+                    "thinkingConfig": {"thinkingBudget": 0}
+                }
+            }
+            resp = requests.post(url, json=payload, headers={"Content-Type": "application/json"}, stream=True, timeout=25)
+            if resp.status_code == 200:
+                for line in resp.iter_lines():
+                    if line:
+                        decoded = line.decode("utf-8")
+                        if decoded.startswith("data: "):
+                            data = json.loads(decoded[6:])
+                            candidates = data.get("candidates", [])
+                            if candidates:
+                                part = candidates[0].get("content", {}).get("parts", [{}])[0].get("text", "")
+                                if part:
+                                    exito = True
+                                    yield part
+                elapsed_ms = int((time.time() - t_start) * 1000)
+                registrar_log_ai(
+                    session_id=session_id,
+                    proveedor="gemini",
+                    modelo=modelo,
+                    tiempo_ms=elapsed_ms,
+                    estado="SUCCESS"
+                )
+                return
+            else:
+                error_msg = f"HTTP {resp.status_code}: {resp.text[:200]}"
+        except Exception as e:
+            error_msg = str(e)
+
+        # Si falló Gemini, registrar ERROR y usar fallback local
+        elapsed_ms = int((time.time() - t_start) * 1000)
+        registrar_log_ai(
+            session_id=session_id,
+            proveedor="gemini",
+            modelo=modelo,
+            tiempo_ms=elapsed_ms,
+            estado="ERROR",
+            error_detail=error_msg
+        )
+        ultimo_mensaje = messages[-1]["content"] if messages else ""
+        resp_local = get_smart_local_response(ultimo_mensaje)
+        words = resp_local.split(" ")
+        for i, w in enumerate(words):
+            yield w + (" " if i < len(words) - 1 else "")
+        return
+
+    # Proveedor: OpenAI
+    if proveedor == "openai":
+        exito = False
+        error_msg = ""
+        try:
+            url = "https://api.openai.com/v1/chat/completions"
+            headers = {
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json"
+            }
+            api_messages = [{"role": "system", "content": f"{SYSTEM_PROMPT}\n\nCONTEXTO INSTITUCIONAL:\n{KNOWLEDGE_CONTEXT}"}]
+            for m in messages:
+                api_messages.append({"role": m["role"], "content": m["content"]})
+            payload = {
+                "model": modelo or "gpt-4o-mini",
+                "messages": api_messages,
+                "temperature": 0.2,
+                "stream": True
+            }
+            resp = requests.post(url, json=payload, headers=headers, stream=True, timeout=25)
+            if resp.status_code == 200:
+                for line in resp.iter_lines():
+                    if line:
+                        decoded = line.decode("utf-8")
+                        if decoded.startswith("data: ") and not decoded.startswith("data: [DONE]"):
+                            data = json.loads(decoded[6:])
+                            delta = data.get("choices", [{}])[0].get("delta", {})
+                            content = delta.get("content", "")
+                            if content:
+                                exito = True
+                                yield content
+                elapsed_ms = int((time.time() - t_start) * 1000)
+                registrar_log_ai(
+                    session_id=session_id,
+                    proveedor="openai",
+                    modelo=modelo,
+                    tiempo_ms=elapsed_ms,
+                    estado="SUCCESS"
+                )
+                return
+            else:
+                error_msg = f"HTTP {resp.status_code}: {resp.text[:200]}"
+        except Exception as e:
+            error_msg = str(e)
+
+        elapsed_ms = int((time.time() - t_start) * 1000)
+        registrar_log_ai(
+            session_id=session_id,
+            proveedor="openai",
+            modelo=modelo,
+            tiempo_ms=elapsed_ms,
+            estado="ERROR",
+            error_detail=error_msg
+        )
+        ultimo_mensaje = messages[-1]["content"] if messages else ""
+        resp_local = get_smart_local_response(ultimo_mensaje)
+        words = resp_local.split(" ")
+        for i, w in enumerate(words):
+            yield w + (" " if i < len(words) - 1 else "")
+        return
+
+    # Proveedor: Anthropic Claude
+    if proveedor == "claude":
+        exito = False
+        error_msg = ""
+        try:
+            url = "https://api.anthropic.com/v1/messages"
+            headers = {
+                "x-api-key": api_key,
+                "anthropic-version": "2023-06-01",
+                "Content-Type": "application/json"
+            }
+            api_messages = []
+            for m in messages:
+                role = "user" if m["role"] == "user" else "assistant"
+                api_messages.append({"role": role, "content": m["content"]})
+            payload = {
+                "model": modelo or "claude-3-5-haiku-20241022",
+                "max_tokens": 2048,
+                "system": f"{SYSTEM_PROMPT}\n\nCONTEXTO INSTITUCIONAL:\n{KNOWLEDGE_CONTEXT}",
+                "messages": api_messages,
+                "stream": True
+            }
+            resp = requests.post(url, json=payload, headers=headers, stream=True, timeout=25)
+            if resp.status_code == 200:
+                for line in resp.iter_lines():
+                    if line:
+                        decoded = line.decode("utf-8")
+                        if decoded.startswith("data: "):
+                            data = json.loads(decoded[6:])
+                            event_type = data.get("type", "")
+                            if event_type == "content_block_delta":
+                                delta_text = data.get("delta", {}).get("text", "")
+                                if delta_text:
+                                    exito = True
+                                    yield delta_text
+                elapsed_ms = int((time.time() - t_start) * 1000)
+                registrar_log_ai(
+                    session_id=session_id,
+                    proveedor="claude",
+                    modelo=modelo,
+                    tiempo_ms=elapsed_ms,
+                    estado="SUCCESS"
+                )
+                return
+            else:
+                error_msg = f"HTTP {resp.status_code}: {resp.text[:200]}"
+        except Exception as e:
+            error_msg = str(e)
+
+        elapsed_ms = int((time.time() - t_start) * 1000)
+        registrar_log_ai(
+            session_id=session_id,
+            proveedor="claude",
+            modelo=modelo,
+            tiempo_ms=elapsed_ms,
+            estado="ERROR",
+            error_detail=error_msg
+        )
+        ultimo_mensaje = messages[-1]["content"] if messages else ""
+        resp_local = get_smart_local_response(ultimo_mensaje)
+        words = resp_local.split(" ")
+        for i, w in enumerate(words):
+            yield w + (" " if i < len(words) - 1 else "")
+        return
+
+    # Fallback genérico final si el proveedor configurado no es reconocido
+    ultimo_mensaje = messages[-1]["content"] if messages else ""
+    resp_local = get_smart_local_response(ultimo_mensaje)
+    words = resp_local.split(" ")
+    for i, w in enumerate(words):
+        yield w + (" " if i < len(words) - 1 else "")
+
+
+def stream_gemini_api(messages: List[Dict[str, str]], api_key: str = None) -> Generator[str, None, None]:
+    """Alias retrocompatible para stream_ai_response."""
+    return stream_ai_response(messages)
 
 
 def query_gemini_api(messages: List[Dict[str, str]], api_key: str = None) -> Tuple[bool, str]:
-    """
-    Envía el historial de mensajes a la API de Gemini usando requests.
-    Retorna (éxito, respuesta_o_error).
-    """
-    key = api_key or os.getenv("GEMINI_API_KEY", "")
-    if not key:
-        return False, "No se ha configurado una clave de API (GEMINI_API_KEY)."
-
-    # Preparar el contenido para Gemini API
-    # Inyectamos el SYSTEM_PROMPT y el KNOWLEDGE_CONTEXT en la instrucción de sistema
-    payload = {
-        "system_instruction": {
-            "parts": [
-                {"text": f"{SYSTEM_PROMPT}\n\nCONTEXTO INSTITUCIONAL:\n{KNOWLEDGE_CONTEXT}"}
-            ]
-        },
-        "contents": [],
-        "generationConfig": {
-            "temperature": 0.2,
-            "maxOutputTokens": 2048,
-            "thinkingConfig": {
-                "thinkingBudget": 0
-            }
-        }
-    }
-
-    # Convertir historial de mensajes
-    for msg in messages:
-        role = "user" if msg["role"] == "user" else "model"
-        payload["contents"].append({
-            "role": role,
-            "parts": [{"text": msg["content"]}]
-        })
-
-    # Intentar con gemini-2.0-flash y luego gemini-1.5-flash si falla
-    for url in [GEMINI_API_URL, FALLBACK_API_URL]:
-        try:
-            resp = requests.post(
-                f"{url}?key={key}",
-                json=payload,
-                headers={"Content-Type": "application/json"},
-                timeout=25
-            )
-            if resp.status_code == 200:
-                data = resp.json()
-                candidates = data.get("candidates", [])
-                if candidates:
-                    parts = candidates[0].get("content", {}).get("parts", [])
-                    if parts:
-                        return True, parts[0].get("text", "")
-            elif resp.status_code == 400:
-                error_data = resp.json()
-                return False, f"Error en la consulta: {error_data.get('error', {}).get('message', 'Parámetros inválidos')}"
-        except Exception as e:
-            continue
-
-    return False, "No fue posible conectar con el servicio de IA en este momento."
-
-
-def stream_gemini_api(messages: List[Dict[str, str]], api_key: str = None):
-    """
-    Generador que emite fragmentos de texto en tiempo real desde la API de Gemini (SSE).
-    """
-    import json
-    key = api_key or os.getenv("GEMINI_API_KEY", "")
-    if not key:
-        return
-
-    stream_url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:streamGenerateContent?alt=sse"
-
-    payload = {
-        "system_instruction": {
-            "parts": [
-                {"text": f"{SYSTEM_PROMPT}\n\nCONTEXTO INSTITUCIONAL:\n{KNOWLEDGE_CONTEXT}"}
-            ]
-        },
-        "contents": [],
-        "generationConfig": {
-            "temperature": 0.2,
-            "maxOutputTokens": 2048,
-            "thinkingConfig": {
-                "thinkingBudget": 0
-            }
-        }
-    }
-
-    for msg in messages:
-        role = "user" if msg["role"] == "user" else "model"
-        payload["contents"].append({
-            "role": role,
-            "parts": [{"text": msg["content"]}]
-        })
-
-    try:
-        resp = requests.post(
-            f"{stream_url}&key={key}",
-            json=payload,
-            headers={"Content-Type": "application/json"},
-            stream=True,
-            timeout=25
-        )
-        if resp.status_code == 200:
-            for line in resp.iter_lines():
-                if line:
-                    decoded = line.decode("utf-8")
-                    if decoded.startswith("data: "):
-                        data = json.loads(decoded[6:])
-                        candidates = data.get("candidates", [])
-                        if candidates:
-                            part = candidates[0].get("content", {}).get("parts", [{}])[0].get("text", "")
-                            if part:
-                                yield part
-    except Exception:
-        pass
-
+    """Función de consulta sincrónica retrocompatible."""
+    chunks = list(stream_ai_response(messages))
+    if chunks:
+        return True, "".join(chunks)
+    ultimo_mensaje = messages[-1]["content"] if messages else ""
+    return True, get_smart_local_response(ultimo_mensaje)
 
 
 def get_smart_local_response(user_query: str) -> str:
     """
-    Motor local de respuestas orientativas basado en los lineamientos de Caja de Ahorros.
-    Se activa inmediatamente cuando no hay clave API configurada, asegurando
-    que el prototipo sea 100% interactivo y funcional en ferias o demos.
+    Motor local de respuestas orientativas basado en los lineamientos oficiales de Caja de Ahorros.
+    Se activa inmediatamente cuando no hay conexión o no hay clave configurada, asegurando
+    que el prototipo sea 100% interactivo, veloz y funcional en ferias o demos sin interrupciones.
     """
     q = user_query.lower()
 

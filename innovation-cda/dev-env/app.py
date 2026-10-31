@@ -24,14 +24,21 @@ if sys.version_info >= (3, 14) and hasattr(asyncio.tasks, '_CTask'):
     asyncio.Task = asyncio.tasks.Task = asyncio.tasks._CTask
     asyncio.Future = asyncio.futures.Future = asyncio.futures._CFuture
 
+from chainlit.server import app as fastapi_app
 from knowledge_base import SYSTEM_PROMPT, KNOWLEDGE_CONTEXT
-from gemini_client import stream_gemini_api, get_smart_local_response
+from gemini_client import stream_ai_response, stream_gemini_api, get_smart_local_response
 from database import (
     guardar_cliente as db_guardar_cliente,
     guardar_chat_json as db_guardar_chat_json,
     actualizar_perfil_cliente as db_actualizar_perfil_cliente,
+    registrar_log_servidor,
+    registrar_log_auditoria,
     DB_PATH
 )
+from admin_routes import setup_admin_routes
+
+# Registrar la consola de administración (/admin) y APIs en FastAPI
+setup_admin_routes(fastapi_app)
 
 # Cargar variables de entorno (.env)
 load_dotenv()
@@ -353,6 +360,13 @@ async def on_chat_start():
     
     # Inicializar sesión en la base de datos SQLite
     db_guardar_chat_json(session_id, [])
+    registrar_log_servidor(
+        nivel="INFO",
+        endpoint="/ws",
+        metodo="WS_START",
+        codigo_estado=101,
+        mensaje=f"Nueva sesión de chat iniciada: {session_id}"
+    )
     
     await cl.Message(
         content=(
@@ -421,6 +435,11 @@ async def process_user_query(user_query: str, is_registration: bool = False):
         cl.user_session.set("codigo_pase", codigo_pase)
         
         guardar_lead_registro({**client_data, "codigo_pase": codigo_pase})
+        registrar_log_auditoria(
+            tipo_evento="REGISTRO_LEAD",
+            detalles=f"Lead: {client_data['nombre']} | Cédula: {client_data['cedula']} | Pase: {codigo_pase}",
+            usuario_origen="formulario_web"
+        )
         
         bienvenida = (
             f"### ¡Mucho gusto y bienvenido/a, **{client_data['nombre']}**! 🚗 🇵🇦\n"
@@ -471,34 +490,33 @@ async def process_user_query(user_query: str, is_registration: bool = False):
         await cl.Message(content=contenido, actions=acciones).send()
         return
 
-    # 4. Consulta de orientación con Gemini Streaming o Fallback local
-    api_key = os.getenv("GEMINI_API_KEY", "")
-    streamed_anything = False
-    
+    # 4. Consulta de orientación con IA (Multi-proveedor: Gemini, OpenAI, Claude o Reglas Locales)
+    async with cl.Step(name="Orientación Inteligente Caja de Ahorros", type="tool") as step:
+        step.output = "Consultando lineamientos de financiamiento de feria..."
+        
     reply_msg = cl.Message(content="")
-    
-    if api_key:
-        async with cl.Step(name="Orientación Inteligente Caja de Ahorros", type="tool") as step:
-            step.output = "Consultando lineamientos de financiamiento de feria..."
+    try:
+        loop = asyncio.get_event_loop()
+        def get_chunks():
+            return list(stream_ai_response(messages, session_id=session_id))
             
-        try:
-            loop = asyncio.get_event_loop()
-            
-            def get_chunks():
-                return list(stream_gemini_api(messages, api_key=api_key))
-                
-            chunks = await loop.run_in_executor(None, get_chunks)
-            
-            if chunks:
-                streamed_anything = True
-                for chunk in chunks:
-                    await reply_msg.stream_token(chunk)
-                    await asyncio.sleep(0.01)
-                await reply_msg.send()
-        except Exception:
-            streamed_anything = False
-
-    if not streamed_anything:
+        chunks = await loop.run_in_executor(None, get_chunks)
+        if chunks:
+            for chunk in chunks:
+                await reply_msg.stream_token(chunk)
+                await asyncio.sleep(0.01)
+            await reply_msg.send()
+            reply_content = reply_msg.content
+        else:
+            raise Exception("No se obtuvieron fragmentos de respuesta del proveedor de IA")
+    except Exception as e:
+        registrar_log_servidor(
+            nivel="ERROR",
+            endpoint="/chat",
+            metodo="WS",
+            mensaje=f"Fallo en generación de respuesta IA: {str(e)}",
+            detalle_error=str(e)
+        )
         fallback_text = get_smart_local_response(user_query)
         words = fallback_text.split(" ")
         for i, word in enumerate(words):
@@ -507,8 +525,6 @@ async def process_user_query(user_query: str, is_registration: bool = False):
             await asyncio.sleep(0.02)
         await reply_msg.send()
         reply_content = fallback_text
-    else:
-        reply_content = reply_msg.content
 
     messages.append({"role": "assistant", "content": reply_content})
     cl.user_session.set("messages", messages)
