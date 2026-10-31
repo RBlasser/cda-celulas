@@ -123,7 +123,7 @@ El sistema incorpora en su vista de configuración un control desplegable (*drop
 ## 6. Persistencia Local y Doble Interfaz (Kiosco vs. Admin)
 
 ### 6.1. Esquema de Base de Datos Embebida (SQLite)
-La base de datos reside en `./data/feria_autos.db` y se autoinicializa al arrancar el ejecutable con el siguiente esquema relacional:
+La base de datos reside en `./data/feria_autos.db` y se autoinicializa al arrancar el ejecutable con el siguiente esquema relacional enriquecido con las 4 palancas de perfilación no invasiva ("Give to Get"):
 
 ```sql
 CREATE TABLE IF NOT EXISTS leads (
@@ -135,22 +135,30 @@ CREATE TABLE IF NOT EXISTS leads (
     telefono TEXT,
     correo TEXT,
     vehiculo_interes TEXT,
-    condicion_vehiculo TEXT, -- Nuevo o Usado
-    sector_laboral TEXT,     -- Público, Privado, Independiente, Jubilado
-    rango_salarial TEXT,
-    abono_disponible TEXT,
+    uso_vehiculo TEXT,       -- Familiar/Personal vs. Trabajo/Negocio/Plataforma
+    sector_laboral TEXT,     -- Salud/Educación, Sector Público, Empresa Privada, Independiente, Jubilado
+    tipo_abono TEXT,         -- Efectivo, Trade-in (Auto a cambio), Mínimo de feria (10%)
+    momento_compra TEXT,     -- Aprovechar feria (Este mes), Próximos 2-3 meses, Exploratorio
+    temperatura_lead TEXT,   -- ALTA (Cierre Feria), MEDIA (Calificado), BAJA (Informativo)
     conversacion_json TEXT NOT NULL
 );
 ```
 
-### 6.2. Doble Interfaz de Usuario
+### 6.2. Estrategia de Indagación Progresiva ("Give to Get")
+Para obtener una calificación comercial profunda sin saturar ni interrogar al cliente:
+1. **Paso 1 (Uso del Vehículo):** Pregunta si es para uso personal/familiar o trabajo/negocio. Orienta el plazo aplicable (hasta 84 meses) sin hablar de dinero.
+2. **Paso 2 (Sector Laboral):** Detecta convenios preferenciales de Caja de Ahorros (ej. 1 mes de permanencia para Salud/Educación o beneficios de Ley 6 para Jubilados).
+3. **Paso 3 (Modalidad de Abono):** Indaga sobre abono en efectivo, auto a cambio (*Trade-in*) o abono mínimo de feria (10%).
+4. **Paso 4 (Momento de Compra / Temperatura):** Identifica la urgencia (este mes en feria vs. próximos meses) para clasificar la oportunidad y emitir el Pase Digital de turno en stand.
+
+### 6.3. Doble Interfaz de Usuario
 1. **Vista Pública Kiosco (`GET /`):**
    * Diseñada para móvil y tabletas táctiles con la identidad institucional de Caja de Ahorros.
-   * Interacción conversacional breve (3 a 5 turnos de perfilación amigable).
+   * Interacción conversacional ágil con botones de acción rápida (*chips*) de 1 clic para responder las 4 preguntas en menos de 30 segundos.
    * No expone botones administrativos ni datos de otros clientes.
 2. **Vista de Administración y Exportación (`GET /admin` o botón de acceso con PIN):**
    * Protegida por un PIN administrativo configurable (ej. `CDA2026`).
-   * **Tabla de Control:** Muestra el listado cronológico de prospectos capturados en la jornada (Nombre, Cédula, Teléfono, Auto cotizado, Fecha/Hora).
+   * **Tabla de Control:** Muestra el listado cronológico de prospectos capturados con su perfil completo y temperatura (`🔥 ALTA`, `⚡ MEDIA`, `🔍 INFORMATIVO`).
    * **Botón "Exportar a Excel / CSV":** Invoca `GET /api/admin/export`, generando una descarga inmediata en la laptop del archivo `leads_feria_[fecha].csv`.
 
 ---

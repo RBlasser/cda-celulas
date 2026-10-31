@@ -5,6 +5,7 @@ Paquete de base de datos SQLite para Caja de Ahorros.
 from .db_manager import (
     init_db,
     guardar_cliente,
+    actualizar_perfil_cliente,
     guardar_chat_json,
     obtener_cliente,
     obtener_conversacion,
@@ -14,6 +15,7 @@ from .db_manager import (
 __all__ = [
     "init_db",
     "guardar_cliente",
+    "actualizar_perfil_cliente",
     "guardar_chat_json",
     "obtener_cliente",
     "obtener_conversacion",

@@ -1,6 +1,6 @@
 """
 Módulo de Gestión de Base de Datos SQLite para Asesor Virtual de Auto - Caja de Ahorros.
-Almacena de forma persistente la información personal del cliente y el historial completo del chat en formato JSON.
+Almacena de forma persistente la información personal del cliente, perfil comercial y el historial completo del chat en formato JSON.
 """
 
 import os
@@ -27,7 +27,7 @@ def init_db():
     conn = get_connection()
     cursor = conn.cursor()
 
-    # 1. Tabla de Clientes (Información Personal de Precalificación)
+    # 1. Tabla de Clientes (Información Personal y Perfilación Comercial de Feria)
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS clientes (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -36,10 +36,22 @@ def init_db():
         cedula TEXT NOT NULL,
         celular TEXT NOT NULL,
         correo TEXT NOT NULL,
+        uso_vehiculo TEXT,
+        sector_laboral TEXT,
+        tipo_abono TEXT,
+        momento_compra TEXT,
+        temperatura_lead TEXT,
         fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         ultima_actividad TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
     """)
+
+    # Agregar columnas de perfilación a tablas existentes de forma segura
+    for col in ["uso_vehiculo", "sector_laboral", "tipo_abono", "momento_compra", "temperatura_lead"]:
+        try:
+            cursor.execute(f"ALTER TABLE clientes ADD COLUMN {col} TEXT;")
+        except sqlite3.OperationalError:
+            pass
 
     # 2. Tabla de Conversaciones (Historial de Chat en JSON y Cotizaciones)
     cursor.execute("""
@@ -84,7 +96,12 @@ def guardar_cliente(
     nombre: str, 
     cedula: str, 
     celular: str, 
-    correo: str
+    correo: str,
+    uso_vehiculo: Optional[str] = None,
+    sector_laboral: Optional[str] = None,
+    tipo_abono: Optional[str] = None,
+    momento_compra: Optional[str] = None,
+    temperatura_lead: Optional[str] = None
 ) -> int:
     """
     Inserta o actualiza los datos personales del cliente registrados en el formulario previo.
@@ -95,15 +112,28 @@ def guardar_cliente(
     ahora = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     cursor.execute("""
-    INSERT INTO clientes (session_id, nombre, cedula, celular, correo, fecha_registro, ultima_actividad)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO clientes (
+        session_id, nombre, cedula, celular, correo,
+        uso_vehiculo, sector_laboral, tipo_abono, momento_compra, temperatura_lead,
+        fecha_registro, ultima_actividad
+    )
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ON CONFLICT(session_id) DO UPDATE SET
         nombre = excluded.nombre,
         cedula = excluded.cedula,
         celular = excluded.celular,
         correo = excluded.correo,
+        uso_vehiculo = COALESCE(excluded.uso_vehiculo, clientes.uso_vehiculo),
+        sector_laboral = COALESCE(excluded.sector_laboral, clientes.sector_laboral),
+        tipo_abono = COALESCE(excluded.tipo_abono, clientes.tipo_abono),
+        momento_compra = COALESCE(excluded.momento_compra, clientes.momento_compra),
+        temperatura_lead = COALESCE(excluded.temperatura_lead, clientes.temperatura_lead),
         ultima_actividad = excluded.ultima_actividad;
-    """, (session_id, nombre, cedula, celular, correo, ahora, ahora))
+    """, (
+        session_id, nombre, cedula, celular, correo,
+        uso_vehiculo, sector_laboral, tipo_abono, momento_compra, temperatura_lead,
+        ahora, ahora
+    ))
 
     conn.commit()
     
@@ -113,6 +143,34 @@ def guardar_cliente(
     cliente_id = row["id"] if row else 0
     conn.close()
     return cliente_id
+
+
+def actualizar_perfil_cliente(session_id: str, perfil_data: Dict[str, Any]):
+    """Actualiza los campos de perfilación comercial capturados durante la conversación."""
+    conn = get_connection()
+    cursor = conn.cursor()
+    ahora = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    cursor.execute("""
+    UPDATE clientes SET
+        uso_vehiculo = COALESCE(?, uso_vehiculo),
+        sector_laboral = COALESCE(?, sector_laboral),
+        tipo_abono = COALESCE(?, tipo_abono),
+        momento_compra = COALESCE(?, momento_compra),
+        temperatura_lead = COALESCE(?, temperatura_lead),
+        ultima_actividad = ?
+    WHERE session_id = ?;
+    """, (
+        perfil_data.get("uso_vehiculo"),
+        perfil_data.get("sector_laboral"),
+        perfil_data.get("tipo_abono"),
+        perfil_data.get("momento_compra"),
+        perfil_data.get("temperatura_lead"),
+        ahora,
+        session_id
+    ))
+    conn.commit()
+    conn.close()
 
 
 def guardar_chat_json(

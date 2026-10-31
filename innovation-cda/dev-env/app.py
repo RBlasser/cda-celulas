@@ -2,7 +2,7 @@
 Asesor Virtual de Auto - Feria de Préstamos Caja de Ahorros
 Desarrollado con Chainlit.
 Proporciona atención conversacional ágil, streaming de respuestas con Gemini,
-orientación por perfil laboral y simulación de crédito con generación de pase digital.
+orientación por perfil laboral, indagación progresiva no invasiva y simulación con pase digital.
 """
 
 import os
@@ -29,6 +29,7 @@ from gemini_client import stream_gemini_api, get_smart_local_response
 from database import (
     guardar_cliente as db_guardar_cliente,
     guardar_chat_json as db_guardar_chat_json,
+    actualizar_perfil_cliente as db_actualizar_perfil_cliente,
     DB_PATH
 )
 
@@ -48,7 +49,6 @@ def calculate_loan_summary(
     Cálculo matemático puro y determinístico de la cuota de auto.
     Aplica lineamientos de Caja de Ahorros y Ley 6 de 1987.
     """
-    # Política de abonos mínimos
     if precio < 10000.0 and pct_abono < 15.0:
         pct_abono = 15.0
     elif pct_abono < 10.0:
@@ -58,14 +58,12 @@ def calculate_loan_summary(
     monto_financiar = round(precio - monto_abono, 2)
     tasa_mensual = (tasa_anual / 100.0) / 12.0
     
-    # Amortización francesa nivelada
     if tasa_mensual > 0:
         factor = (1 + tasa_mensual) ** plazo_meses
         cuota_cap_int = round(monto_financiar * (tasa_mensual * factor) / (factor - 1), 2)
     else:
         cuota_cap_int = round(monto_financiar / plazo_meses, 2)
         
-    # FECI (1% anual si aplica regular, 0% si jubilado Ley 6 o financiamiento <= B/. 5,000)
     if es_jubilado or monto_financiar <= 5000.0:
         cuota_feci = 0.00
     else:
@@ -104,7 +102,16 @@ def guardar_lead_registro(client_data: dict):
         if os.path.exists(leads_file):
             with open(leads_file, "r", encoding="utf-8") as f:
                 leads = json.load(f)
-        leads.append(registro)
+        # Actualizar o agregar registro
+        ced = registro.get("cedula")
+        updated = False
+        for i, lead in enumerate(leads):
+            if ced and lead.get("cedula") == ced:
+                leads[i].update(registro)
+                updated = True
+                break
+        if not updated:
+            leads.append(registro)
         with open(leads_file, "w", encoding="utf-8") as f:
             json.dump(leads, f, indent=2, ensure_ascii=False)
     except Exception as e:
@@ -112,7 +119,7 @@ def guardar_lead_registro(client_data: dict):
 
 
 def format_loan_markdown(data: dict, client_data: dict = None) -> str:
-    """Formatea la simulación y el pase digital en un mensaje markdown profesional y determinístico."""
+    """Formatea la simulación y el pase digital en un mensaje markdown profesional."""
     if data["es_jubilado"]:
         feci_str = "B/. 0.00 *(Exonerado 100% por Ley 6 de 1987)*"
         beneficio_perfil = "• **Condición Especial:** Jubilado / Pensionado *(Aplica beneficio de Ley 6: 0% FECI y 50% de descuento en gastos de cierre)*\n"
@@ -123,7 +130,6 @@ def format_loan_markdown(data: dict, client_data: dict = None) -> str:
         feci_str = f"B/. {data['cuota_feci']:,.2f}/mes"
         beneficio_perfil = ""
     
-    # Inclusión de datos del titular registrado
     if client_data and client_data.get("nombre"):
         titular_str = (
             f"• **Titular:** {client_data['nombre']}\n"
@@ -173,11 +179,22 @@ def es_pregunta_solicitud_datos_letra(texto: str) -> bool:
     ]
     coincide_frase = any(f in t for f in frases_clave)
     tiene_letra_y_pregunta = ("letra" in t or "cuota" in t) and any(w in t for w in ["que", "qué", "como", "cómo", "saber", "necesit", "ocup"])
-    
-    # Verificar si ya incluye números explícitos de precio (en cuyo caso se debe simular)
     tiene_cifras = bool(re.search(r'\d{4,6}|\d{1,3}[,\.]\d{3}', t))
-    
     return (coincide_frase or tiene_letra_y_pregunta) and not tiene_cifras
+
+
+def es_intencion_perfilacion(texto: str) -> bool:
+    """Detecta si el usuario desea asesoría personalizada o perfilación para saber su mejor opción."""
+    t = texto.lower()
+    frases = [
+        "asesoria personalizada", "asesoría personalizada",
+        "perfilarme", "perfilacion", "perfilación",
+        "recomiendame", "recomiéndame", "mejor tasa",
+        "que me conviene", "qué me conviene",
+        "orientame segun mi perfil", "oriéntame según mi perfil",
+        "quiero asesorarme", "asesorame", "asesórame"
+    ]
+    return any(f in t for f in frases)
 
 
 def obtener_mensaje_solicitud_datos():
@@ -187,20 +204,16 @@ def obtener_mensaje_solicitud_datos():
         "Para brindarle una cifra personalizada y transparente que incluya capital, intereses y los seguros correspondientes, requerimos conocer los siguientes detalles:\n\n"
         "1. **Precio del vehículo:** El valor de venta aproximado del auto que le interesa (nuevo o de marcas participantes).\n"
         "2. **Abono inicial:** Cuánto tiene previsto aportar como abono (el mínimo de feria es desde el 10% en autos regulares, o 30% si desea calificar a la modalidad ágil *Fast Track*).\n"
-        "3. **Su perfil laboral:**\n"
-        "   - Empresa privada o gobierno (permanente o continuidad laboral).\n"
-        "   - Leyes especiales (Sector Salud o Educación).\n"
-        "   - Jubilado o pensionado *(aplica exoneración total de FECI por Ley 6 de 1987)*.\n"
-        "   - Profesional independiente.\n"
-        "4. **Plazo deseado:** Habitualmente hasta 84 meses (7 años) para autos nuevos, o hasta 60 meses en perfiles de jubilados.\n\n"
+        "3. **Su perfil laboral:** Empresa privada, gobierno (salud/educación), jubilado o independiente.\n"
+        "4. **Plazo deseado:** Habitualmente hasta 84 meses (7 años) para autos nuevos, o hasta 60 meses en jubilados.\n\n"
         "---\n\n"
-        "💡 *Puede respondernos indicando sus datos (ejemplo: **\"Auto de B/. 18,500 con 10% de abono a 7 años, trabajo en educación\"**) o presionar una de las siguientes opciones para ver una simulación inmediata:*"
+        "💡 *Puede respondernos indicando sus datos o presionar una de las siguientes opciones rápidas:*"
     )
     
     acciones = [
+        cl.Action(name="iniciar_perfilacion", payload={"value": "Deseo realizar la asesoría personalizada paso a paso"}, label="🎯 Asesoría Personalizada (Mejor Plan)"),
         cl.Action(name="preset_sedan", payload={"value": "Deseo simular un auto de B/. 18,500 con 10% de abono a 84 meses para asalariado"}, label="🚗 Auto B/. 18,500 (Asalariado)"),
-        cl.Action(name="preset_educador", payload={"value": "Deseo simular un auto de B/. 16,000 con 15% de abono a 84 meses para sector salud o educación"}, label="🏥 Auto B/. 16,000 (Salud/Educador)"),
-        cl.Action(name="preset_jubilado", payload={"value": "Deseo simular un auto de B/. 22,000 con 15% de abono a 60 meses para jubilado Ley 6"}, label="👴 Auto B/. 22,000 (Jubilado Ley 6)")
+        cl.Action(name="preset_educador", payload={"value": "Deseo simular un auto de B/. 16,000 con 15% de abono a 84 meses para sector salud o educación"}, label="🏥 Auto B/. 16,000 (Salud/Educador)")
     ]
     return contenido, acciones
 
@@ -222,8 +235,6 @@ def es_intencion_simulacion(texto: str) -> bool:
 def extraer_parametros_consulta(texto: str) -> dict:
     """Extrae determinísticamente los parámetros de la consulta del usuario."""
     t = texto.lower()
-    
-    # 1. Precio (soporta 18500, 18,500, 18.500, 18k, con o sin símbolos)
     match_k = re.search(r'\b(\d{1,2})\s*k\b', t)
     match_precio = re.search(r'\b(\d{4,6}(?:\.\d{2})?|\d{1,3}(?:[,\.]\d{3})+(?:\.\d{2})?)\b', t)
     
@@ -237,11 +248,9 @@ def extraer_parametros_consulta(texto: str) -> dict:
         except ValueError:
             precio = 18500.0
 
-    # 2. Perfil
     es_jubilado = any(k in t for k in ["jubilad", "pensionad", "ley 6", "tercera edad"])
     es_salud_educacion = any(k in t for k in ["educa", "maestr", "profesor", "salud", "medic", "médic", "enfermer"])
     
-    # 3. Abono (%)
     if "fast track" in t:
         pct_abono = 30.0
     else:
@@ -254,13 +263,11 @@ def extraer_parametros_consulta(texto: str) -> dict:
         else:
             pct_abono = 15.0 if precio < 10000.0 else 10.0
 
-    # Garantizar abono mínimo según política de CDA
     if precio < 10000.0 and pct_abono < 15.0:
         pct_abono = 15.0
     elif pct_abono < 10.0:
         pct_abono = 10.0
 
-    # 4. Plazo (meses)
     match_plazo = re.search(r'(\d{1,2})\s*(?:meses|mes)', t)
     match_anios = re.search(r'(\d)\s*(?:años|año|anios|anio)', t)
     
@@ -285,6 +292,167 @@ def extraer_parametros_consulta(texto: str) -> dict:
     }
 
 
+# =========================================================================
+# FLUJO DE INDAGACIÓN PROGRESIVA NO INVASIVA (4 PASOS "GIVE TO GET")
+# =========================================================================
+
+async def iniciar_paso_1_uso():
+    """Paso 1: Uso del vehículo para orientar producto y plazo sin pedir dinero."""
+    cl.user_session.set("perfil_comercial", {})
+    msg = (
+        "### 🎯 Asesoría Personalizada — Paso 1 de 4\n\n"
+        "Para orientarle con el mejor plan y plazo de financiamiento de Caja de Ahorros:\n\n"
+        "¿Este vehículo sería principalmente para su **uso personal / familiar** o para **trabajo / plataforma / negocio**?"
+    )
+    actions = [
+        cl.Action(name="perfil_uso", payload={"value": "Personal / Familiar"}, label="👨‍👩‍👧 Familiar / Personal"),
+        cl.Action(name="perfil_uso", payload={"value": "Trabajo / Negocio / Plataforma"}, label="💼 Trabajo / Negocio")
+    ]
+    await cl.Message(content=msg, actions=actions).send()
+
+
+@cl.action_callback("iniciar_perfilacion")
+async def callback_iniciar_perfilacion(action: cl.Action):
+    await iniciar_paso_1_uso()
+
+
+@cl.action_callback("perfil_uso")
+async def callback_perfil_uso(action: cl.Action):
+    uso = action.payload.get("value", "Personal / Familiar")
+    perfil = cl.user_session.get("perfil_comercial", {})
+    perfil["uso_vehiculo"] = uso
+    cl.user_session.set("perfil_comercial", perfil)
+
+    msg = (
+        f"✓ **Uso registrado:** {uso}\n\n"
+        "### 🏛️ Paso 2 de 4: Sector Laboral (Convenios Institucionales)\n\n"
+        "En Caja de Ahorros contamos con condiciones preferenciales según su sector (por ejemplo, aprobación rápida con **solo 1 mes de permanencia** para Salud y Educación, o **0% FECI** para jubilados).\n\n"
+        "¿En qué sector labora actualmente?"
+    )
+    actions = [
+        cl.Action(name="perfil_sector", payload={"value": "Salud o Educación (Leyes Especiales)"}, label="🏥 Salud / Educación"),
+        cl.Action(name="perfil_sector", payload={"value": "Sector Público / Gobierno"}, label="🏛️ Sector Público"),
+        cl.Action(name="perfil_sector", payload={"value": "Empresa Privada"}, label="🏢 Empresa Privada"),
+        cl.Action(name="perfil_sector", payload={"value": "Profesional Independiente"}, label="👔 Independiente"),
+        cl.Action(name="perfil_sector", payload={"value": "Jubilado / Pensionado (Ley 6)"}, label="👴 Jubilado (Ley 6)")
+    ]
+    await cl.Message(content=msg, actions=actions).send()
+
+
+@cl.action_callback("perfil_sector")
+async def callback_perfil_sector(action: cl.Action):
+    sector = action.payload.get("value", "Empresa Privada")
+    perfil = cl.user_session.get("perfil_comercial", {})
+    perfil["sector_laboral"] = sector
+    cl.user_session.set("perfil_comercial", perfil)
+
+    msg = (
+        f"✓ **Sector registrado:** {sector}\n\n"
+        "### 💵 Paso 3 de 4: Modalidad de Abono Inicial\n\n"
+        "Respecto al enganche inicial de su auto: ¿Tiene contemplado entregar un abono en efectivo o dar un auto usado como parte de pago (*Trade-in*)?"
+    )
+    actions = [
+        cl.Action(name="perfil_abono", payload={"value": "Abono en efectivo"}, label="💵 Abono en efectivo"),
+        cl.Action(name="perfil_abono", payload={"value": "Auto usado para cambio (Trade-in)"}, label="🚗 Auto a cambio (Trade-in)"),
+        cl.Action(name="perfil_abono", payload={"value": "Busco financiamiento con mínimo (10%)"}, label="⚡ Mínimo de feria (10%)")
+    ]
+    await cl.Message(content=msg, actions=actions).send()
+
+
+@cl.action_callback("perfil_abono")
+async def callback_perfil_abono(action: cl.Action):
+    abono = action.payload.get("value", "Mínimo de feria (10%)")
+    perfil = cl.user_session.get("perfil_comercial", {})
+    perfil["tipo_abono"] = abono
+    cl.user_session.set("perfil_comercial", perfil)
+
+    msg = (
+        f"✓ **Modalidad de abono:** {abono}\n\n"
+        "### ⏱️ Paso 4 de 4: Momento de Decisión\n\n"
+        "Para que nuestro equipo en el stand le reserve la tasa promocional de feria:\n\n"
+        "¿Su plan es aprovechar las condiciones del evento para reservar **este mes**, o está evaluando opciones con calma para más adelante?"
+    )
+    actions = [
+        cl.Action(name="perfil_tiempo", payload={"value": "Aprovechar la feria (Este mes)", "temp": "🔥 ALTA (Cierre en Feria)"}, label="🔥 Aprovechar la feria (Este mes)"),
+        cl.Action(name="perfil_tiempo", payload={"value": "Próximos 2 a 3 meses", "temp": "⚡ MEDIA (Prospecto Calificado)"}, label="🗓️ Próximos 2 a 3 meses"),
+        cl.Action(name="perfil_tiempo", payload={"value": "Solo explorando opciones", "temp": "🔍 INFORMATIVO"}, label="🔍 Solo explorando opciones")
+    ]
+    await cl.Message(content=msg, actions=actions).send()
+
+
+@cl.action_callback("perfil_tiempo")
+async def callback_perfil_tiempo(action: cl.Action):
+    momento = action.payload.get("value", "Este mes")
+    temp = action.payload.get("temp", "ALTA")
+    session_id = cl.user_session.get("session_id") or cl.user_session.get("id") or "default-session"
+    
+    perfil = cl.user_session.get("perfil_comercial", {})
+    perfil["momento_compra"] = momento
+    perfil["temperatura_lead"] = temp
+    cl.user_session.set("perfil_comercial", perfil)
+    
+    # Persistir perfil comercial en base de datos SQLite
+    db_actualizar_perfil_cliente(session_id, perfil)
+    
+    # Actualizar archivo tabular/JSON de leads
+    client_data = cl.user_session.get("client_data") or {}
+    full_lead = {**client_data, **perfil}
+    guardar_lead_registro(full_lead)
+    
+    codigo_pase = f"CDA-FERIA-{random.randint(1000, 9999)}"
+    
+    # Identificar beneficio comercial directo para mostrar valor
+    sector = perfil.get("sector_laboral", "")
+    if "Salud" in sector or "Educación" in sector:
+        beneficio_desc = (
+            "• **Beneficio Exclusivo CDA:** Aplica trámite ágil con **solo 1 mes de permanencia** o periodo probatorio (Leyes especiales) y opción de descuento directo."
+        )
+    elif "Jubilado" in sector:
+        beneficio_desc = (
+            "• **Beneficio de Ley 6 de 1987:** Exoneración del **100% del impuesto FECI** y **50% de descuento** en gastos de cierre del préstamo."
+        )
+    elif "Público" in sector:
+        beneficio_desc = (
+            "• **Beneficio para Sector Público:** Financiamiento de hasta 84 meses por descuento directo con cuota preferencial."
+        )
+    else:
+        beneficio_desc = (
+            "• **Condiciones de Feria:** Financiamiento de hasta 84 meses (7 años) y abonos desde el 10% en marcas tradicionales y chinas autorizadas (BYD, Geely, Changan)."
+        )
+
+    resumen_msg = (
+        f"### 🎉 ¡Perfil Configurado con Éxito!\n\n"
+        f"Estimado/a **{client_data.get('nombre', 'Cliente')}**, hemos estructurado su ficha comercial para la feria:\n\n"
+        f"• **Uso Previsto:** {perfil.get('uso_vehiculo')}\n"
+        f"• **Sector Laboral:** {perfil.get('sector_laboral')}\n"
+        f"• **Modalidad de Abono:** {perfil.get('tipo_abono')}\n"
+        f"• **Interés de Compra:** {perfil.get('temperatura_lead')}\n"
+        f"{beneficio_desc}\n\n"
+        f"---\n\n"
+        f"### 🎫 Su Pase Digital Prioritario de Atención\n"
+        f"**Código de Turno:** `{codigo_pase}`\n\n"
+        f"Mencione este código a nuestro oficial de crédito en el stand de **Caja de Ahorros** en la feria para recibir atención preferencial y validar su precalificación inmediata con la tasa especial del evento.\n\n"
+        f"*¿Desea además simular una letra mensual con un monto específico o consultar marcas autorizadas?*"
+    )
+    
+    post_actions = [
+        cl.Action(name="solicitar_letra", payload={"value": "Quiero calcular mi letra mensual estimada"}, label="🧮 Calcular mi letra"),
+        cl.Action(name="marcas_chinas", payload={"value": "¿Qué marcas chinas financia Caja de Ahorros?"}, label="🇨🇳 Marcas Chinas (BYD, Geely)"),
+        cl.Action(name="fast_track", payload={"value": "¿Cómo funciona la modalidad Fast Track de 30% de abono?"}, label="⚡ Modalidad Fast Track")
+    ]
+    
+    messages = cl.user_session.get("messages", [])
+    messages.append({"role": "assistant", "content": resumen_msg})
+    cl.user_session.set("messages", messages)
+    db_guardar_chat_json(session_id, messages, pase_digital=codigo_pase)
+    
+    await cl.Message(content=resumen_msg, actions=post_actions).send()
+
+
+# =========================================================================
+# CICLO DE VIDA DE CHAINLIT
+# =========================================================================
+
 @cl.on_chat_start
 async def on_chat_start():
     """Inicializa la sesión de chat y crea el registro base en SQLite."""
@@ -292,6 +460,7 @@ async def on_chat_start():
     cl.user_session.set("session_id", session_id)
     cl.user_session.set("messages", [])
     cl.user_session.set("client_data", None)
+    cl.user_session.set("perfil_comercial", {})
     
     # Inicializar sesión en la base de datos SQLite
     db_guardar_chat_json(session_id, [])
@@ -300,8 +469,8 @@ async def on_chat_start():
         content=(
             "### 🚗 ¡Bienvenido a la Feria de Autos con **Caja de Ahorros**!\n"
             "*El Banco de la Familia Panameña 🇵🇦*\n\n"
-            "👋 **Paso previo obligatorio:** Por favor complete el formulario en pantalla con su **Nombre Completo, Cédula de Identidad, Celular y Correo** para habilitar la atención del **Asesor Virtual** y asignarle su Pase Digital de feria.\n\n"
-            "*Una vez enviado el formulario, el asistente activará inmediatamente todas las opciones de consulta y simulación.*"
+            "👋 **Paso previo:** Complete el formulario en pantalla con su **Nombre, Cédula, Celular y Correo** para activar al **Asesor Virtual** y asignarle su Pase Digital de feria.\n\n"
+            "*Una vez enviado, el asistente activará inmediatamente todas las opciones de asesoría personalizada y simulación.*"
         )
     ).send()
 
@@ -352,7 +521,6 @@ async def process_user_query(user_query: str):
         
         cl.user_session.set("client_data", client_data)
         
-        # Guardar cliente en SQLite en el subfolder dedicado database/
         db_guardar_cliente(
             session_id=session_id,
             nombre=client_data["nombre"],
@@ -371,15 +539,11 @@ async def process_user_query(user_query: str):
             f"• **Celular:** `{client_data['celular']}`\n"
             f"• **Correo:** `{client_data['correo']}`\n\n"
             f"---\n"
-            f"Soy su **Asesor Virtual de Auto**. Puedo orientarle en:\n"
-            f"• **Requisitos documentales** según su perfil (Salud, Educación, Empresa Privada, Jubilados o Independientes).\n"
-            f"• **Abonos mínimos, plazos y marcas autorizadas** (incluyendo BYD, Geely, Changan y modelos ecológicos).\n"
-            f"• **Beneficios por Ley 6** para jubilados (exoneración total de FECI).\n"
-            f"• **Simulación de su letra mensual** y emisión de su **Pase Digital prioritario**.\n\n"
-            f"Seleccione una de las siguientes opciones o escriba su consulta con total libertad:"
+            f"Soy su **Asesor Virtual de Auto**. Para orientarle con la tasa y beneficios más convenientes, puede realizar una **Asesoría Personalizada en 4 pasos rápidos** o consultar cualquiera de nuestras opciones:"
         )
         
         actions = [
+            cl.Action(name="iniciar_perfilacion", payload={"value": "Deseo realizar la asesoría personalizada paso a paso"}, label="🎯 Asesoría Personalizada (Mejor Plan)"),
             cl.Action(name="solicitar_letra", payload={"value": "Quiero saber cuál sería mi letra, qué necesitas saber de mí?"}, label="🧮 ¿Cuál sería mi letra?"),
             cl.Action(name="salud_educadores", payload={"value": "¿Cuáles son los requisitos y el tiempo de permanencia si soy educador o trabajo en el sector salud?"}, label="🏥 Salud y Educadores"),
             cl.Action(name="marcas_chinas", payload={"value": "¿Puedo financiar un vehículo de marcas de origen chino como BYD, Geely o Changan con Caja de Ahorros?"}, label="🇨🇳 Marcas Chinas (BYD, Geely)"),
@@ -394,7 +558,12 @@ async def process_user_query(user_query: str):
         await cl.Message(content=bienvenida, actions=actions).send()
         return
 
-    # 1. CASO DETERMINÍSTICO A: El usuario pregunta qué se necesita para saber su letra
+    # 1. CASO DETERMINÍSTICO A: El usuario pide asesoría o perfilación personalizada
+    if es_intencion_perfilacion(user_query):
+        await iniciar_paso_1_uso()
+        return
+
+    # 2. CASO DETERMINÍSTICO B: El usuario pregunta qué se necesita para saber su letra
     if es_pregunta_solicitud_datos_letra(user_query):
         contenido, acciones = obtener_mensaje_solicitud_datos()
         messages.append({"role": "assistant", "content": contenido})
@@ -404,7 +573,7 @@ async def process_user_query(user_query: str):
         await cl.Message(content=contenido, actions=acciones).send()
         return
 
-    # 2. CASO DETERMINÍSTICO B: Cálculo de simulación de cuota / letra
+    # 3. CASO DETERMINÍSTICO C: Cálculo de simulación de cuota / letra
     if es_intencion_simulacion(user_query):
         params = extraer_parametros_consulta(user_query)
         client_data = cl.user_session.get("client_data")
@@ -421,7 +590,6 @@ async def process_user_query(user_query: str):
         messages.append({"role": "assistant", "content": response_text})
         cl.user_session.set("messages", messages)
         
-        # Persistir en SQLite con datos de la cotización y pase digital
         db_guardar_chat_json(
             session_id=session_id,
             messages=messages,
@@ -433,11 +601,10 @@ async def process_user_query(user_query: str):
         await cl.Message(content=response_text).send()
         return
 
-    # 3. Consulta de orientación con Gemini Streaming o Fallback local
+    # 4. Consulta de orientación con Gemini Streaming o Fallback local
     api_key = os.getenv("GEMINI_API_KEY", "")
     streamed_anything = False
     
-    # Crear mensaje vacío para streaming progresivo
     reply_msg = cl.Message(content="")
     
     if api_key:
@@ -445,7 +612,6 @@ async def process_user_query(user_query: str):
             step.output = "Consultando lineamientos de financiamiento de feria..."
             
         try:
-            # Ejecutar el generador SSE síncrono en un hilo asíncrono
             loop = asyncio.get_event_loop()
             
             def get_chunks():
@@ -462,7 +628,6 @@ async def process_user_query(user_query: str):
         except Exception:
             streamed_anything = False
 
-    # 4. Fallback determinista local en caso de no haber API o fallo de conexión
     if not streamed_anything:
         fallback_text = get_smart_local_response(user_query)
         words = fallback_text.split(" ")
@@ -477,6 +642,4 @@ async def process_user_query(user_query: str):
 
     messages.append({"role": "assistant", "content": reply_content})
     cl.user_session.set("messages", messages)
-    
-    # Persistir en SQLite
     db_guardar_chat_json(session_id, messages)
