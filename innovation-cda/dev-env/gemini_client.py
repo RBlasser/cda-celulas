@@ -143,20 +143,17 @@ def get_smart_local_response(user_query: str) -> str:
     """
     q = user_query.lower()
 
-    if any(k in q for k in ["cual seria mi letra", "cuál sería mi letra", "que necesitas saber", "qué necesitas saber", "que ocupas saber", "que datos necesitas", "calcular letra", "saber mi letra"]):
+    if any(k in q for k in ["letra", "cuota", "cuanto pagaria", "cuánto pagaría", "calcular", "simular", "simulacion", "simulación", "feci", "costarme"]):
         return (
-            "¡Con mucho gusto le ayudamos a calcular su letra mensual estimada! 🚗 ![Panamá](/public/flag_pa.svg)\n\n"
-            "Para brindarle una cifra personalizada y transparente que incluya capital, intereses y los seguros correspondientes, requerimos conocer los siguientes detalles:\n\n"
-            "1. **Precio del vehículo:** El valor de venta aproximado del auto que le interesa (nuevo o de marcas participantes).\n"
-            "2. **Abono inicial:** Cuánto tiene previsto aportar como abono (mínimo de feria desde el 10% en autos regulares, o 30% en modalidad ágil *Fast Track*).\n"
-            "3. **Su perfil laboral:**\n"
-            "   - Empresa privada o gobierno (permanente o continuidad laboral).\n"
-            "   - Leyes especiales (Sector Salud o Educación).\n"
-            "   - Jubilado o pensionado *(aplica exoneración total de FECI por Ley 6 de 1987)*.\n"
-            "   - Profesional independiente.\n"
-            "4. **Plazo deseado:** Habitualmente hasta 84 meses (7 años) para autos nuevos, o hasta 60 meses en perfiles de jubilados.\n\n"
-            "---\n\n"
-            "💡 *Puede respondernos indicando sus datos (ejemplo: **\"Deseo un auto de B/. 18,500 con 10% de abono a 7 años, trabajo en educación\"**) y con gusto le calcularemos su cuota y pase digital de atención.*"
+            "Estimado cliente, con mucho gusto le orientamos. 🚗 ![Panamá](/public/flag_pa.svg)\n\n"
+            "En **Caja de Ahorros**, las cuotas mensuales exactas y corridas financieras formales son estructuradas "
+            "directamente por un **oficial de crédito** en nuestro stand de feria o en cualquiera de nuestras sucursales, "
+            "utilizando la cotización formal de la agencia concesionaria y las tasas preferenciales del evento.\n\n"
+            "Respecto a los lineamientos generales de nuestra política de financiamiento:\n"
+            "• **Plazos máximos:** Hasta 84 meses (7 años) y hasta 96 meses en autos nuevos para colaboradores asalariados e independientes (hasta 60 meses para jubilados).\n"
+            "• **Abonos iniciales:** Desde el 10% en condiciones regulares de feria, o 30% en la modalidad ágil *Fast Track*.\n"
+            "• **Beneficios de Ley:** Clientes jubilados y de tercera edad (Ley 6 de 1987) cuentan con **100% de exoneración del impuesto FECI** y 50% de descuento en gastos de cierre.\n\n"
+            "Le invitamos a realizar una rápida asesoría de 4 pasos para perfilar su solicitud y emitirle su Pase Digital prioritario para ser atendido en stand."
         )
 
     if any(k in q for k in ["educador", "maestro", "profesor", "salud", "médico", "medico", "enfermera", "leyes especiales"]):

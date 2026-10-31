@@ -11,7 +11,7 @@ Bienvenido a nuestro canal digital de orientación y precalificación ágil para
 - 🇨🇳 **Marcas Autorizadas:** Modelos tradicionales, ecológicos (eléctricos e híbridos) y marcas chinas con respaldo local (BYD, Geely, Changan, GAC, JAC, etc.).
 - ⚡ **Modalidad Fast Track de Feria:** Aprobación ágil con **30% de abono** inicial para colaboradores asalariados permanentes.
 - 👴 **Jubilados y Tercera Edad (Ley 6 de 1987):** **100% exonerados de FECI** y 50% de descuento en la comisión de cierre.
-- 🧮 **Simulación Financiera:** Calcule su cuota mensual aproximada y obtenga su **Pase Digital de Atención** con código de turno para el stand.
+- 📋 **Condiciones de Feria y Pase Digital:** Conozca plazos, abonos mínimos de política y obtenga su **Pase Digital de Atención** con código de turno para el stand.
 
 ---
 *Presione cualquiera de los botones de sugerencia abajo o escriba su consulta en el chat.*
