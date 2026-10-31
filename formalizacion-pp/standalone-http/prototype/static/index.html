@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Caja de Ahorros - Consola de Formalización de Préstamos Personales</title>
+  <style>
+    :root {
+      --cda-navy: #002B49;
+      --cda-blue: #005691;
+      --cda-gold: #C5A059;
+      --cda-bg: #F4F6F9;
+      --cda-card: #FFFFFF;
+      --cda-border: #E2E8F0;
+      --cda-text: #1E293B;
+      --cda-muted: #64748B;
+      --cda-green: #10B981;
+      --cda-yellow: #F59E0B;
+      --cda-red: #EF4444;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    body { background-color: var(--cda-bg); color: var(--cda-text); min-height: 100vh; display: flex; flex-direction: column; }
+    
+    /* Header */
+    header {
+      background: linear-gradient(135deg, var(--cda-navy), var(--cda-blue));
+      color: white;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand h1 { font-size: 1.15rem; font-weight: 700; letter-spacing: -0.3px; }
+    .brand span { font-size: 0.8rem; background: var(--cda-gold); color: var(--cda-navy); padding: 2px 8px; border-radius: 4px; font-weight: 600; }
+    
+    .header-actions { display: flex; gap: 12px; align-items: center; }
+    .btn { padding: 8px 16px; border-radius: 6px; font-weight: 600; font-size: 0.85rem; cursor: pointer; border: none; transition: all 0.2s; }
+    .btn-outline { background: transparent; color: white; border: 1px solid rgba(255,255,255,0.4); }
+    .btn-outline:hover { background: rgba(255,255,255,0.1); border-color: white; }
+    .btn-gold { background: var(--cda-gold); color: var(--cda-navy); }
+    .btn-gold:hover { filter: brightness(1.1); }
+    .btn-primary { background: var(--cda-blue); color: white; }
+    .btn-primary:hover { background: #004575; }
+
+    /* Settings Bar */
+    .settings-bar {
+      background: white;
+      border-bottom: 1px solid var(--cda-border);
+      padding: 10px 24px;
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      font-size: 0.85rem;
+    }
+    .settings-group { display: flex; align-items: center; gap: 8px; }
+    .settings-group label { font-weight: 600; color: var(--cda-muted); }
+    .settings-group select, .settings-group input {
+      padding: 6px 12px;
+      border: 1px solid var(--cda-border);
+      border-radius: 6px;
+      font-size: 0.85rem;
+      outline: none;
+    }
+    .settings-group input { width: 260px; }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--cda-muted); display: inline-block; }
+    .status-dot.active { background: var(--cda-green); }
+
+    /* Main Container */
+    main { flex: 1; padding: 20px 24px; max-width: 1400px; margin: 0 auto; width: 100%; display: grid; grid-template-columns: 380px 1fr; gap: 20px; }
+
+    /* Left Column: Upload & Auditoría */
+    .card {
+      background: var(--cda-card);
+      border: 1px solid var(--cda-border);
+      border-radius: 10px;
+      padding: 18px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      margin-bottom: 20px;
+    }
+    .card-title { font-size: 0.95rem; font-weight: 700; color: var(--cda-navy); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+
+    .dropzone {
+      border: 2px dashed #CBD5E1;
+      border-radius: 8px;
+      padding: 24px 16px;
+      text-align: center;
+      background: #F8FAFC;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .dropzone:hover { border-color: var(--cda-blue); background: #EFF6FF; }
+    .dropzone p { font-size: 0.85rem; color: var(--cda-muted); margin-top: 6px; }
+    .file-list { margin-top: 12px; font-size: 0.8rem; }
+    .file-item { padding: 4px 8px; background: #F1F5F9; border-radius: 4px; margin-bottom: 4px; display: flex; justify-content: space-between; }
+
+    /* Semáforo Normativo */
+    .semaforo-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+    }
+    .semaforo-VERDE { background: #DCFCE7; color: #166534; border: 1px solid #86EFAC; }
+    .semaforo-AMARILLO { background: #FEF3C7; color: #92400E; border: 1px solid #FCD34D; }
+    .semaforo-ROJO { background: #FEE2E2; color: #991B1B; border: 1px solid #FCA5A5; }
+
+    .findings-list { margin-top: 12px; list-style: none; }
+    .findings-list li {
+      font-size: 0.85rem;
+      padding: 8px 12px;
+      border-left: 3px solid #CBD5E1;
+      background: #F8FAFC;
+      margin-bottom: 6px;
+      border-radius: 0 4px 4px 0;
+    }
+    .findings-list li.warn { border-left-color: var(--cda-yellow); }
+    .findings-list li.danger { border-left-color: var(--cda-red); }
+
+    /* Right Column: Smart Clipboard & Legal */
+    .clipboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .field-card {
+      background: #F8FAFC;
+      border: 1px solid var(--cda-border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .field-label { font-size: 0.72rem; text-transform: uppercase; color: var(--cda-muted); font-weight: 700; }
+    .field-value { font-size: 0.95rem; font-weight: 600; color: var(--cda-navy); margin: 4px 0 8px 0; word-break: break-word; }
+    .copy-btn {
+      align-self: flex-end;
+      background: white;
+      border: 1px solid #CBD5E1;
+      border-radius: 4px;
+      padding: 4px 10px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--cda-blue);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .copy-btn:hover { background: var(--cda-blue); color: white; border-color: var(--cda-blue); }
+    .copy-btn.copied { background: var(--cda-green); color: white; border-color: var(--cda-green); }
+
+    /* Alert Banner */
+    .error-banner {
+      background: #FEE2E2;
+      border: 1px solid #EF4444;
+      color: #991B1B;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-size: 0.85rem;
+      display: none;
+    }
+
+    /* Footer info */
+    .footer-note { font-size: 0.75rem; color: var(--cda-muted); text-align: center; padding: 12px; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <h1>Caja de Ahorros</h1>
+      <span>Copiloto Formalización PP (MVP)</span>
+    </div>
+    <div class="header-actions">
+      <span style="font-size: 0.8rem; opacity: 0.85;">Modo: Standalone HTTP Local</span>
+      <button class="btn btn-outline" onclick="resetSession()">Nueva Solicitud</button>
+    </div>
+  </header>
+
+  <div class="settings-bar">
+    <div class="settings-group">
+      <label>Proveedor de IA:</label>
+      <select id="providerSelect" onchange="saveConfig()">
+        <option value="google">Google Gemini (Gemini 1.5 Flash)</option>
+        <option value="anthropic">Anthropic (Claude 3.5 Sonnet)</option>
+        <option value="openai">OpenAI (GPT-4o)</option>
+      </select>
+    </div>
+    <div class="settings-group">
+      <label>API Key:</label>
+      <input type="password" id="apiKeyInput" placeholder="Ingresa tu clave de API..." />
+      <button class="btn btn-primary" onclick="saveConfig()">Guardar</button>
+      <span class="status-dot" id="configDot"></span>
+    </div>
+  </div>
+
+  <div style="padding: 0 24px; margin-top: 12px;">
+    <div class="error-banner" id="errorBanner"></div>
+  </div>
+
+  <main>
+    <!-- Columna Izquierda: Carga y Auditoría -->
+    <section>
+      <div class="card">
+        <div class="card-title">
+          <span>1. Expediente de Crédito</span>
+        </div>
+        <div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
+          <input type="file" id="fileInput" multiple accept=".pdf,.png,.jpg" style="display: none;" onchange="handleFiles(this.files)" />
+          <strong>Arrastra aquí los documentos escaneados</strong>
+          <p>Talonario, Cédula, Carta de Trabajo, Proforma o APC</p>
+        </div>
+        <div class="file-list" id="fileList"></div>
+        <button class="btn btn-gold" id="processBtn" style="width: 100%; margin-top: 12px;" onclick="processDocuments()" disabled>
+          Auditar y Extraer Expediente
+        </button>
+      </div>
+
+      <div class="card" id="auditCard" style="display: none;">
+        <div class="card-title">
+          <span>Auditoría Normativa</span>
+          <span id="semaforoContainer"></span>
+        </div>
+        <ul class="findings-list" id="findingsList"></ul>
+      </div>
+    </section>
+
+    <!-- Columna Derecha: Smart Clipboard y Ensamblador Legal -->
+    <section>
+      <div class="card">
+        <div class="card-title">
+          <span>2. Smart Clipboard (Traslado Asistido a Ultimus BPM)</span>
+          <span style="font-size: 0.75rem; font-weight: normal; color: var(--cda-muted);">Usa Win + Flechas para pantalla dividida</span>
+        </div>
+        <div class="clipboard-grid" id="clipboardGrid">
+          <div style="grid-column: 1 / -1; color: var(--cda-muted); font-size: 0.85rem; padding: 20px 0; text-align: center;">
+            Carga y procesa un expediente a la izquierda para desplegar las tarjetas de copiado en 1 clic.
+          </div>
+        </div>
+      </div>
+
+      <div class="card" id="legalCard" style="display: none;">
+        <div class="card-title">
+          <span>3. Ensamblador Legal (Compra de Saldo)</span>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--cda-muted); margin-bottom: 12px;">
+          Genera automáticamente la Carta de Promesa de Pago para la entidad acreedora con montos y números de cuenta reconciliados.
+        </p>
+        <button class="btn btn-primary" onclick="downloadContract()">
+          📄 Descargar Carta de Promesa de Pago (.docx)
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <div class="footer-note">
+    Caja de Ahorros de Panamá &bull; Célula de Innovación &bull; Standalone HTTP Server v1.0
+  </div>
+
+  <script>
+    let selectedFiles = [];
+
+    async function saveConfig() {
+      const provider = document.getElementById('providerSelect').value;
+      const apiKey = document.getElementById('apiKeyInput').value;
+      const formData = new FormData();
+      formData.append('provider', provider);
+      formData.append('api_key', apiKey);
+
+      try {
+        const res = await fetch('/api/config', { method: 'POST', body: formData });
+        if (res.ok) {
+          document.getElementById('configDot').classList.add('active');
+          hideError();
+        }
+      } catch (err) {
+        showError("Error al guardar configuración local: " + err);
+      }
+    }
+
+    function handleFiles(files) {
+      selectedFiles = Array.from(files);
+      const list = document.getElementById('fileList');
+      list.innerHTML = '';
+      selectedFiles.forEach(f => {
+        const div = document.createElement('div');
+        div.className = 'file-item';
+        div.innerHTML = `<span>📄 ${f.name}</span><span>${(f.size/1024).toFixed(0)} KB</span>`;
+        list.appendChild(div);
+      });
+      document.getElementById('processBtn').disabled = selectedFiles.length === 0;
+    }
+
+    async function processDocuments() {
+      hideError();
+      const btn = document.getElementById('processBtn');
+      btn.disabled = true;
+      btn.innerText = "Auditando con IA...";
+
+      const formData = new FormData();
+      selectedFiles.forEach(f => formData.append('files', f));
+
+      try {
+        const res = await fetch('/api/process', { method: 'POST', body: formData });
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({ detail: res.statusText }));
+          throw new Error(errData.detail || "Error en el procesamiento del expediente.");
+        }
+        const data = await res.json();
+        renderAudit(data);
+        renderClipboard(data.datos_extraidos || {});
+        document.getElementById('legalCard').style.display = 'block';
+      } catch (err) {
+        showError(err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "Auditar y Extraer Expediente";
+      }
+    }
+
+    function renderAudit(data) {
+      const card = document.getElementById('auditCard');
+      card.style.display = 'block';
+      const semaforo = data.semaforo || 'ROJO';
+      document.getElementById('semaforoContainer').innerHTML = `
+        <span class="semaforo-badge semaforo-${semaforo}">● ${semaforo}</span>
+      `;
+      const list = document.getElementById('findingsList');
+      list.innerHTML = '';
+      (data.hallazgos || []).forEach(h => {
+        const li = document.createElement('li');
+        li.innerText = h;
+        if (semaforo === 'AMARILLO') li.className = 'warn';
+        if (semaforo === 'ROJO') li.className = 'danger';
+        list.appendChild(li);
+      });
+    }
+
+    function renderClipboard(datos) {
+      const grid = document.getElementById('clipboardGrid');
+      grid.innerHTML = '';
+
+      const labels = {
+        nombre_cliente: "Nombre del Cliente",
+        cedula: "Cédula de Identidad",
+        patrono: "Patrono / Institución",
+        posicion_planilla: "Posición de Planilla",
+        salario_neto: "Salario Neto Comprobado",
+        salario_bruto: "Salario Bruto",
+        monto_prestamo: "Monto de Préstamo",
+        plazo_meses: "Plazo (Meses)",
+        banco_acreedor: "Banco Acreedor",
+        saldo_compra: "Saldo a Cancelar",
+        cuenta_acreedor: "Cuenta / Préstamo a Cancelar"
+      };
+
+      for (const [key, label] of Object.entries(labels)) {
+        const val = datos[key] || "No identificado";
+        const card = document.createElement('div');
+        card.className = 'field-card';
+        card.innerHTML = `
+          <div>
+            <div class="field-label">${label}</div>
+            <div class="field-value">${val}</div>
+          </div>
+          <button class="copy-btn" onclick="copyText(this, '${val.replace(/'/g, "\\'")}')">
+            📋 Copiar
+          </button>
+        `;
+        grid.appendChild(card);
+      }
+    }
+
+    function copyText(btn, text) {
+      navigator.clipboard.writeText(text).then(() => {
+        const originalText = btn.innerHTML;
+        btn.innerHTML = "✓ Copiado";
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.classList.remove('copied');
+        }, 1500);
+      });
+    }
+
+    async function downloadContract() {
+      try {
+        const res = await fetch('/api/assemble', { method: 'POST' });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({ detail: "Error ensamblando contrato" }));
+          throw new Error(err.detail);
+        }
+        const blob = await res.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = "carta_promesa_pago_cda.docx";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      } catch (err) {
+        showError("Fallo al generar documento legal: " + err.message);
+      }
+    }
+
+    async function resetSession() {
+      await fetch('/api/reset', { method: 'POST' });
+      selectedFiles = [];
+      document.getElementById('fileList').innerHTML = '';
+      document.getElementById('fileInput').value = '';
+      document.getElementById('processBtn').disabled = true;
+      document.getElementById('auditCard').style.display = 'none';
+      document.getElementById('legalCard').style.display = 'none';
+      document.getElementById('clipboardGrid').innerHTML = `
+        <div style="grid-column: 1 / -1; color: var(--cda-muted); font-size: 0.85rem; padding: 20px 0; text-align: center;">
+          Carga y procesa un expediente a la izquierda para desplegar las tarjetas de copiado en 1 clic.
+        </div>
+      `;
+      hideError();
+    }
+
+    function showError(msg) {
+      const banner = document.getElementById('errorBanner');
+      banner.innerText = "⚠️ ERROR: " + msg;
+      banner.style.display = 'block';
+    }
+
+    function hideError() {
+      const banner = document.getElementById('errorBanner');
+      banner.style.display = 'none';
+    }
+  </script>
+</body>
+</html>
