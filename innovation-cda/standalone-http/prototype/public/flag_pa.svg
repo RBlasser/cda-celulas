@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" width="900" height="600">
+  <rect width="900" height="600" fill="#FFFFFF"/>
+  <rect x="450" y="0" width="450" height="300" fill="#DA121A"/>
+  <rect x="0" y="300" width="450" height="300" fill="#072357"/>
+  <!-- Blue Star in top-left white canton -->
+  <polygon fill="#072357" points="225.0,75.0 241.84,126.82 296.33,126.82 252.25,158.85 269.08,210.68 225.0,178.65 180.92,210.68 197.75,158.85 153.67,126.82 208.16,126.82"/>
+  <!-- Red Star in bottom-right white canton -->
+  <polygon fill="#DA121A" points="675.0,375.0 691.84,426.82 746.33,426.82 702.25,458.85 719.08,510.68 675.0,478.65 630.92,510.68 647.75,458.85 603.67,426.82 658.16,426.82"/>
+</svg>

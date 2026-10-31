@@ -140,7 +140,7 @@ def format_loan_markdown(data: dict, client_data: dict = None) -> str:
         titular_str = ""
     
     md = (
-        f"### 🧮 Simulación Estimada de Financiamiento\n\n"
+        f"### 🧮 Estimaciones Aproximadas\n\n"
         f"• **Precio de Venta del Auto:** B/. {data['precio']:,.2f}\n"
         f"• **Abono Inicial ({data['pct_abono']:.0f}%):** B/. {data['monto_abono']:,.2f}\n"
         f"• **Monto Neto a Financiar:** B/. {data['monto_financiar']:,.2f}\n"
@@ -167,6 +167,10 @@ def es_pregunta_solicitud_datos_letra(texto: str) -> bool:
     t = texto.lower()
     frases_clave = [
         "cual seria mi letra", "cuál sería mi letra",
+        "cuanto seria mi letra", "cuánto sería mi letra",
+        "cuanto podria costarme", "cuánto podría costarme",
+        "cuanto costaria la letra", "cuánto costaría la letra",
+        "cuanto pagaria", "cuánto pagaría",
         "que necesitas saber", "qué necesitas saber",
         "que ocupas saber", "qué ocupas saber",
         "que datos necesitas", "qué datos necesitas",
@@ -178,8 +182,8 @@ def es_pregunta_solicitud_datos_letra(texto: str) -> bool:
         "que necesito para simular", "qué necesito para simular"
     ]
     coincide_frase = any(f in t for f in frases_clave)
-    tiene_letra_y_pregunta = ("letra" in t or "cuota" in t) and any(w in t for w in ["que", "qué", "como", "cómo", "saber", "necesit", "ocup"])
-    tiene_cifras = bool(re.search(r'\d{4,6}|\d{1,3}[,\.]\d{3}', t))
+    tiene_letra_y_pregunta = ("letra" in t or "cuota" in t) and any(w in t for w in ["que", "qué", "como", "cómo", "cuanto", "cuánto", "saber", "necesit", "ocup", "cost"])
+    tiene_cifras = bool(re.search(r'\b(\d{4,6}|\d{1,3}[,\.]\d{3})\b', t)) or bool(re.search(r'\b\d{1,2}\s*k\b', t))
     return (coincide_frase or tiene_letra_y_pregunta) and not tiene_cifras
 
 
@@ -197,23 +201,24 @@ def es_intencion_perfilacion(texto: str) -> bool:
     return any(f in t for f in frases)
 
 
-def obtener_mensaje_solicitud_datos():
-    """Genera la respuesta cordial solicitando los 4 datos clave con botones interactivos."""
+def obtener_mensaje_solicitud_datos(params: dict = None):
+    """Genera la respuesta cordial solicitando el valor del auto sin inventar cifras."""
+    marca_str = f" para su **{params['marca']}**" if params and params.get("marca") else ""
+    abono_val = params.get("pct_abono") if params else 10.0
+    abono_str = f" considerando su **{abono_val:.0f}% de abono inicial**" if abono_val else ""
+    
     contenido = (
-        "¡Con mucho gusto le ayudamos a calcular su letra mensual estimada! 🚗🇵🇦\n\n"
-        "Para brindarle una cifra personalizada y transparente que incluya capital, intereses y los seguros correspondientes, requerimos conocer los siguientes detalles:\n\n"
-        "1. **Precio del vehículo:** El valor de venta aproximado del auto que le interesa (nuevo o de marcas participantes).\n"
-        "2. **Abono inicial:** Cuánto tiene previsto aportar como abono (el mínimo de feria es desde el 10% en autos regulares, o 30% si desea calificar a la modalidad ágil *Fast Track*).\n"
-        "3. **Su perfil laboral:** Empresa privada, gobierno (salud/educación), jubilado o independiente.\n"
-        "4. **Plazo deseado:** Habitualmente hasta 84 meses (7 años) para autos nuevos, o hasta 60 meses en jubilados.\n\n"
+        f"¡Con mucho gusto le ayudamos a calcular sus **Estimaciones Aproximadas** de letra mensual{marca_str}{abono_str}! 🚗 ![Panamá](/public/flag_pa.svg)\n\n"
+        "Para brindarle un cálculo transparente y exacto que incluya capital, intereses y los seguros correspondientes:\n\n"
+        "**¿Cuál es el precio de venta o valor aproximado del vehículo que desea cotizar?**\n\n"
         "---\n\n"
-        "💡 *Puede respondernos indicando sus datos o presionar una de las siguientes opciones rápidas:*"
+        "💡 *Puede escribir el monto directamente (por ejemplo: **\"B/. 18,500\"**, **\"20 mil\"** o **\"24k\"**) o seleccionar una referencia de feria:*"
     )
     
     acciones = [
-        cl.Action(name="iniciar_perfilacion", payload={"value": "Deseo realizar la asesoría personalizada paso a paso"}, label="🎯 Asesoría Personalizada (Mejor Plan)"),
-        cl.Action(name="preset_sedan", payload={"value": "Deseo simular un auto de B/. 18,500 con 10% de abono a 84 meses para asalariado"}, label="🚗 Auto B/. 18,500 (Asalariado)"),
-        cl.Action(name="preset_educador", payload={"value": "Deseo simular un auto de B/. 16,000 con 15% de abono a 84 meses para sector salud o educación"}, label="🏥 Auto B/. 16,000 (Salud/Educador)")
+        cl.Action(name="preset_sedan", payload={"value": "Deseo simular un auto de B/. 18,500 con 10% de abono a 84 meses"}, label="🚗 Auto B/. 18,500"),
+        cl.Action(name="preset_suv", payload={"value": "Deseo simular un auto de B/. 23,000 con 10% de abono a 84 meses"}, label="🚙 Auto B/. 23,000"),
+        cl.Action(name="preset_economico", payload={"value": "Deseo simular un auto de B/. 14,000 con 10% de abono a 84 meses"}, label="🚗 Auto B/. 14,000")
     ]
     return contenido, acciones
 
@@ -221,35 +226,91 @@ def obtener_mensaje_solicitud_datos():
 def es_intencion_simulacion(texto: str) -> bool:
     """Detecta si el mensaje contiene intención de simulación de cuota o letra."""
     t = texto.lower()
-    palabras = [
+    tiene_cifras = bool(re.search(r'\b(\d{4,6}|\d{1,3}[,\.]\d{3})\b', t)) or bool(re.search(r'\b\d{1,2}\s*k\b', t))
+    palabras_directas = [
         "simular", "simulacion", "simulación", "simule",
         "calcular cuota", "calcular letra", "calcula",
-        "cuanto pagaria", "cuánto pagaría", "cuanto seria la letra", "cuánto sería la letra",
-        "cuota para", "letra para", "cuota de", "letra de"
+        "calcular mi letra"
     ]
-    tiene_palabra_sim = any(k in t for k in palabras)
-    tiene_cifras = bool(re.search(r'(?:b/\.|\$)?\s*(\d{1,3}(?:[,\.]\d{3})*(?:\.\d{2})?|\d{4,6})', t))
+    tiene_palabra_sim = any(k in t for k in palabras_directas)
     return tiene_palabra_sim or (("letra" in t or "cuota" in t) and tiene_cifras)
 
 
-def extraer_parametros_consulta(texto: str) -> dict:
-    """Extrae determinísticamente los parámetros de la consulta del usuario."""
+def extraer_parametros_consulta(texto: str, historial: list = None) -> dict:
+    """Extrae determinísticamente los parámetros de la consulta del usuario sin inventar precios."""
     t = texto.lower()
+    
+    # 1. Buscar precio en el texto actual
     match_k = re.search(r'\b(\d{1,2})\s*k\b', t)
     match_precio = re.search(r'\b(\d{4,6}(?:\.\d{2})?|\d{1,3}(?:[,\.]\d{3})+(?:\.\d{2})?)\b', t)
     
-    precio = 18500.0
+    precio = None
     if match_k:
         precio = float(match_k.group(1)) * 1000.0
     elif match_precio:
         val_str = match_precio.group(1).replace(",", "")
         try:
-            precio = float(val_str)
+            val = float(val_str)
+            if val >= 3000.0:  # Evitar años o montos no vehiculares
+                precio = val
         except ValueError:
-            precio = 18500.0
+            precio = None
 
-    es_jubilado = any(k in t for k in ["jubilad", "pensionad", "ley 6", "tercera edad"])
-    es_salud_educacion = any(k in t for k in ["educa", "maestr", "profesor", "salud", "medic", "médic", "enfermer"])
+    marca_detectada = None
+    pct_abono_hist = None
+    sector_hist = None
+    
+    marcas_conocidas = [
+        "nissan", "toyota", "hyundai", "kia", "byd", "geely", "changan",
+        "suzuki", "honda", "mazda", "ford", "chevrolet", "gac", "mg", "chery"
+    ]
+    for m in marcas_conocidas:
+        if m in t:
+            marca_detectada = m.title()
+            break
+
+    # 2. Si hay historial, extraer marca, abono o sector previos
+    if historial:
+        for msg in reversed(historial):
+            c = msg.get("content", "").lower()
+            if not precio:
+                mk = re.search(r'\b(\d{1,2})\s*k\b', c)
+                mp = re.search(r'\b(\d{4,6}(?:\.\d{2})?|\d{1,3}(?:[,\.]\d{3})+(?:\.\d{2})?)\b', c)
+                if mk:
+                    precio = float(mk.group(1)) * 1000.0
+                elif mp:
+                    try:
+                        v = float(mp.group(1).replace(",", ""))
+                        if v >= 3000.0:
+                            precio = v
+                    except ValueError:
+                        pass
+            if not marca_detectada:
+                for m in marcas_conocidas:
+                    if m in c:
+                        marca_detectada = m.title()
+                        break
+            if not pct_abono_hist:
+                match_pct = re.search(r'(\d{1,2})\s*%', c)
+                if match_pct:
+                    try:
+                        pct_abono_hist = float(match_pct.group(1))
+                    except ValueError:
+                        pass
+            if not sector_hist:
+                if any(k in c for k in ["consultor", "independiente", "servicios profesionales"]):
+                    sector_hist = "Profesional Independiente"
+                elif any(k in c for k in ["educa", "maestr", "profesor", "salud", "medic", "médic", "enfermer"]):
+                    sector_hist = "Salud / Educación"
+                elif any(k in c for k in ["jubilad", "pensionad", "ley 6", "tercera edad"]):
+                    sector_hist = "Jubilado"
+                elif any(k in c for k in ["privad", "empresa"]):
+                    sector_hist = "Empresa Privada"
+                elif any(k in c for k in ["public", "públic", "gobiern"]):
+                    sector_hist = "Sector Público"
+
+    es_jubilado = any(k in t for k in ["jubilad", "pensionad", "ley 6", "tercera edad"]) or (sector_hist == "Jubilado")
+    es_salud_educacion = any(k in t for k in ["educa", "maestr", "profesor", "salud", "medic", "médic", "enfermer"]) or (sector_hist == "Salud / Educación")
     
     if "fast track" in t:
         pct_abono = 30.0
@@ -259,11 +320,13 @@ def extraer_parametros_consulta(texto: str) -> dict:
             try:
                 pct_abono = float(match_pct.group(1))
             except ValueError:
-                pct_abono = 15.0 if precio < 10000.0 else 10.0
+                pct_abono = pct_abono_hist or 10.0
+        elif pct_abono_hist is not None:
+            pct_abono = pct_abono_hist
         else:
-            pct_abono = 15.0 if precio < 10000.0 else 10.0
+            pct_abono = 10.0
 
-    if precio < 10000.0 and pct_abono < 15.0:
+    if precio and precio < 10000.0 and pct_abono < 15.0:
         pct_abono = 15.0
     elif pct_abono < 10.0:
         pct_abono = 10.0
@@ -288,7 +351,9 @@ def extraer_parametros_consulta(texto: str) -> dict:
         "pct_abono": pct_abono,
         "plazo_meses": plazo_meses,
         "es_jubilado": es_jubilado,
-        "es_salud_educacion": es_salud_educacion
+        "es_salud_educacion": es_salud_educacion,
+        "marca": marca_detectada,
+        "sector": sector_hist
     }
 
 
@@ -468,7 +533,7 @@ async def on_chat_start():
     await cl.Message(
         content=(
             "### 🚗 ¡Bienvenido a la Feria de Autos con **Caja de Ahorros**!\n"
-            "*El Banco de la Familia Panameña 🇵🇦*\n\n"
+            "*El Banco de la Familia Panameña* ![Panamá](/public/flag_pa.svg)\n\n"
             "👋 **Paso previo:** Complete el formulario en pantalla con su **Nombre, Cédula, Celular y Correo** para activar al **Asesor Virtual** y asignarle su Pase Digital de feria.\n\n"
             "*Una vez enviado, el asistente activará inmediatamente todas las opciones de asesoría personalizada y simulación.*"
         )
@@ -482,6 +547,8 @@ async def on_chat_start():
 @cl.action_callback("solicitar_letra")
 @cl.action_callback("simular")
 @cl.action_callback("preset_sedan")
+@cl.action_callback("preset_suv")
+@cl.action_callback("preset_economico")
 @cl.action_callback("preset_educador")
 @cl.action_callback("preset_jubilado")
 async def handle_quick_action(action: cl.Action):
@@ -531,7 +598,7 @@ async def process_user_query(user_query: str):
         guardar_lead_registro(client_data)
         
         bienvenida = (
-            f"### ¡Mucho gusto y bienvenido/a, **{client_data['nombre']}**! 🚗🇵🇦\n"
+            f"### ¡Mucho gusto y bienvenido/a, **{client_data['nombre']}**! 🚗 ![Panamá](/public/flag_pa.svg)\n"
             f"*Caja de Ahorros — El Banco de la Familia Panameña*\n\n"
             f"Hemos registrado exitosamente sus datos de contacto para su cotización:\n"
             f"• **Titular:** {client_data['nombre']}\n"
@@ -565,7 +632,8 @@ async def process_user_query(user_query: str):
 
     # 2. CASO DETERMINÍSTICO B: El usuario pregunta qué se necesita para saber su letra
     if es_pregunta_solicitud_datos_letra(user_query):
-        contenido, acciones = obtener_mensaje_solicitud_datos()
+        params = extraer_parametros_consulta(user_query, messages)
+        contenido, acciones = obtener_mensaje_solicitud_datos(params)
         messages.append({"role": "assistant", "content": contenido})
         cl.user_session.set("messages", messages)
         db_guardar_chat_json(session_id, messages)
@@ -575,7 +643,16 @@ async def process_user_query(user_query: str):
 
     # 3. CASO DETERMINÍSTICO C: Cálculo de simulación de cuota / letra
     if es_intencion_simulacion(user_query):
-        params = extraer_parametros_consulta(user_query)
+        params = extraer_parametros_consulta(user_query, messages)
+        if params["precio"] is None:
+            # Nunca inventar una cifra de B/. 18,500. Solicitar el precio con cordialidad:
+            contenido, acciones = obtener_mensaje_solicitud_datos(params)
+            messages.append({"role": "assistant", "content": contenido})
+            cl.user_session.set("messages", messages)
+            db_guardar_chat_json(session_id, messages)
+            await cl.Message(content=contenido, actions=acciones).send()
+            return
+
         client_data = cl.user_session.get("client_data")
         sim_data = calculate_loan_summary(
             precio=params["precio"],

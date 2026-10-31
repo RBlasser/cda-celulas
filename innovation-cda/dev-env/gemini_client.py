@@ -145,7 +145,7 @@ def get_smart_local_response(user_query: str) -> str:
 
     if any(k in q for k in ["cual seria mi letra", "cuál sería mi letra", "que necesitas saber", "qué necesitas saber", "que ocupas saber", "que datos necesitas", "calcular letra", "saber mi letra"]):
         return (
-            "¡Con mucho gusto le ayudamos a calcular su letra mensual estimada! 🚗🇵🇦\n\n"
+            "¡Con mucho gusto le ayudamos a calcular su letra mensual estimada! 🚗 ![Panamá](/public/flag_pa.svg)\n\n"
             "Para brindarle una cifra personalizada y transparente que incluya capital, intereses y los seguros correspondientes, requerimos conocer los siguientes detalles:\n\n"
             "1. **Precio del vehículo:** El valor de venta aproximado del auto que le interesa (nuevo o de marcas participantes).\n"
             "2. **Abono inicial:** Cuánto tiene previsto aportar como abono (mínimo de feria desde el 10% en autos regulares, o 30% en modalidad ágil *Fast Track*).\n"

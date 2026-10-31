@@ -1,5 +1,6 @@
 # 🚗 Asesor Virtual de Auto • Feria de Préstamos
-### **Caja de Ahorros** — *El Banco de la Familia Panameña 🇵🇦*
+### **Caja de Ahorros** — *El Banco de la Familia Panameña* ![Panamá](/public/flag_pa.svg)
+
 
 Bienvenido a nuestro canal digital de orientación y precalificación ágil para la **Feria de Préstamos de Auto**.
 

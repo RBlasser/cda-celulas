@@ -170,12 +170,50 @@
     }, 120);
   }
 
+  // Reemplazo visual de bandera de Panamá para sistemas Windows sin soporte nativo de emojis de banderas
+  function replacePanamaFlags(rootNode) {
+    const target = rootNode || document.body;
+    if (!target) return;
+    const flagRegex = /\uD83C\uDDF5\uD83C\uDDE6/g;
+    const walker = document.createTreeWalker(target, NodeFilter.SHOW_TEXT, null, false);
+    const textNodes = [];
+    let node;
+    while ((node = walker.nextNode())) {
+      if (node.nodeValue && flagRegex.test(node.nodeValue)) {
+        textNodes.push(node);
+      }
+    }
+    for (const textNode of textNodes) {
+      const parent = textNode.parentNode;
+      if (!parent || ["SCRIPT", "STYLE", "TEXTAREA", "INPUT"].includes(parent.tagName)) continue;
+      const span = document.createElement("span");
+      span.innerHTML = textNode.nodeValue.replace(
+        flagRegex,
+        '<img src="/public/flag_pa.svg" alt="Panamá" class="cda-flag" />'
+      );
+      parent.replaceChild(span, textNode);
+    }
+  }
+
   // Inicialización cuando el DOM esté listo
   function init() {
     const isRegistered = sessionStorage.getItem(STORAGE_KEY);
     if (!isRegistered) {
       createModal();
     }
+    replacePanamaFlags(document.body);
+    const observer = new MutationObserver((mutations) => {
+      for (const m of mutations) {
+        for (const added of m.addedNodes) {
+          if (added.nodeType === Node.ELEMENT_NODE) {
+            replacePanamaFlags(added);
+          } else if (added.nodeType === Node.TEXT_NODE && /\uD83C\uDDF5\uD83C\uDDE6/.test(added.nodeValue)) {
+            replacePanamaFlags(added.parentNode);
+          }
+        }
+      }
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
   }
 
   if (document.readyState === "loading") {

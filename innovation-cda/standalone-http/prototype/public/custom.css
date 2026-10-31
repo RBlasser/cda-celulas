@@ -225,3 +225,17 @@ button[id^="action-"]:hover {
 .cda-btn-submit:active {
   transform: translateY(0);
 }
+
+/* Bandera de Panamá SVG */
+.cda-flag,
+img[alt*="Panamá"],
+img[alt*="bandera"] {
+  display: inline-block !important;
+  height: 1.15em !important;
+  width: auto !important;
+  vertical-align: -0.18em !important;
+  margin: 0 4px !important;
+  border-radius: 2px !important;
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0.4) !important;
+}
+
