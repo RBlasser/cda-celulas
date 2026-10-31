@@ -1,5 +1,13 @@
 @echo off
-echo Iniciando Prototipo Standalone HTTP - Formalizacion de Prestamos Personales CDA...
-echo Abriendo en http://127.0.0.1:8080 ...
-python -m uvicorn app:app --host 127.0.0.1 --port 8080 --reload
-pause
+title Copiloto Formalizacion PP - Caja de Ahorros
+echo ======================================================================
+echo   Iniciando Copiloto de Formalizacion de Prestamos Personales CDA...
+echo ======================================================================
+python run.py
+if %ERRORLEVEL% NEQ 0 (
+    echo.
+    echo [ERROR] No se pudo iniciar la aplicacion. Verifique dependencias con:
+    echo pip install -r requirements.txt
+    echo.
+    pause
+)
