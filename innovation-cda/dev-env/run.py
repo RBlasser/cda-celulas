@@ -20,8 +20,8 @@ nest_asyncio.apply = lambda *args, **kwargs: None
 if __name__ == "__main__":
     from chainlit.cli import cli
 
-    # Argumentos predeterminados para Chainlit
+    # Argumentos predeterminados para Chainlit (sin -w para evitar que watchfiles reinicie al escribir en BD o JSON)
     if len(sys.argv) <= 1:
-        sys.argv = ["chainlit", "run", "app.py", "-w", "--port", "8000"]
+        sys.argv = ["chainlit", "run", "app.py", "--port", "8000"]
 
     cli()

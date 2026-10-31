@@ -33,7 +33,7 @@ if __name__ == "__main__":
     if not has_port:
         free_port = find_available_port()
         if len(sys.argv) <= 1:
-            sys.argv = ["chainlit", "run", "app.py", "-w", "--port", str(free_port)]
+            sys.argv = ["chainlit", "run", "app.py", "--port", str(free_port)]
         else:
             sys.argv.extend(["--port", str(free_port)])
 

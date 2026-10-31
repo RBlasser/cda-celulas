@@ -288,7 +288,7 @@ async def callback_perfil_tiempo(action: cl.Action):
     full_lead = {**client_data, **perfil}
     guardar_lead_registro(full_lead)
     
-    codigo_pase = f"CDA-FERIA-{random.randint(1000, 9999)}"
+    codigo_pase = cl.user_session.get("codigo_pase") or f"CDA-FERIA-{random.randint(1000, 9999)}"
     
     # Identificar beneficio comercial directo para mostrar valor
     sector = perfil.get("sector_laboral", "")
@@ -380,11 +380,8 @@ async def handle_quick_action(action: cl.Action):
 async def on_message(message: cl.Message):
     """Maneja los mensajes ingresados por el usuario."""
     is_reg = "Registro de Precalificación:" in message.content or "[REGISTRO_CLIENTE]" in message.content
-    if is_reg:
-        try:
-            await message.remove()
-        except Exception:
-            pass
+    # No llamar a message.remove() aquí: en Chainlit 2.x eliminar el mensaje del turno suprime
+    # los mensajes de respuesta asociados. custom.js ya lo oculta visualmente del DOM con CSS.
     await process_user_query(message.content, is_registration=is_reg)
 
 
@@ -420,7 +417,10 @@ async def process_user_query(user_query: str, is_registration: bool = False):
             celular=client_data["celular"],
             correo=client_data["correo"]
         )
-        guardar_lead_registro(client_data)
+        codigo_pase = cl.user_session.get("codigo_pase") or f"CDA-FERIA-{random.randint(1000, 9999)}"
+        cl.user_session.set("codigo_pase", codigo_pase)
+        
+        guardar_lead_registro({**client_data, "codigo_pase": codigo_pase})
         
         bienvenida = (
             f"### ¡Mucho gusto y bienvenido/a, **{client_data['nombre']}**! 🚗 🇵🇦\n"
@@ -430,6 +430,11 @@ async def process_user_query(user_query: str, is_registration: bool = False):
             f"• **Cédula de Identidad:** `{client_data['cedula']}`\n"
             f"• **Celular:** `{client_data['celular']}`\n"
             f"• **Correo:** `{client_data['correo']}`\n\n"
+            f"---\n\n"
+            f"### 🎟️ ¡Pase Digital de Atención Prioritaria!\n"
+            f"**Código de Turno:** `{codigo_pase}`\n\n"
+            f"He preparado su perfil para atenderle sin esperas en la feria. Le invitamos a acercarse a nuestro stand de **Caja de Ahorros** presentando este mensaje para que un oficial de crédito le realice su corrida financiera formal y cotización formalizada al instante.\n\n"
+            f"*¿Le gustaría confirmarme si tiene pensado visitar nuestro stand durante estos días de feria?*\n\n"
             f"---\n"
             f"Soy su **Asesor Virtual de Auto**. Para orientarle con la tasa y beneficios más convenientes, puede realizar una **Asesoría Personalizada en 4 pasos rápidos** o consultar cualquiera de nuestras opciones:"
         )
@@ -445,7 +450,7 @@ async def process_user_query(user_query: str, is_registration: bool = False):
         
         messages.append({"role": "assistant", "content": bienvenida})
         cl.user_session.set("messages", messages)
-        db_guardar_chat_json(session_id, messages)
+        db_guardar_chat_json(session_id, messages, pase_digital=codigo_pase)
         
         await cl.Message(content=bienvenida, actions=actions).send()
         return
