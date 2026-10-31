@@ -150,24 +150,126 @@
       if (textarea && submitBtn) {
         clearInterval(interval);
         
-        // Asignar valor compatible con el estado de React
-        const nativeSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value")?.set;
-        if (nativeSetter) {
-          nativeSetter.call(textarea, formattedMsg);
-        } else {
-          textarea.value = formattedMsg;
+        textarea.focus();
+        textarea.select();
+
+        let inserted = false;
+        try {
+          inserted = document.execCommand("insertText", false, formattedMsg);
+        } catch (e) {
+          inserted = false;
         }
 
-        textarea.dispatchEvent(new Event("input", { bubbles: true }));
-        textarea.dispatchEvent(new Event("change", { bubbles: true }));
+        if (!inserted || textarea.value !== formattedMsg) {
+          const previousValue = textarea.value;
+          const nativeSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value")?.set;
+          if (textarea._valueTracker) {
+            textarea._valueTracker.setValue(previousValue || "");
+          }
+          if (nativeSetter) {
+            nativeSetter.call(textarea, formattedMsg);
+          } else {
+            textarea.value = formattedMsg;
+          }
+          textarea.dispatchEvent(new Event("input", { bubbles: true }));
+          textarea.dispatchEvent(new Event("change", { bubbles: true }));
+        }
 
         setTimeout(() => {
-          submitBtn.click();
+          if (submitBtn && !submitBtn.disabled) {
+            submitBtn.click();
+          } else {
+            textarea.dispatchEvent(
+              new KeyboardEvent("keydown", {
+                key: "Enter",
+                code: "Enter",
+                keyCode: 13,
+                which: 13,
+                bubbles: true,
+                cancelable: true
+              })
+            );
+            setTimeout(() => {
+              const btn = document.getElementById("chat-submit");
+              if (btn && !btn.disabled) btn.click();
+            }, 80);
+          }
+          // Ocultar inmediatamente cualquier renderizado prematuro del mensaje de registro
+          hideRegistrationMessages(document.body);
+          let checkCount = 0;
+          const hideTimer = setInterval(() => {
+            hideRegistrationMessages(document.body);
+            checkCount++;
+            if (checkCount > 25) clearInterval(hideTimer);
+          }, 50);
         }, 150);
       } else if (attempts > 50) {
         clearInterval(interval);
       }
     }, 120);
+  }
+
+  // Ocultar cualquier burbuja o paso del chat que contenga datos técnicos de precalificación
+  function hideRegistrationMessages(rootNode) {
+    const target = rootNode || document.body;
+    if (!target) return;
+
+    // 1. Selector directo para elementos de pasos y mensajes
+    const candidateSteps = target.querySelectorAll
+      ? target.querySelectorAll('[data-step-type="user_message"], .step, [id^="step-"], .step-user_message')
+      : [];
+
+    candidateSteps.forEach((step) => {
+      const text = step.textContent || "";
+      if (
+        (text.includes("Registro de Precalificación") || text.includes("[REGISTRO_CLIENTE]")) &&
+        !text.includes("¡Mucho gusto y bienvenido/a") // No ocultar la bienvenida del asistente
+      ) {
+        step.setAttribute("data-cda-hide-step", "true");
+        step.style.setProperty("display", "none", "important");
+        step.style.setProperty("height", "0px", "important");
+        step.style.setProperty("margin", "0px", "important");
+        step.style.setProperty("padding", "0px", "important");
+        step.style.setProperty("overflow", "hidden", "important");
+        step.style.setProperty("visibility", "hidden", "important");
+        step.style.setProperty("opacity", "0", "important");
+        step.style.setProperty("pointer-events", "none", "important");
+      }
+    });
+
+    // 2. TreeWalker para capturar nodos de texto específicos
+    const walker = document.createTreeWalker(target, NodeFilter.SHOW_TEXT, null, false);
+    let node;
+    while ((node = walker.nextNode())) {
+      if (
+        node.nodeValue &&
+        (node.nodeValue.includes("Registro de Precalificación") ||
+         node.nodeValue.includes("[REGISTRO_CLIENTE]"))
+      ) {
+        let parent = node.parentElement;
+        while (parent && parent !== document.body) {
+          if (
+            parent.getAttribute("data-step-type") === "user_message" ||
+            (parent.classList && parent.classList.contains("step")) ||
+            (parent.id && parent.id.startsWith("step-"))
+          ) {
+            if (!parent.textContent.includes("¡Mucho gusto y bienvenido/a")) {
+              parent.setAttribute("data-cda-hide-step", "true");
+              parent.style.setProperty("display", "none", "important");
+              parent.style.setProperty("height", "0px", "important");
+              parent.style.setProperty("margin", "0px", "important");
+              parent.style.setProperty("padding", "0px", "important");
+              parent.style.setProperty("overflow", "hidden", "important");
+              parent.style.setProperty("visibility", "hidden", "important");
+              parent.style.setProperty("opacity", "0", "important");
+              parent.style.setProperty("pointer-events", "none", "important");
+            }
+            break;
+          }
+          parent = parent.parentElement;
+        }
+      }
+    }
   }
 
   // Reemplazo visual de bandera de Panamá para sistemas Windows sin soporte nativo de emojis de banderas
@@ -202,13 +304,25 @@
       createModal();
     }
     replacePanamaFlags(document.body);
+    hideRegistrationMessages(document.body);
+
     const observer = new MutationObserver((mutations) => {
       for (const m of mutations) {
         for (const added of m.addedNodes) {
           if (added.nodeType === Node.ELEMENT_NODE) {
             replacePanamaFlags(added);
-          } else if (added.nodeType === Node.TEXT_NODE && /\uD83C\uDDF5\uD83C\uDDE6/.test(added.nodeValue)) {
-            replacePanamaFlags(added.parentNode);
+            hideRegistrationMessages(added);
+          } else if (added.nodeType === Node.TEXT_NODE) {
+            if (/\uD83C\uDDF5\uD83C\uDDE6/.test(added.nodeValue)) {
+              replacePanamaFlags(added.parentNode);
+            }
+            if (
+              added.nodeValue &&
+              (added.nodeValue.includes("Registro de Precalificación") ||
+               added.nodeValue.includes("[REGISTRO_CLIENTE]"))
+            ) {
+              hideRegistrationMessages(added.parentNode);
+            }
           }
         }
       }

@@ -74,7 +74,7 @@ def obtener_mensaje_condiciones_politica(params: dict = None):
     abono_ref = f" (con su **{params['pct_abono']:.0f}% de abono** previsto)" if params and params.get("pct_abono") else ""
     
     contenido = (
-        f"### 📋 Condiciones Generales de Financiamiento (Política Pública) 🚗 ![Panamá](/public/flag_pa.svg)\n\n"
+        f"### 📋 Condiciones Generales de Financiamiento (Política Pública) 🚗 🇵🇦\n\n"
         f"En **Caja de Ahorros**, las cuotas mensuales exactas y corridas financieras formales son estructuradas "
         f"directamente por un **oficial de crédito** en el stand de la feria o en cualquiera de nuestras sucursales, "
         f"utilizando la cotización formal emitida por la agencia concesionaria{marca_str}.\n\n"
@@ -357,7 +357,7 @@ async def on_chat_start():
     await cl.Message(
         content=(
             "### 🚗 ¡Bienvenido a la Feria de Autos con **Caja de Ahorros**!\n"
-            "*El Banco de la Familia Panameña* ![Panamá](/public/flag_pa.svg)\n\n"
+            "*El Banco de la Familia Panameña* 🇵🇦\n\n"
             "👋 **Paso previo:** Complete el formulario en pantalla con su **Nombre, Cédula, Celular y Correo** para activar al **Asesor Virtual** y asignarle su Pase Digital de feria.\n\n"
             "*Una vez enviado, el asistente activará inmediatamente todas las opciones de asesoría personalizada y simulación.*"
         )
@@ -379,17 +379,23 @@ async def handle_quick_action(action: cl.Action):
 @cl.on_message
 async def on_message(message: cl.Message):
     """Maneja los mensajes ingresados por el usuario."""
-    await process_user_query(message.content)
+    is_reg = "Registro de Precalificación:" in message.content or "[REGISTRO_CLIENTE]" in message.content
+    if is_reg:
+        try:
+            await message.remove()
+        except Exception:
+            pass
+    await process_user_query(message.content, is_registration=is_reg)
 
 
-async def process_user_query(user_query: str):
+async def process_user_query(user_query: str, is_registration: bool = False):
     """Procesa la consulta del usuario persistiendo clientes y chat JSON en SQLite."""
     session_id = cl.user_session.get("session_id") or cl.user_session.get("id") or "default-session"
     messages = cl.user_session.get("messages", [])
-    messages.append({"role": "user", "content": user_query})
-    
-    # Persistir turno de usuario en SQLite
-    db_guardar_chat_json(session_id, messages)
+    if not is_registration:
+        messages.append({"role": "user", "content": user_query})
+        # Persistir turno de usuario en SQLite
+        db_guardar_chat_json(session_id, messages)
     
     # 0. CASO DETERMINÍSTICO PREVIO: Registro de Formulario del Cliente
     if "Registro de Precalificación:" in user_query or "[REGISTRO_CLIENTE]" in user_query:
@@ -417,7 +423,7 @@ async def process_user_query(user_query: str):
         guardar_lead_registro(client_data)
         
         bienvenida = (
-            f"### ¡Mucho gusto y bienvenido/a, **{client_data['nombre']}**! 🚗 ![Panamá](/public/flag_pa.svg)\n"
+            f"### ¡Mucho gusto y bienvenido/a, **{client_data['nombre']}**! 🚗 🇵🇦\n"
             f"*Caja de Ahorros — El Banco de la Familia Panameña*\n\n"
             f"Hemos registrado exitosamente sus datos de contacto para su cotización:\n"
             f"• **Titular:** {client_data['nombre']}\n"

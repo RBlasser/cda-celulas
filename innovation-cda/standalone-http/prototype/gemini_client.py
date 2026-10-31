@@ -145,7 +145,7 @@ def get_smart_local_response(user_query: str) -> str:
 
     if any(k in q for k in ["letra", "cuota", "cuanto pagaria", "cuánto pagaría", "calcular", "simular", "simulacion", "simulación", "feci", "costarme"]):
         return (
-            "Estimado cliente, con mucho gusto le orientamos. 🚗 ![Panamá](/public/flag_pa.svg)\n\n"
+            "Estimado cliente, con mucho gusto le orientamos. 🚗 🇵🇦\n\n"
             "En **Caja de Ahorros**, las cuotas mensuales exactas y corridas financieras formales son estructuradas "
             "directamente por un **oficial de crédito** en nuestro stand de feria o en cualquiera de nuestras sucursales, "
             "utilizando la cotización formal de la agencia concesionaria y las tasas preferenciales del evento.\n\n"

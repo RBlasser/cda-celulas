@@ -239,3 +239,18 @@ img[alt*="bandera"] {
   box-shadow: 0 0 1px rgba(0, 0, 0, 0.4) !important;
 }
 
+/* Ocultar la burbuja técnica de precalificación del cliente en el chat */
+[data-cda-hide-step="true"],
+.step[data-cda-hide-step="true"],
+div[data-step-type="user_message"][data-cda-hide-step="true"] {
+  display: none !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+
