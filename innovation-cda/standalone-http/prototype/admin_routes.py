@@ -480,16 +480,15 @@ HTML_ADMIN_TEMPLATE = """<!DOCTYPE html>
                             <div class="form-group">
                                 <label class="form-label">Proveedor de Inteligencia Artificial</label>
                                 <select id="ai-provider-select" class="form-control" onchange="handleProviderChange()">
-                                    <option value="gemini">Google Gemini (Recomendado)</option>
-                                    <option value="openai">OpenAI (GPT-4o / GPT-4o-mini)</option>
-                                    <option value="claude">Anthropic Claude (3.5 Haiku)</option>
-                                    <option value="local">Motor Local de Reglas CDA (Offline / Cero Costo)</option>
+                                    <option value="gemini">Google Gemini</option>
+                                    <option value="openai">OpenAI</option>
+                                    <option value="claude">Anthropic Claude</option>
                                 </select>
                             </div>
 
                             <div class="form-group">
                                 <label class="form-label">Modelo del Proveedor</label>
-                                <input type="text" id="ai-model-input" class="form-control" placeholder="gemini-2.0-flash, gpt-4o-mini, etc." />
+                                <select id="ai-model-select" class="form-control"></select>
                             </div>
                         </div>
 
@@ -646,6 +645,24 @@ HTML_ADMIN_TEMPLATE = """<!DOCTYPE html>
             document.getElementById('btn-logout').style.display = 'none';
         }
 
+        const PROVIDER_MODELS = {
+            gemini: [
+                { id: "gemini-2.0-flash", label: "gemini-2.0-flash (Predeterminado)" },
+                { id: "gemini-1.5-flash", label: "gemini-1.5-flash" },
+                { id: "gemini-1.5-pro", label: "gemini-1.5-pro" }
+            ],
+            openai: [
+                { id: "gpt-4o-mini", label: "gpt-4o-mini (Predeterminado)" },
+                { id: "gpt-4o", label: "gpt-4o" },
+                { id: "gpt-3.5-turbo", label: "gpt-3.5-turbo" }
+            ],
+            claude: [
+                { id: "claude-3-5-haiku-20241022", label: "claude-3-5-haiku (Predeterminado)" },
+                { id: "claude-3-5-sonnet-20241022", label: "claude-3-5-sonnet" },
+                { id: "claude-3-haiku-20240307", label: "claude-3-haiku" }
+            ]
+        };
+
         async function loadAiConfig() {
             try {
                 const resp = await fetch('/api/admin/config', {
@@ -654,35 +671,37 @@ HTML_ADMIN_TEMPLATE = """<!DOCTYPE html>
                 if (resp.status === 401) { logout(); return; }
                 const data = await resp.json();
                 document.getElementById('ai-provider-select').value = data.provider || 'gemini';
-                document.getElementById('ai-model-input').value = data.model || '';
+                handleProviderChange(data.model);
                 document.getElementById('ai-key-input').placeholder = data.api_key_masked ? `Actual: ${data.api_key_masked}` : 'Ingrese API Key...';
-                handleProviderChange();
             } catch (err) {
                 console.error(err);
             }
         }
 
-        function handleProviderChange() {
+        function handleProviderChange(selectedModel = null) {
             const provider = document.getElementById('ai-provider-select').value;
-            const keyGroup = document.getElementById('api-key-group');
-            const modelInput = document.getElementById('ai-model-input');
-            if (provider === 'local') {
-                keyGroup.style.display = 'none';
-                modelInput.value = 'reglas-cda-offline';
-            } else {
-                keyGroup.style.display = 'block';
-                if (!modelInput.value || modelInput.value === 'reglas-cda-offline') {
-                    if (provider === 'gemini') modelInput.value = 'gemini-2.0-flash';
-                    else if (provider === 'openai') modelInput.value = 'gpt-4o-mini';
-                    else if (provider === 'claude') modelInput.value = 'claude-3-5-haiku-20241022';
-                }
+            const modelSelect = document.getElementById('ai-model-select');
+            const models = PROVIDER_MODELS[provider] || [];
+            
+            modelSelect.innerHTML = '';
+            models.forEach(m => {
+                const opt = document.createElement('option');
+                opt.value = m.id;
+                opt.textContent = m.label;
+                modelSelect.appendChild(opt);
+            });
+
+            if (selectedModel && models.some(m => m.id === selectedModel)) {
+                modelSelect.value = selectedModel;
+            } else if (models.length > 0) {
+                modelSelect.value = models[0].id;
             }
         }
 
         async function saveAiConfig(e) {
             e.preventDefault();
             const provider = document.getElementById('ai-provider-select').value;
-            const model = document.getElementById('ai-model-input').value.trim();
+            const model = document.getElementById('ai-model-select').value;
             const key = document.getElementById('ai-key-input').value.trim();
 
             try {
