@@ -1,3 +1,7 @@
+<div class="cda-hero-banner">
+  <img src="/public/logo_cda.png" alt="Caja de Ahorros — El Banco de la Familia Panameña" class="cda-hero-logo" />
+</div>
+
 # 🚗 Asesor Virtual de Auto • Feria de Préstamos
 ### **Caja de Ahorros** — *El Banco de la Familia Panameña* 🇵🇦
 

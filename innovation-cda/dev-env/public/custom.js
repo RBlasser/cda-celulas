@@ -19,6 +19,9 @@
     overlay.innerHTML = `
       <div class="cda-modal-card" role="dialog" aria-modal="true" aria-labelledby="cda-title">
         <div class="cda-modal-header">
+          <div class="cda-modal-brand-header">
+            <img src="/public/logo_cda.png" alt="Caja de Ahorros — El Banco de la Familia Panameña" class="cda-modal-logo" style="height: 56px; max-height: 56px; width: auto; max-width: 250px; object-fit: contain; border-radius: 9px; display: block; margin: 0 auto 10px auto; box-shadow: 0 4px 14px rgba(7, 69, 148, 0.25);" />
+          </div>
           <div class="cda-modal-badge">🚗 Feria de Préstamos • Caja de Ahorros</div>
           <h2 id="cda-title" class="cda-modal-title">Registro de Precalificación</h2>
           <p class="cda-modal-subtitle">Ingrese sus datos para activar el <strong>Asesor Virtual de Auto</strong> y habilitar la emisión de su Pase Digital oficial.</p>
@@ -299,6 +302,11 @@
 
   // Inicialización cuando el DOM esté listo
   function init() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get("reset") === "1") {
+      sessionStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem(STORAGE_KEY);
+    }
     const isRegistered = sessionStorage.getItem(STORAGE_KEY);
     if (!isRegistered) {
       createModal();
